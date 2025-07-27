@@ -1,0 +1,32 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.example.dacn.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.modelmapper.ModelMapper;
+import org.springframework.boot.BootstrapRegistry;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.BeanDefinitionDsl;
+
+/**
+ *
+ * @author ADMIN
+ */
+@Configuration
+public class OtherConfig {
+
+    @Bean
+    protected ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+    
+    @Bean
+    protected ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+}
