@@ -31,8 +31,10 @@ public class SecurityConfig {
         return httpSecurity
                 .addFilterBefore(config, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(rq -> {
-                    rq.requestMatchers(HttpMethod.GET, "api/v1/user/*").hasAuthority("ADMIN")
+                    rq
+                            //                            .requestMatchers(HttpMethod.GET, "api/v1/user/*").hasAuthority("ADMIN")
                             .anyRequest().permitAll();
                 })
                 .cors(AbstractHttpConfigurer::disable)

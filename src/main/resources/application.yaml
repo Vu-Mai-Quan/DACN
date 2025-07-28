@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: /api/v1
 init-data:
     admin:
         email: ADMIN@gmai.com
@@ -6,6 +9,9 @@ init-data:
         seccret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
         expire-date: 360000
         issuer: dacn.com
+    token-refresh:
+        expire-date: 360000
+        
 spring:
     devtools:
         restart:
@@ -26,5 +32,7 @@ spring:
             db2:
               url: jdbc:sqlite:src/main/resources/database/mydb.sqlite3
               driver-class-name: org.sqlite.JDBC
+
+  
            
               

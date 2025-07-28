@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Collection;
@@ -47,10 +48,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 })
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class TaiKhoan extends BaseEntityUpdateAt implements UserDetails {
+public class TaiKhoan
+        extends BaseEntityUpdateAt
+        implements UserDetails {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "id", name = "id_thong_tin_nguoi_dung")
+    @OneToOne(fetch = FetchType.LAZY,targetEntity = ThongTinNguoiDung.class)
+    @JoinColumn(name = "id")
     @MapsId
     ThongTinNguoiDung thongTinNguoiDung;
 
@@ -60,7 +63,7 @@ public class TaiKhoan extends BaseEntityUpdateAt implements UserDetails {
     @Column(length = 150, nullable = false, name = "mat_khau")
     @Getter(value = AccessLevel.NONE)
     String matKhau;
-    @Column(name="co_bi_khoa")
+    @Column(name = "co_bi_khoa")
     boolean coBiKhoa = false;
     @Column(name = "da_kich_hoat")
     boolean daKichHoat = false;
@@ -73,7 +76,10 @@ public class TaiKhoan extends BaseEntityUpdateAt implements UserDetails {
             name = "tai_khoan_va_chuc_vu")
     @ToString.Exclude
     Set<Role> roles = new HashSet<>();
+    @OneToMany(mappedBy = "idNguoiDung", fetch = FetchType.LAZY)
+    Set<RefreshToken> refreshTokens = new HashSet<>();
 
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(role
@@ -93,7 +99,7 @@ public class TaiKhoan extends BaseEntityUpdateAt implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-       return true;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
@@ -103,7 +109,7 @@ public class TaiKhoan extends BaseEntityUpdateAt implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-      return true;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override

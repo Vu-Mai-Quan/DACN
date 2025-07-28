@@ -13,7 +13,6 @@ import jakarta.persistence.PrePersist;
 import java.sql.Date;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +29,7 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    protected UUID id;
+    public UUID id;
 
     @Column(name = "create_at")
     @Setter(AccessLevel.NONE)

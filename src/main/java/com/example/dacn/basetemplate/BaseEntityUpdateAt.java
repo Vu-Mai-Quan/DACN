@@ -5,13 +5,9 @@
 package com.example.dacn.basetemplate;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.sql.Date;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +28,7 @@ public abstract class BaseEntityUpdateAt extends BaseEntity {
     @Setter(AccessLevel.NONE)
     protected Date update_at;
 
-    @PrePersist
+    @PreUpdate
     protected void setUpdateAt() {
         this.update_at = new Date(System.currentTimeMillis());
     }
