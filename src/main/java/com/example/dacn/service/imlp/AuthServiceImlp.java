@@ -6,6 +6,7 @@ package com.example.dacn.service.imlp;
 
 import com.example.dacn.basetemplate.dto.request.LoginDto;
 import com.example.dacn.basetemplate.dto.response.LoginResponse;
+import com.example.dacn.basetemplate.dto.response.TokenAndExpriredView;
 import com.example.dacn.db1.model.RefreshToken;
 import com.example.dacn.db1.model.TaiKhoan;
 import com.example.dacn.db1.repositories.RefreshTokenRepo;
@@ -13,6 +14,7 @@ import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import com.example.dacn.service.IAuthService;
 import com.example.dacn.service.IJwtService;
 import jakarta.persistence.EntityNotFoundException;
+import java.sql.Date;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +44,8 @@ public class AuthServiceImlp implements IAuthService {
         if (!encode.matches(loginDto.getPassword(), tk.getPassword())) {
             throw new EntityNotFoundException("Thông tin tài khoản hoặc mật khẩu không chính xác");
         }
-        Optional<String> rfRp = rfTkRp.getNewToken(tk.getId());
-        String rf = rfRp.isPresent() ? rfRp.get() : insertRefreshToken(jwtSevice.createRefreshToken(tk), tk);
+        Optional<TokenAndExpriredView> rfRp = rfTkRp.getNewToken(tk.getId());
+        String rf = rfRp.isPresent() && new Date(rfRp.get().getExprired()).after(new Date(System.currentTimeMillis())) ? rfRp.get().getToken() : insertRefreshToken(jwtSevice.createRefreshToken(tk), tk);
         String token = jwtSevice.createToken(tk);
         return LoginResponse.builder()
                 .token(token)
@@ -52,12 +54,10 @@ public class AuthServiceImlp implements IAuthService {
                 .build();
     }
 
-
     @Transactional(transactionManager = "db2TransactionManager")
     private String insertRefreshToken(String token, TaiKhoan idTaiKhoan) {
-     rfTkRp.save(new RefreshToken(idTaiKhoan, jwtSevice.exprired(token).getTime(), token));
+        rfTkRp.save(new RefreshToken(idTaiKhoan, jwtSevice.exprired(token).getTime(), token));
         return token;
     }
-
 
 }

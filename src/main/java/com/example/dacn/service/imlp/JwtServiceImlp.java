@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.example.dacn.service.imlp;
 
 import com.example.dacn.db1.model.TaiKhoan;
@@ -11,7 +7,6 @@ import com.example.dacn.service.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -20,7 +15,6 @@ import java.security.Key;
 import java.sql.Date;
 import java.util.function.Function;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,30 +30,30 @@ import org.springframework.stereotype.Service;
 public class JwtServiceImlp implements IJwtService {
 
 
-    String seccretKey;
+    String secretKey;
 
     long expireDate;
 
     long refreshExpireDate;
     Key key;
-    String issure;
+    String issue;
     TaiKhoanRepo khoanRepo;
     BlackListTokenRepo blackListTokenRepo;
 
     public JwtServiceImlp(
-            @Value("${init-data.token.seccret-key}")  String seccretKey,
+            @Value("${init-data.token.secret-key}")  String secretKey,
             @Value("${init-data.token.expire-date}")  long expireDate,
             @Value("${init-data.token-refresh.expire-date}")  long refreshExpireDate,
             @Value("${init-data.token.issuer}") String issure,
             TaiKhoanRepo khoanRepo,
             BlackListTokenRepo blackListTokenRepo) {
-        this.seccretKey = seccretKey;
+        this.secretKey = secretKey;
         this.expireDate = expireDate;
         this.refreshExpireDate = refreshExpireDate;
-        this.issure = issure;
+        this.issue = issure;
         this.khoanRepo = khoanRepo;
         this.blackListTokenRepo = blackListTokenRepo;
-        this.key = Keys.hmacShaKeyFor(Base64.encodeBase64(this.seccretKey.getBytes(), true));
+        this.key = Keys.hmacShaKeyFor(Base64.encodeBase64(this.secretKey.getBytes(), true));
     }
 
     @Override
@@ -67,10 +61,10 @@ public class JwtServiceImlp implements IJwtService {
         return Jwts.builder()
                 .claim("role", details.getAuthorities())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setIssuer(issure)
+                .setIssuer(issue)
                 .setExpiration(new Date(System.currentTimeMillis() + expireDate))
                 .setSubject(details.getUsername())
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(key)
                 .compact();
     }
 
@@ -109,7 +103,7 @@ public class JwtServiceImlp implements IJwtService {
                 .setIssuer("refresh_token")
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpireDate))
                 .setSubject(details.getUsername())
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(key)
                 .compact();
     }
 

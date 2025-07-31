@@ -4,8 +4,11 @@
  */
 package com.example.dacn.db1.model;
 
+import com.example.dacn.basetemplate.dto.response.TokenAndExpriredView;
 import com.example.dacn.db1.model.compositekey.IdRefreshToken;
 import jakarta.persistence.Column;
+import jakarta.persistence.ColumnResult;
+import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -13,12 +16,15 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.SqlResultSetMapping;
+import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
-import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NamedNativeQueries;
+import org.hibernate.annotations.NamedNativeQuery;
 
 /**
  *
@@ -31,6 +37,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@NamedNativeQueries({
+    @NamedNativeQuery(name = "RefreshToken.GetTọkenAndExprired", query = "select rft.token, rft.exprired "
+            + "from refresh_token rft where rft.id_nguoi_dung = :id order by rft.exprired desc limit 1", resultSetMapping = "RefreshToken.TokenAndExpriredView")
+})
+@SqlResultSetMappings({
+    @SqlResultSetMapping(classes = @ConstructorResult(targetClass = TokenAndExpriredView.class, columns = {
+        @ColumnResult(name = "token", type = String.class),
+        @ColumnResult(name = "exprired", type = Long.class)
+    }), name = "RefreshToken.TokenAndExpriredView")
+})
 public class RefreshToken {
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -41,7 +57,8 @@ public class RefreshToken {
     @Id
     @Column(nullable = false)
     private long exprired;
-    
+
     @Column(length = 300)
-    String token;
+    private String token;
+
 }

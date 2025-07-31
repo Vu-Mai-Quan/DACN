@@ -35,7 +35,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
-
+@ToString
 public class Role extends BaseEntity {
 
     @Enumerated(EnumType.STRING)

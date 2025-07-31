@@ -4,10 +4,14 @@
  */
 package com.example.dacn.service;
 
+import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 /**
  *
  * @author ADMIN
  */
-public class INguoiDungService {
-    
+public interface INguoiDungService {
+    Page<ThongTinNDResponse> layDanhSachTTNguoiDung(Pageable pageable);
 }

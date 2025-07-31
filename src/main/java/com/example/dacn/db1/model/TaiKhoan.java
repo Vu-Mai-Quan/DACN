@@ -52,9 +52,10 @@ public class TaiKhoan
         extends BaseEntityUpdateAt
         implements UserDetails {
 
-    @OneToOne(fetch = FetchType.LAZY,targetEntity = ThongTinNguoiDung.class)
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = ThongTinNguoiDung.class)
     @JoinColumn(name = "id")
     @MapsId
+//    @Setter(AccessLevel.NONE)
     ThongTinNguoiDung thongTinNguoiDung;
 
     @Column(length = 100, nullable = false)
@@ -64,8 +65,10 @@ public class TaiKhoan
     @Getter(value = AccessLevel.NONE)
     String matKhau;
     @Column(name = "co_bi_khoa")
+    @Getter(value = AccessLevel.NONE)
     boolean coBiKhoa = false;
     @Column(name = "da_kich_hoat")
+    @Getter(value = AccessLevel.NONE)
     boolean daKichHoat = false;
     @Column(length = 8, nullable = false)
     @Enumerated(EnumType.STRING)
@@ -79,7 +82,6 @@ public class TaiKhoan
     @OneToMany(mappedBy = "idNguoiDung", fetch = FetchType.LAZY)
     Set<RefreshToken> refreshTokens = new HashSet<>();
 
-    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(role
@@ -87,6 +89,10 @@ public class TaiKhoan
                 .collect(Collectors.toSet());
     }
 
+//    public void setThongTinNguoiDung(ThongTinNguoiDung thongTinNguoiDung) {
+//        thongTinNguoiDung.setTaiKhoan(this);
+//        
+//    }
     @Override
     public String getPassword() {
         return this.matKhau;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

@@ -13,12 +13,15 @@ import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
 import jakarta.transaction.Transactional;
+
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -26,7 +29,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author ADMIN
  */
 @Component
@@ -39,14 +41,15 @@ public class InitData implements ApplicationRunner {
     private final String email, password;
 
     public InitData(ChucVuRepo chucVuRepo, ThongTinNDRepo thongTinNDRepo,
-            TaiKhoanRepo khoanRepo, PasswordEncoder encode,
-            @Value("${init-data.admin.email}") String email, @Value("${init-data.admin.password}") String password) {
+                    TaiKhoanRepo khoanRepo, PasswordEncoder encode,
+                    @Value("${init-data.admin.email}") String email, @Value("${init-data.admin.password}") String password) {
         this.chucVuRepo = chucVuRepo;
         this.thongTinNDRepo = thongTinNDRepo;
         this.khoanRepo = khoanRepo;
         this.encode = encode;
         this.email = email;
         this.password = password;
+
     }
 
     @Override
@@ -55,7 +58,7 @@ public class InitData implements ApplicationRunner {
         khoiTaoAdminChuaTonTai();
     }
 
-    @Transactional
+
     private void khoiTaoAdminChuaTonTai() throws Exception {
         if (khoanRepo.kiemTraEmailDaTonTai(email) > 0) {
             return;
@@ -82,14 +85,13 @@ public class InitData implements ApplicationRunner {
         }
     }
 
-    @Transactional
+
     private void khoiTaoChucVuChuaTonTai() {
         try {
             Map<String, String> mapRoleName = chucVuRepo.timHetTenChucVu().stream()
                     .collect(Collectors.toMap(Function.identity(), Function.identity()));
-            Set<Role> roles = java.util.Arrays.asList(EnumRole.values())
-                    .stream().filter(item -> !mapRoleName.containsKey(item.name()))
-                    .map(mapper -> new Role(mapper))
+            Set<Role> roles = Arrays.stream(EnumRole.values()).filter(item -> !mapRoleName.containsKey(item.name()))
+                    .map(Role::new)
                     .collect(Collectors.toSet());
             if (roles.isEmpty()) {
                 return;

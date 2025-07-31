@@ -4,20 +4,16 @@
  */
 package com.example.dacn.config;
 
-import java.util.Set;
+import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 /**
  *
@@ -31,21 +27,21 @@ public class UserDetailConfig {
         return new BCryptPasswordEncoder(4);
     }
 
+//    @Bean
+//    protected UserDetailsService userDetailService(TaiKhoanRepo khoanRepo) {
+//        return (username) -> khoanRepo.timTaiKhoanTheoEmail(username).get();
+//    }
+//
+//    @Bean
+//    protected AuthenticationProvider authenticationProvider(PasswordEncoder encoder, UserDetailsService detailsService) {
+//        DaoAuthenticationProvider dap = new DaoAuthenticationProvider(encoder);
+//        dap.setUserDetailsService(detailsService);
+//        dap.setPasswordEncoder(encoder);
+//        return dap;
+//    }
+//
+//
     @Bean
-    protected UserDetailsService userDetailService() {
-        User u = new User("ADMIN", encoder().encode("1234"), Set.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_CUSTOMER"), new SimpleGrantedAuthority("ROLE_MANAGER")));
-        return new InMemoryUserDetailsManager(u);
-    }
-
-    @Bean
-    protected AuthenticationProvider authenticationProvider(PasswordEncoder encoder) {
-        DaoAuthenticationProvider dap = new DaoAuthenticationProvider(encoder);
-        dap.setUserDetailsService(userDetailService());
-        return dap;
-    }
-
-    ;
-    
     protected AuthenticationManager authenticationManager(AuthenticationConfiguration ac) throws Exception {
         return ac.getAuthenticationManager();
     }

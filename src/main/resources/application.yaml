@@ -1,12 +1,13 @@
 server:
   servlet:
     context-path: /api/v1
+
 init-data:
     admin:
         email: ADMIN@gmai.com
         password: 12345678
     token:
-        seccret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
+        secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
         expire-date: 360000
         issuer: dacn.com
     token-refresh:

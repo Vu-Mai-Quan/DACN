@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,6 +23,7 @@ public interface ThongTinNDRepo extends JpaRepository<ThongTinNguoiDung, UUID> {
     @Query("select t from ThongTinNguoiDung t WHERE t.sdt = :sdt")
     Optional<ThongTinNguoiDung> findBySdt(@Param("sdt") String sdt);
 
-    @Query("SELECT tt from ThongTinNguoiDung tt JOIN tt.taiKhoan tk JOIN FETCH tk.roles")
+    @Query("SELECT tt from ThongTinNguoiDung tt")
+    @EntityGraph(value = "ThongTinNguoiDung.JoinRole",type = EntityGraph.EntityGraphType.FETCH)
     Page<ThongTinNguoiDung> layDanhSachNguoiDung(Pageable page);
 }

@@ -8,6 +8,11 @@ import com.example.dacn.basetemplate.BaseEntityUpdateAt;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedEntityGraphs;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.sql.Date;
@@ -29,17 +34,24 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "ThongTinNguoiDung.JoinRole",
+            attributeNodes = @NamedAttributeNode(value = "taiKhoan", subgraph = "TaiKhoan.Roles"),
+            subgraphs = {
+                @NamedSubgraph(name = "TaiKhoan.Roles", attributeNodes = {
+            @NamedAttributeNode(value = "roles")
+        })})
+})
 public class ThongTinNguoiDung extends BaseEntityUpdateAt {
 
-    
     @Column(length = 13, nullable = false, unique = true)
     String sdt;
     @Column(name = "ho_ten", length = 50)
     String hoTen;
-    @Column(name="ngay_sinh")
+    @Column(name = "ngay_sinh")
     Date ngaySinh;
     @Column(length = 225)
     String avatar;
-    @OneToOne(mappedBy = "thongTinNguoiDung", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "thongTinNguoiDung", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     TaiKhoan taiKhoan;
 }
