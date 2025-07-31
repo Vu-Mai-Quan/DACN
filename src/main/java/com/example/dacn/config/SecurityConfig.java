@@ -14,7 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- *
  * @author ADMIN
  */
 @Configuration
@@ -29,11 +28,9 @@ public class SecurityConfig {
                 .addFilterBefore(config, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(rq -> {
-                    rq
-                            //                            .requestMatchers(HttpMethod.GET, "api/v1/user/*").hasAuthority("ADMIN")
-                            .anyRequest().permitAll();
-                })
+                .authorizeHttpRequests(rq -> rq
+                        //                            .requestMatchers(HttpMethod.GET, "api/v1/user/*").hasAuthority("ADMIN")
+                        .anyRequest().permitAll().requestMatchers("/admin/*").hasRole("ADMIN"))
                 .cors(AbstractHttpConfigurer::disable)
                 .build();
     }

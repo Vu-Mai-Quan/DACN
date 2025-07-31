@@ -54,8 +54,8 @@ public class AuthServiceImlp implements IAuthService {
                 .build();
     }
 
-    @Transactional(transactionManager = "db2TransactionManager")
-    private String insertRefreshToken(String token, TaiKhoan idTaiKhoan) {
+//    @Transactional(transactionManager = "db2TransactionManager")
+    protected String insertRefreshToken(String token, TaiKhoan idTaiKhoan) {
         rfTkRp.save(new RefreshToken(idTaiKhoan, jwtSevice.exprired(token).getTime(), token));
         return token;
     }

@@ -30,8 +30,6 @@ import org.springframework.stereotype.Service;
 public class JwtServiceImlp implements IJwtService {
 
 
-    String secretKey;
-
     long expireDate;
 
     long refreshExpireDate;
@@ -47,13 +45,12 @@ public class JwtServiceImlp implements IJwtService {
             @Value("${init-data.token.issuer}") String issure,
             TaiKhoanRepo khoanRepo,
             BlackListTokenRepo blackListTokenRepo) {
-        this.secretKey = secretKey;
         this.expireDate = expireDate;
         this.refreshExpireDate = refreshExpireDate;
         this.issue = issure;
         this.khoanRepo = khoanRepo;
         this.blackListTokenRepo = blackListTokenRepo;
-        this.key = Keys.hmacShaKeyFor(Base64.encodeBase64(this.secretKey.getBytes(), true));
+        this.key = Keys.hmacShaKeyFor(Base64.encodeBase64(secretKey.getBytes(), true));
     }
 
     @Override

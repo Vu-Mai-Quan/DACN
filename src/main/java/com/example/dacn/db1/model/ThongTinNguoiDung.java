@@ -52,6 +52,6 @@ public class ThongTinNguoiDung extends BaseEntityUpdateAt {
     Date ngaySinh;
     @Column(length = 225)
     String avatar;
-    @OneToOne(mappedBy = "thongTinNguoiDung", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "thongTinNguoiDung", cascade = CascadeType.ALL, orphanRemoval = true)
     TaiKhoan taiKhoan;
 }

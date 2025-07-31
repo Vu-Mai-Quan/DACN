@@ -12,8 +12,13 @@ import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
-import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -21,12 +26,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 /**
  * @author ADMIN
@@ -65,11 +64,11 @@ public class InitData implements ApplicationRunner {
         }
         try {
             var ttnd = thongTinNDRepo.findBySdt("0989209522");
-            ThongTinNguoiDung nguoiDung = ttnd.isPresent() ? ttnd.get() : new ThongTinNguoiDung();
+            ThongTinNguoiDung nguoiDung = ttnd.orElseGet(ThongTinNguoiDung::new);
             nguoiDung.setAvatar("https://drive.google.com/file/d/1yiZz4XVRyHZjUFi1vTzSsHCr5o7cnBaf/view");
             nguoiDung.setHoTen("Quản trị viên");
             nguoiDung.setSdt("0989209522");
-            nguoiDung.setNgaySinh(new java.sql.Date(2002, 05, 28));
+            nguoiDung.setNgaySinh(new Date(2002, 5, 28));
             Set<Role> lsRoles = chucVuRepo.findAllInName();
             TaiKhoan khoan = new TaiKhoan();
             khoan.setEmail(email);

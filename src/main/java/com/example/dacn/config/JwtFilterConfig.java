@@ -11,15 +11,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.sql.Date;
-import java.util.Set;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.manager.Constants;
-import org.apache.tomcat.util.buf.CharsetUtil;
 import org.modelmapper.internal.Pair;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -29,6 +23,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.sql.Date;
+import java.util.Set;
 
 /**
  * @author ADMIN Lớp được tạo ra để kiểm tra token có hợp lệ để đi tiếp không
@@ -41,7 +39,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
     private final ObjectMapper mapper;
 
     @Override
-    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         Pair<String, Set<String>> pair = Pair.of("*/client/*", Set.of("GET", "POST", "PUT", "DELETE"));
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         String servletPath = request.getRequestURL().toString();

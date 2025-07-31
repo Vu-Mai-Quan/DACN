@@ -5,15 +5,14 @@
 package com.example.dacn.mapper;
 
 import com.example.dacn.basetemplate.dto.response.TaiKhoanResponese;
-import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
 import com.example.dacn.db1.model.TaiKhoan;
-import com.example.dacn.db1.model.ThongTinNguoiDung;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  *
@@ -31,7 +30,7 @@ public class ThongTinNDVaTaiKhoanMapper implements IMapperService {
     );
 
     @Override
-    public <S, D> D mapperObject(S source, Class<D> out, Consumer consumer) {
+    public <S, D> D mapperObject(S source, Class<D> out, Consumer<ModelMapper> consumer) {
         consumer.accept(mapper);
         if (source == null) {
             return null;
