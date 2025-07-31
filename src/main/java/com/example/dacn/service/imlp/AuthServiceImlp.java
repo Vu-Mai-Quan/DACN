@@ -14,14 +14,15 @@ import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import com.example.dacn.service.IAuthService;
 import com.example.dacn.service.IJwtService;
 import jakarta.persistence.EntityNotFoundException;
-import java.sql.Date;
-import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Date;
+import java.util.Optional;
 
 /**
  *
@@ -38,6 +39,7 @@ public class AuthServiceImlp implements IAuthService {
     RefreshTokenRepo rfTkRp;
 
     @Override
+    @Transactional(transactionManager = "db2TransactionManager")
     public LoginResponse login(LoginDto loginDto) {
         var tk = taikhoanRepo.timTaiKhoanTheoEmail(loginDto.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Thông tin tài khoản hoặc mật khẩu không chính xác"));
@@ -54,8 +56,8 @@ public class AuthServiceImlp implements IAuthService {
                 .build();
     }
 
-//    @Transactional(transactionManager = "db2TransactionManager")
-    protected String insertRefreshToken(String token, TaiKhoan idTaiKhoan) {
+
+    private String insertRefreshToken(String token, TaiKhoan idTaiKhoan) {
         rfTkRp.save(new RefreshToken(idTaiKhoan, jwtSevice.exprired(token).getTime(), token));
         return token;
     }

@@ -5,23 +5,11 @@
 package com.example.dacn.db1.model;
 
 import com.example.dacn.basetemplate.BaseEntityUpdateAt;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedEntityGraphs;
-import jakarta.persistence.NamedSubgraph;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.sql.Date;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.sql.Date;
 
 /**
  *
