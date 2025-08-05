@@ -4,7 +4,9 @@
  */
 package com.example.dacn.config;
 
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.BootstrapRegistry;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +28,9 @@ public class OtherConfig {
     
     @Bean
     protected ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        var o = new ObjectMapper();
+        o.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        return o;
     }
 
 }

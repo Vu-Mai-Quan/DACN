@@ -6,8 +6,14 @@ package com.example.dacn.basetemplate.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +24,6 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
- *
  * @author ADMIN
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,9 +40,17 @@ public class ThongTinNDResponse {
     String sdt;
     @JsonProperty(value = "ho_ten")
     String hoTen;
-    @JsonProperty(value = "ngau_sinh")
+    @JsonProperty(value = "ngay_sinh")
     Date ngaySinh;
     String avatar;
     @JsonProperty(value = "tai_khoan")
     TaiKhoanResponese taiKhoan;
+
+    @JsonProperty(value = "danh_sach_chuc_vu")
+    @Setter(value = AccessLevel.NONE)
+    Set<String> danhSachChucVu;
+
+    public void setDanhSachChucVu(List<String> danhSachChucVu) {
+        this.danhSachChucVu = new HashSet<>(danhSachChucVu);
+    }
 }

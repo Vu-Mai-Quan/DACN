@@ -12,8 +12,8 @@ import lombok.experimental.FieldDefaults;
 import java.sql.Date;
 
 /**
- *
  * @author ADMIN
+
  */
 @Table(name = "thong_tin_nguoi_dung", schema = "dacn_repair_service_booking_system")
 @Entity
@@ -23,13 +23,19 @@ import java.sql.Date;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NamedEntityGraphs({
-    @NamedEntityGraph(name = "ThongTinNguoiDung.JoinRole",
-            attributeNodes = @NamedAttributeNode(value = "taiKhoan", subgraph = "TaiKhoan.Roles"),
-            subgraphs = {
-                @NamedSubgraph(name = "TaiKhoan.Roles", attributeNodes = {
-            @NamedAttributeNode(value = "roles")
-        })})
+        @NamedEntityGraph(name = "ThongTinNguoiDung.JoinRole",
+                attributeNodes = @NamedAttributeNode(value = "taiKhoan", subgraph = "TaiKhoan.Roles"),
+                subgraphs = {
+                        @NamedSubgraph(name = "TaiKhoan.Roles", attributeNodes = {
+                                @NamedAttributeNode(value = "roles")
+                        })})
 })
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "ThongTinNguoiDung.selectAllWithRole", query = """
+                select * from thong_tin_nd_va_chuc_vu
+                """,resultSetMapping = "mappingsThongTinNdWithRole")
+})
+
 public class ThongTinNguoiDung extends BaseEntityUpdateAt {
 
     @Column(length = 13, nullable = false, unique = true)
@@ -40,6 +46,7 @@ public class ThongTinNguoiDung extends BaseEntityUpdateAt {
     Date ngaySinh;
     @Column(length = 225)
     String avatar;
-    @OneToOne(mappedBy = "thongTinNguoiDung", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "thongTinNguoiDung",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     TaiKhoan taiKhoan;
 }

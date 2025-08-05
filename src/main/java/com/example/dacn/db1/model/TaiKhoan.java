@@ -47,7 +47,6 @@ import org.springframework.security.core.userdetails.UserDetails;
     @Index(columnList = "email", name = "email_idx")
 })
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
 public class TaiKhoan
         extends BaseEntityUpdateAt
         implements UserDetails {
@@ -79,6 +78,7 @@ public class TaiKhoan
             name = "tai_khoan_va_chuc_vu")
     @ToString.Exclude
     Set<Role> roles = new HashSet<>();
+
     @OneToMany(mappedBy = "idNguoiDung", fetch = FetchType.LAZY)
     Set<RefreshToken> refreshTokens = new HashSet<>();
 

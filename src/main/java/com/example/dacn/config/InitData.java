@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -87,9 +88,8 @@ public class InitData implements ApplicationRunner {
 
     private void khoiTaoChucVuChuaTonTai() {
         try {
-            Map<String, String> mapRoleName = chucVuRepo.timHetTenChucVu().stream()
-                    .collect(Collectors.toMap(Function.identity(), Function.identity()));
-            Set<Role> roles = Arrays.stream(EnumRole.values()).filter(item -> !mapRoleName.containsKey(item.name()))
+            Set<String> mapRoleName = new HashSet<>(chucVuRepo.timHetTenChucVu());
+            Set<Role> roles = Arrays.stream(EnumRole.values()).filter(item -> !mapRoleName.contains(item.name()))
                     .map(Role::new)
                     .collect(Collectors.toSet());
             if (roles.isEmpty()) {

@@ -5,6 +5,8 @@
 package com.example.dacn.db1.repositories;
 
 import com.example.dacn.db1.model.TaiKhoan;
+
+import java.sql.Date;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +24,5 @@ public interface TaiKhoanRepo extends JpaRepository<TaiKhoan, UUID> {
 
     @Query("SELECT tk from TaiKhoan tk JOIN FETCH tk.roles where tk.email = :email")
     Optional<TaiKhoan> timTaiKhoanTheoEmail(@Param("email") String email);
+
 }

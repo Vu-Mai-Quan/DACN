@@ -4,12 +4,12 @@
  */
 package com.example.dacn.mapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 
 import java.util.function.Consumer;
 
 /**
- *
  * @author ADMIN
  */
 public interface IMapperService {

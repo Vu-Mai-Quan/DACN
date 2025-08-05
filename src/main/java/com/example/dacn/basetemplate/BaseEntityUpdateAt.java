@@ -26,10 +26,10 @@ public abstract class BaseEntityUpdateAt extends BaseEntity {
 
     @Column(name = "update_at")
     @Setter(AccessLevel.NONE)
-    protected Date update_at;
+    protected Date updateAt;
 
     @PreUpdate
     protected void setUpdateAt() {
-        this.update_at = new Date(System.currentTimeMillis());
+        this.updateAt = new Date(System.currentTimeMillis());
     }
 }

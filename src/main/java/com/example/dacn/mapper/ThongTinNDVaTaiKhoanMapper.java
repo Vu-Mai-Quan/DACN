@@ -5,62 +5,78 @@
 package com.example.dacn.mapper;
 
 import com.example.dacn.basetemplate.dto.response.TaiKhoanResponese;
+import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
 import com.example.dacn.db1.model.TaiKhoan;
+import com.example.dacn.db1.model.ThongTinNguoiDung;
+import com.example.dacn.db1.model.viewmodel.ThongTinNdVaChucVu;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- *
  * @author ADMIN
  */
+@Slf4j
 @Component(value = "ttndTKRoleMapper")
 @RequiredArgsConstructor
 public class ThongTinNDVaTaiKhoanMapper implements IMapperService {
 
     private final ModelMapper mapper;
-    private final Map<String, Set<String>> rolesMap = Map.of("1", Set.of("ROLE_CLIENT"),
-            "2", Set.of("ROLE_CUSTOMER", "ROLE_CLIENT"),
-            "3", Set.of("ROLE_CUSTOMER", "ROLE_CLIENT", "ROLE_MANAGER"),
-            "4", Set.of("ROLE_CUSTOMER", "ROLE_CLIENT", "ROLE_MANAGER", "ROLE_ADMIN")
-    );
+    private final ObjectMapper objectCodec;
+  
 
     @Override
     public <S, D> D mapperObject(S source, Class<D> out, Consumer<ModelMapper> consumer) {
         consumer.accept(mapper);
-        if (source == null) {
-            return null;
-        }
-        return mapper.map(source, out);
+        return source != null ? mapper.map(source, out) : null;
     }
 
     @Override
     public <S, D> D mapperObject(S source, Class<D> out) {
+        // Luôn luôn tạo TypeMap một lần và sử dụng lại.
+        // Nếu bạn tạo nó trong mỗi lần gọi hàm, nó sẽ làm chậm ứng dụng.
+        TypeMap<ThongTinNdVaChucVu, ThongTinNDResponse> typeMap = mapper.getTypeMap(ThongTinNdVaChucVu.class, ThongTinNDResponse.class);
 
-        mapper.typeMap(TaiKhoan.class, TaiKhoanResponese.class)
-                .addMappings((type) -> {
-                    type.map(
-                            tk -> {
-                                var i = String.valueOf(1);
-                                System.out.println(i);
-                                return rolesMap.containsKey(i) ? rolesMap.get(i) : rolesMap.get("1");
-                            },
-                            TaiKhoanResponese::setDanhSachChucVu);
-                    type.map(TaiKhoan::getUsername, TaiKhoanResponese::setEmail);
-                    type.map(TaiKhoan::getType, TaiKhoanResponese::setType);
-                    type.map(TaiKhoan::isAccountNonLocked, TaiKhoanResponese::setCoBiKhoa);
-                    type.map(TaiKhoan::isEnabled, TaiKhoanResponese::setDaKichHoat);
-                });
-//        mapper.typeMap(ThongTinNguoiDung.class, ThongTinNDResponse.class)
-//                .addMapping(ThongTinNguoiDung::getTaiKhoan, ThongTinNDResponse::setTaiKhoan);
-        if (source == null) {
-            return null;
+        if (typeMap == null) {
+            typeMap = mapper.createTypeMap(ThongTinNdVaChucVu.class, ThongTinNDResponse.class);
+            typeMap.addMappings(mapping -> {
+                mapping
+                        .using(ctx -> {
+                            // Đây là cách sử dụng Converter để xử lý giá trị
+                            // ctx.getSource() là giá trị từ sourceMethod, nó không bao giờ null ở đây.
+                            String taiKhoanJson = (String) ctx.getSource();
+                            try {
+                                return objectCodec.readValue(taiKhoanJson, TaiKhoanResponese.class);
+                            } catch (IOException e) {
+                                throw new RuntimeException("Lỗi mapping TaiKhoanResponese", e);
+                            }
+                        })
+                        .map(ThongTinNdVaChucVu::getTaiKhoan, ThongTinNDResponse::setTaiKhoan);
+
+                mapping.using(ctx -> {
+                    String roleListJson = (String) ctx.getSource();
+                    try {
+                        return objectCodec.readValue(roleListJson, List.class);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Lỗi mapping getRoleList", e);
+                    }
+                }).map(ThongTinNdVaChucVu::getRoleList, ThongTinNDResponse::setDanhSachChucVu);
+            });
         }
-        return mapper.map(source, out);
+
+        return source != null ? mapper.map(source, out) : null;
     }
 
 }

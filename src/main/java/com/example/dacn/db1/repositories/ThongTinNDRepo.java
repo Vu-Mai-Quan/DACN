@@ -5,17 +5,17 @@
 package com.example.dacn.db1.repositories;
 
 import com.example.dacn.db1.model.ThongTinNguoiDung;
-import java.util.Optional;
-import java.util.UUID;
+import com.example.dacn.db1.model.viewmodel.ThongTinNdVaChucVu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+import java.util.UUID;
+
 /**
- *
  * @author ADMIN
  */
 public interface ThongTinNDRepo extends JpaRepository<ThongTinNguoiDung, UUID> {
@@ -23,7 +23,8 @@ public interface ThongTinNDRepo extends JpaRepository<ThongTinNguoiDung, UUID> {
     @Query("select t from ThongTinNguoiDung t WHERE t.sdt = :sdt")
     Optional<ThongTinNguoiDung> findBySdt(@Param("sdt") String sdt);
 
-    @Query("SELECT tt from ThongTinNguoiDung tt")
-    @EntityGraph(value = "ThongTinNguoiDung.JoinRole",type = EntityGraph.EntityGraphType.FETCH)
-    Page<ThongTinNguoiDung> layDanhSachNguoiDung(Pageable page);
+    @Query(name = "ThongTinNdVaChucVu.findAll")
+    Page<ThongTinNdVaChucVu> layDanhSachNguoiDung(Pageable page);
+
+
 }

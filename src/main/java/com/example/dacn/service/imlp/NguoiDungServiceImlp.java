@@ -5,6 +5,7 @@
 package com.example.dacn.service.imlp;
 
 import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
+import com.example.dacn.db1.model.viewmodel.ThongTinNdVaChucVu;
 import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.mapper.IMapperService;
 import com.example.dacn.service.INguoiDungService;
@@ -18,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author ADMIN
  */
 @Service
@@ -32,15 +32,28 @@ public class NguoiDungServiceImlp implements INguoiDungService {
         this.ims = ims;
         this.dRepo = dRepo;
     }
+
     IMapperService ims;
     ThongTinNDRepo dRepo;
 
+//    @Override
+//    public Page<ThongTinNDResponse> layDanhSachTTNguoiDung(Pageable pageable) {
+//        log.info("Tên: {}, Chức vụ: {}", SecurityContextHolder.getContext().getAuthentication().getName(), SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+////        return dRepo.layDanhSachNguoiDung(pageable).map(item -> ims.mapperObject(item, ThongTinNDResponse.class));
+//        return dRepo.layDanhSachNguoiDung(pageable).map(item -> ims.mapperObject(item, ThongTinNDResponse.class));
+//    }
+
     @Override
     public Page<ThongTinNDResponse> layDanhSachTTNguoiDung(Pageable pageable) {
-        log.info("Tên người dùng vừa dùng chức năng này {}", SecurityContextHolder.getContext().getAuthentication().getName());
-        return dRepo.layDanhSachNguoiDung(pageable).map(item -> {
-        return ims.mapperObject(item, ThongTinNDResponse.class);
-        });
+        return dRepo.layDanhSachNguoiDung(pageable)
+                .map(item-> ims.mapperObject(item, ThongTinNDResponse.class))
+                ;
     }
+//    @Override
+//    public Page<ThongTinNdVaChucVu> layDanhSachTTNguoiDung(Pageable pageable) {
+//        return dRepo.layDanhSachNguoiDung(pageable)
+////                .map(item-> ims.mapperObject(item, ThongTinNDResponse.class))
+//                ;
+//    }
 
 }

@@ -6,6 +6,7 @@ package com.example.dacn.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.sql.DataSource;
 import org.hibernate.cfg.Environment;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -39,7 +40,7 @@ public abstract class ADbConfig {
 
     protected PlatformTransactionManager dbTransactionManager(
             LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-        return new JpaTransactionManager(entityManagerFactory.getObject());
+        return new JpaTransactionManager(Objects.requireNonNull(entityManagerFactory.getObject()));
     }
 
     protected DataSourceProperties dataSourceProperties() {
