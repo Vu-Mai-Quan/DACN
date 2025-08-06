@@ -30,9 +30,5 @@ public class ErrorResponse<T> {
     Date time = new Date(System.currentTimeMillis());
     T data;
 
-    public ErrorResponse(HttpStatus status, String message, String url) {
-        this.status = status;
-        this.message = message;
-        this.url = url;
-    }
+
 }
