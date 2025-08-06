@@ -6,36 +6,19 @@ package com.example.dacn.db1.model;
 
 import com.example.dacn.basetemplate.BaseEntityUpdateAt;
 import com.example.dacn.enumvalues.EnumTypeAccount;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
- *
  * @author ADMIN
  */
 @Entity
@@ -44,8 +27,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Setter
 @Table(name = "tai_khoan", indexes = {
-    @Index(columnList = "email", name = "email_idx")
+        @Index(columnList = "email", name = "email_idx")
 })
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TaiKhoan
         extends BaseEntityUpdateAt
@@ -54,7 +38,6 @@ public class TaiKhoan
     @OneToOne(fetch = FetchType.LAZY, targetEntity = ThongTinNguoiDung.class)
     @JoinColumn(name = "id")
     @MapsId
-//    @Setter(AccessLevel.NONE)
     ThongTinNguoiDung thongTinNguoiDung;
 
     @Column(length = 100, nullable = false)
@@ -85,11 +68,11 @@ public class TaiKhoan
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(role
-                -> new SimpleGrantedAuthority("ROLE_%s".formatted(role.getRole().name())))
+                        -> new SimpleGrantedAuthority("ROLE_%s".formatted(role.getRole().name())))
                 .collect(Collectors.toSet());
     }
 
-//    public void setThongTinNguoiDung(ThongTinNguoiDung thongTinNguoiDung) {
+    //    public void setThongTinNguoiDung(ThongTinNguoiDung thongTinNguoiDung) {
 //        thongTinNguoiDung.setTaiKhoan(this);
 //        
 //    }

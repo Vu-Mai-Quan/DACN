@@ -4,16 +4,17 @@
  */
 package com.example.dacn.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import javax.sql.DataSource;
 import org.hibernate.cfg.Environment;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -46,5 +47,5 @@ public abstract class ADbConfig {
     protected DataSourceProperties dataSourceProperties() {
         return new DataSourceProperties();
     }
-;
+
 }

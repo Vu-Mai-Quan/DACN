@@ -25,7 +25,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.Set;
 
 /**
@@ -76,7 +75,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
     }
 
     private void sendErrorResponse(HttpServletRequest rq, HttpServletResponse response, String message) throws IOException {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, rq.getRequestURI(), message, new Date(System.currentTimeMillis()));
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, rq.getRequestURI(), message);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding(Constants.CHARSET);
         response.getWriter().write(mapper.writeValueAsString(errorResponse));

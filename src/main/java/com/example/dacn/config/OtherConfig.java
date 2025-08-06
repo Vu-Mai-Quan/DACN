@@ -4,15 +4,11 @@
  */
 package com.example.dacn.config;
 
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.BootstrapRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.BeanDefinitionDsl;
 
 /**
  *

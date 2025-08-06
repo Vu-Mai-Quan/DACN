@@ -13,29 +13,15 @@ import java.sql.Date;
 
 /**
  * @author ADMIN
-
  */
 @Table(name = "thong_tin_nguoi_dung", schema = "dacn_repair_service_booking_system")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@NamedEntityGraphs({
-        @NamedEntityGraph(name = "ThongTinNguoiDung.JoinRole",
-                attributeNodes = @NamedAttributeNode(value = "taiKhoan", subgraph = "TaiKhoan.Roles"),
-                subgraphs = {
-                        @NamedSubgraph(name = "TaiKhoan.Roles", attributeNodes = {
-                                @NamedAttributeNode(value = "roles")
-                        })})
-})
-@NamedNativeQueries({
-        @NamedNativeQuery(name = "ThongTinNguoiDung.selectAllWithRole", query = """
-                select * from thong_tin_nd_va_chuc_vu
-                """,resultSetMapping = "mappingsThongTinNdWithRole")
-})
-
+@Builder
+@Setter
 public class ThongTinNguoiDung extends BaseEntityUpdateAt {
 
     @Column(length = 13, nullable = false, unique = true)
@@ -44,9 +30,10 @@ public class ThongTinNguoiDung extends BaseEntityUpdateAt {
     String hoTen;
     @Column(name = "ngay_sinh")
     Date ngaySinh;
-    @Column(length = 225)
+    @Column(length = 1000)
     String avatar;
     @OneToOne(mappedBy = "thongTinNguoiDung",
             cascade = CascadeType.ALL, orphanRemoval = true)
+
     TaiKhoan taiKhoan;
 }

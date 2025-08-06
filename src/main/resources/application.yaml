@@ -8,7 +8,7 @@ init-data:
         password: 12345678
     token:
         secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-        expire-date: 3600000
+        expire-date: 36000000
         issuer: dacn.com
     token-refresh:
         expire-date: 360000

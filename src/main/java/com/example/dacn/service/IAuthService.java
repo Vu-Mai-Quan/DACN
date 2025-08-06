@@ -5,6 +5,7 @@
 package com.example.dacn.service;
 
 import com.example.dacn.basetemplate.dto.request.LoginDto;
+import com.example.dacn.basetemplate.dto.request.RegisterDto;
 import com.example.dacn.basetemplate.dto.response.LoginResponse;
 
 /**
@@ -13,4 +14,6 @@ import com.example.dacn.basetemplate.dto.response.LoginResponse;
  */
 public interface IAuthService {
     LoginResponse login(LoginDto loginDto);
+
+    String dangKiTaiKhoan(RegisterDto   registerDto);
 }

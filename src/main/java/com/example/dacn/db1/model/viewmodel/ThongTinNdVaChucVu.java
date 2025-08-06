@@ -1,7 +1,9 @@
 package com.example.dacn.db1.model.viewmodel;
 
-import com.example.dacn.enumvalues.EnumTypeAccount;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,8 +14,6 @@ import org.hibernate.annotations.Immutable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 

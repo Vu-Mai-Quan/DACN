@@ -5,7 +5,6 @@
 package com.example.dacn.service.imlp;
 
 import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
-import com.example.dacn.db1.model.viewmodel.ThongTinNdVaChucVu;
 import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.mapper.IMapperService;
 import com.example.dacn.service.INguoiDungService;
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**

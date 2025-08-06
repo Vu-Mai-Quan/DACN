@@ -17,13 +17,12 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -53,6 +52,7 @@ public class InitData implements ApplicationRunner {
     }
 
     @Override
+    @Transactional(transactionManager = "db1TransactionManager")
     public void run(ApplicationArguments args) throws Exception {
         khoiTaoChucVuChuaTonTai();
         khoiTaoAdminChuaTonTai();
@@ -69,7 +69,7 @@ public class InitData implements ApplicationRunner {
             nguoiDung.setAvatar("https://drive.google.com/file/d/1yiZz4XVRyHZjUFi1vTzSsHCr5o7cnBaf/view");
             nguoiDung.setHoTen("Quản trị viên");
             nguoiDung.setSdt("0989209522");
-            nguoiDung.setNgaySinh(new Date(2002, 5, 28));
+            nguoiDung.setNgaySinh(Date.valueOf("2002-06-28"));
             Set<Role> lsRoles = chucVuRepo.findAllInName();
             TaiKhoan khoan = new TaiKhoan();
             khoan.setEmail(email);

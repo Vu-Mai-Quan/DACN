@@ -7,12 +7,9 @@ package com.example.dacn.basetemplate;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PreUpdate;
+import lombok.*;
+
 import java.sql.Date;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  *

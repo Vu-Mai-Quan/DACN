@@ -6,12 +6,7 @@ package com.example.dacn.mapper;
 
 import com.example.dacn.basetemplate.dto.response.TaiKhoanResponese;
 import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
-import com.example.dacn.db1.model.TaiKhoan;
-import com.example.dacn.db1.model.ThongTinNguoiDung;
 import com.example.dacn.db1.model.viewmodel.ThongTinNdVaChucVu;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 /**

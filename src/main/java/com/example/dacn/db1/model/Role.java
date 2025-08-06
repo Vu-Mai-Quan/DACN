@@ -6,23 +6,13 @@ package com.example.dacn.db1.model;
 
 import com.example.dacn.basetemplate.BaseEntity;
 import com.example.dacn.enumvalues.EnumRole;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
 
 /**
  *

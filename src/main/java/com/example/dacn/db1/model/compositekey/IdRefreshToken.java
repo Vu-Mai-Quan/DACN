@@ -4,13 +4,13 @@
  */
 package com.example.dacn.db1.model.compositekey;
 
-import java.io.Serializable;
-import java.sql.Date;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  *

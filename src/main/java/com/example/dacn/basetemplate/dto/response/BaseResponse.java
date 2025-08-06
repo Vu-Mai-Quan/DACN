@@ -5,12 +5,13 @@
 package com.example.dacn.basetemplate.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.sql.Date;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+
+import java.sql.Date;
 
 /**
  *

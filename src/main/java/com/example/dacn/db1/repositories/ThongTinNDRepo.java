@@ -23,6 +23,9 @@ public interface ThongTinNDRepo extends JpaRepository<ThongTinNguoiDung, UUID> {
     @Query("select t from ThongTinNguoiDung t WHERE t.sdt = :sdt")
     Optional<ThongTinNguoiDung> findBySdt(@Param("sdt") String sdt);
 
+    @Query(value="select count(t.sdt) from thong_tin_nguoi_dung t WHERE t.sdt = :sdt limit 1", nativeQuery=true)
+    int kiemTraSdtTonTai(@Param("sdt") String sdt);
+
     @Query(name = "ThongTinNdVaChucVu.findAll")
     Page<ThongTinNdVaChucVu> layDanhSachNguoiDung(Pageable page);
 

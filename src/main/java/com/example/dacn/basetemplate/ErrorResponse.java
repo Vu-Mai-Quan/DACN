@@ -4,31 +4,35 @@
  */
 package com.example.dacn.basetemplate;
 
-import java.sql.Date;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+
+import java.sql.Date;
 
 /**
  *
  * @author ADMIN
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Setter
 @Getter
 @Builder
-public class ErrorResponse {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
+public class ErrorResponse<T> {
 
     HttpStatus status;
     String message, url;
     @Builder.Default
     Date time = new Date(System.currentTimeMillis());
+    T data;
 
+    public ErrorResponse(HttpStatus status, String message, String url) {
+        this.status = status;
+        this.message = message;
+        this.url = url;
+    }
 }

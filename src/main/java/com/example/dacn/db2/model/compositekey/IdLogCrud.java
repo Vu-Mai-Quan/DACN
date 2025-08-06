@@ -4,12 +4,12 @@
  */
 package com.example.dacn.db2.model.compositekey;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.UUID;
-
-import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 /**
  *

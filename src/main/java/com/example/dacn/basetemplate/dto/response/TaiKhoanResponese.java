@@ -8,17 +8,8 @@ import com.example.dacn.config.annotations.Base64ToBooleanDeserializer;
 import com.example.dacn.enumvalues.EnumTypeAccount;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Base64;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
