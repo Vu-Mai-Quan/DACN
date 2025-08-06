@@ -18,6 +18,6 @@ import java.util.UUID;
 public interface ChucVuRepo extends JpaRepository<Role, UUID>{
     @Query(value = "select r.role_name from role r", nativeQuery = true)
     Set<String> timHetTenChucVu();
-    @Query("select r from Role r WHERE r.role IN ('ADMIN', 'CUSTOMER','CLIENT','MANAGER')")
+    @Query("select r from Role r WHERE r.role IN (com.example.dacn.enumvalues.EnumRole.ADMIN, com.example.dacn.enumvalues.EnumRole.CUSTOMER,com.example.dacn.enumvalues.EnumRole.CLIENT,com.example.dacn.enumvalues.EnumRole.MANAGER)")
     Set<Role> findAllInName();
 }

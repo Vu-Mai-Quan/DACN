@@ -75,7 +75,12 @@ public class JwtFilterConfig extends OncePerRequestFilter {
     }
 
     private void sendErrorResponse(HttpServletRequest rq, HttpServletResponse response, String message) throws IOException {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, rq.getRequestURI(), message);
+        var errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED)
+                .url(rq.getRequestURI())
+                .message(message)
+                .data(null)
+                .build();
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding(Constants.CHARSET);
         response.getWriter().write(mapper.writeValueAsString(errorResponse));

@@ -35,11 +35,6 @@ public class Role extends BaseEntity {
     @ToString.Exclude
     Set<TaiKhoan> taiKhoans = new HashSet<>();
 
-    public Role(UUID id, EnumRole role) {
-        super.setId(id);
-        this.role = role;
-    }
-
     public Role(EnumRole role) {
         this.role = role;
     }
