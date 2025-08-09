@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HangSanXuat extends BaseEntityUpdateAt {
-    @Column(name = "ten_hang", length = 100, nullable = false)
+    @Column(name = "ten_hang", columnDefinition = "nvarchar(50)", nullable = false)
     String tenHang;
     @Column(name = "mo_ta")
     @Lob

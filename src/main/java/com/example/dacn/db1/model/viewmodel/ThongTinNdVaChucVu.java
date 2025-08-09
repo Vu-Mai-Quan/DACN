@@ -19,20 +19,15 @@ import java.util.UUID;
 
 /**
  * Mapping for DB view
- * create view thong_tin_nd_va_chuc_vu as select `tt`.`id`                                                      AS `id`,
- * `tt`.`ho_ten`                                                  AS `ho_ten`,
- * `tt`.`avatar`                                                  AS `avatar`,
- * `tt`.`ngay_sinh`                                               AS `ngay_sinh`,
- * `tt`.`sdt`                                                     AS `sdt`,
- * json_objectagg('tai_khoan', json_object('email', `tk`.`email`,
- * 'type', `tk`.`type`, 'co_bi_khoa', `tk`.`co_bi_khoa`, 'da_kich_hoat',
- * `tk`.`da_kich_hoat`)) as `tai_khoan`,
- * (select JSON_ARRAYAGG(r.role_name)
+ * create view  thong_tin_nd_va_chuc_vu as select `tt`.`id`                                                     AS `id`,
+ * `tt`.`ho_ten`                                                 AS `ho_ten`,
+ * `tt`.`avatar`                                                 AS `avatar`,
+ * `tt`.`ngay_sinh`                                              AS `ngay_sinh`,
+ * `tt`.`sdt`                                                    AS `sdt`,
+ * json_object('email', `tk`.`email`,
+ * 'type', `tk`.`type`, 'co_bi_khoa', `tk`.`co_bi_khoa`, 'da_kich_hoat',                                                `tk`.`da_kich_hoat`, 'role_list', (select JSON_ARRAYAGG(r.role_name)
  * from tai_khoan_va_chuc_vu tkr
- * join role r on tkr.id_role = r.id
- * where (tkr.id_tai_khoan = tt.id)
- * )                                           as `role_list`
- * from (thong_tin_nguoi_dung tt join tai_khoan tk on tt.id = tk.id)
+ * join role r on tkr.id_role = r.id                                                                                   where (tkr.id_tai_khoan = tt.id))) as `tai_khoan` from (thong_tin_nguoi_dung tt join tai_khoan tk on tt.id = tk.id)
  * group by tt.id;
  */
 @AllArgsConstructor
@@ -69,7 +64,5 @@ public class ThongTinNdVaChucVu implements Serializable {
     @Column(name = "tai_khoan", nullable = false)
     private String taiKhoan;
 
-    @Column(name = "role_list")
-    private String roleList;
 
 }

@@ -5,12 +5,15 @@
 package com.example.dacn.basetemplate.dto.response;
 
 import com.example.dacn.config.annotations.Base64ToBooleanDeserializer;
+import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 /**
  * @author ADMIN
@@ -26,14 +29,14 @@ public class TaiKhoanResponese {
 
 
     String email;
-    @JsonProperty(value = "co_bi_khoa")
+    @JsonProperty("co_bi_khoa")
     @JsonDeserialize(using = Base64ToBooleanDeserializer.class)
     boolean coBiKhoa;
-    @JsonProperty(value = "da_kich_hoat")
+    @JsonProperty("da_kich_hoat")
     @JsonDeserialize(using = Base64ToBooleanDeserializer.class)
     boolean daKichHoat;
-
     EnumTypeAccount type;
-
+    @JsonProperty("role_list")
+    Set<EnumRole> roleList;
 
 }

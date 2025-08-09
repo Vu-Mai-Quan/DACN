@@ -31,7 +31,7 @@ import javax.sql.DataSource;
 public class DbConfig1 extends ADbConfig {
 
     {
-        this.props.put(Environment.HBM2DDL_AUTO, "update");
+        this.props.put(Environment.HBM2DDL_AUTO, "none");
         this.props.put(Environment.STATEMENT_BATCH_SIZE, "20");
         this.props.put(Environment.ORDER_INSERTS, "true");
         this.props.put(Environment.ORDER_UPDATES, "true");

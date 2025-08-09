@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DanhMucSanPham extends BaseEntityUpdateAt {
-    @Column(name = "ten_danh_muc", nullable = false, unique = true, length = 100)
+    @Column(name = "ten_danh_muc", nullable = false, unique = true, columnDefinition = "nvarchar(100)")
     String tenDanhMuc;
     @Column(name = "da_kich_hoat")
     boolean daKichHoat;

@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
 @Entity
 @Table(name = "gia_tri_bien_the_san_pham", schema = "dacn_repair_service_booking_system")
 @NoArgsConstructor
@@ -20,6 +18,6 @@ public class GiaTriBienTheSP extends BaseEntity {
     LuaChonBienTheSanPham optionValue;
     @Column(columnDefinition = "nvarchar(50)", nullable = false)
     String value;
-    @ManyToMany(mappedBy = "giaTriBienTheSPs", fetch = FetchType.LAZY)
-    Set<BienTheSanPham> bienTheSanPhams;
+
+
 }

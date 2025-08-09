@@ -14,7 +14,6 @@ import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -40,32 +39,18 @@ public class ThongTinNDVaTaiKhoanMapper implements IMapperService {
         // Luôn luôn tạo TypeMap một lần và sử dụng lại.
         // Nếu bạn tạo nó trong mỗi lần gọi hàm, nó sẽ làm chậm ứng dụng.
         TypeMap<ThongTinNdVaChucVu, ThongTinNDResponse> typeMap = mapper.getTypeMap(ThongTinNdVaChucVu.class, ThongTinNDResponse.class);
-
         if (typeMap == null) {
             typeMap = mapper.createTypeMap(ThongTinNdVaChucVu.class, ThongTinNDResponse.class);
-            typeMap.addMappings(mapping -> {
-                mapping
-                        .using(ctx -> {
-                            // Đây là cách sử dụng Converter để xử lý giá trị
-                            // ctx.getSource() là giá trị từ sourceMethod, nó không bao giờ null ở đây.
-                            String taiKhoanJson = (String) ctx.getSource();
-                            try {
-                                return objectCodec.readValue(taiKhoanJson, TaiKhoanResponese.class);
-                            } catch (IOException e) {
-                                throw new RuntimeException("Lỗi mapping TaiKhoanResponese", e);
-                            }
-                        })
-                        .map(ThongTinNdVaChucVu::getTaiKhoan, ThongTinNDResponse::setTaiKhoan);
-
-                mapping.using(ctx -> {
-                    String roleListJson = (String) ctx.getSource();
-                    try {
-                        return objectCodec.readValue(roleListJson, List.class);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Lỗi mapping getRoleList", e);
-                    }
-                }).map(ThongTinNdVaChucVu::getRoleList, ThongTinNDResponse::setDanhSachChucVu);
-            });
+            typeMap.addMappings(mapping -> mapping
+                    .using(ctx -> {
+                        String taiKhoanJson = (String) ctx.getSource();
+                        try {
+                            return objectCodec.readValue(taiKhoanJson, TaiKhoanResponese.class);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Lỗi mapping TaiKhoanResponese", e);
+                        }
+                    })
+                    .map(ThongTinNdVaChucVu::getTaiKhoan, ThongTinNDResponse::setTaiKhoan));
         }
         return source != null ? mapper.map(source, out) : null;
     }

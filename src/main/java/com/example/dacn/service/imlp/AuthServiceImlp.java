@@ -7,8 +7,10 @@ package com.example.dacn.service.imlp;
 import com.example.dacn.basetemplate.dto.request.LoginDto;
 import com.example.dacn.basetemplate.dto.request.RegisterDto;
 import com.example.dacn.basetemplate.dto.response.LoginResponse;
+import com.example.dacn.basetemplate.dto.response.TaiKhoanResponese;
 import com.example.dacn.basetemplate.dto.response.TokenAndExpriredView;
 import com.example.dacn.db1.model.RefreshToken;
+import com.example.dacn.db1.model.Role;
 import com.example.dacn.db1.model.TaiKhoan;
 import com.example.dacn.db1.model.ThongTinNguoiDung;
 import com.example.dacn.db1.repositories.RefreshTokenRepo;
@@ -17,6 +19,7 @@ import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
+import com.example.dacn.mapper.IMapperService;
 import com.example.dacn.service.IAuthService;
 import com.example.dacn.service.IJwtService;
 import jakarta.persistence.EntityExistsException;
@@ -30,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author ADMIN
@@ -45,7 +50,7 @@ public class AuthServiceImlp implements IAuthService {
     RefreshTokenRepo rfTkRp;
     RoleRepo roleRepo;
     ThongTinNDRepo thongTinNDRepo;
-
+    IMapperService iMapperService;
 
     @Override
     @Transactional(transactionManager = "db2TransactionManager")
@@ -75,6 +80,26 @@ public class AuthServiceImlp implements IAuthService {
         thongTinNDRepo.save(ttnd);
         return "Đăng kí thành công";
 
+    }
+
+    @Override
+    public TaiKhoanResponese phanQuyenTaiKhoan(UUID idTaiKhoan, Set<Role> roles) {
+      var tk =  taikhoanRepo.findById(idTaiKhoan).orElseThrow(EntityNotFoundException::new);
+      tk.setRoles(roles);
+      taikhoanRepo.save(tk);
+
+      iMapperService.mapperObject(tk, TaiKhoanResponese.class, (mapper)->{
+        var typeMap =  mapper.getTypeMap(TaiKhoan.class, TaiKhoanResponese.class);
+        if (typeMap == null){
+            typeMap = mapper.createTypeMap(TaiKhoan.class, TaiKhoanResponese.class);
+            typeMap.addMappings(map->{
+                map.using(ctx->{
+                    return ctx;
+                });
+            });
+        }
+      });
+      return null;
     }
 
     private TaiKhoan taoTaiKhoan(RegisterDto registerDto) {

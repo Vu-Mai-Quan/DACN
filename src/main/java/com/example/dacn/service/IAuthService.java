@@ -7,6 +7,11 @@ package com.example.dacn.service;
 import com.example.dacn.basetemplate.dto.request.LoginDto;
 import com.example.dacn.basetemplate.dto.request.RegisterDto;
 import com.example.dacn.basetemplate.dto.response.LoginResponse;
+import com.example.dacn.basetemplate.dto.response.TaiKhoanResponese;
+import com.example.dacn.db1.model.Role;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -16,4 +21,6 @@ public interface IAuthService {
     LoginResponse login(LoginDto loginDto);
 
     String dangKiTaiKhoan(RegisterDto   registerDto);
+
+    TaiKhoanResponese phanQuyenTaiKhoan(UUID idTaiKhoan, Set<Role> roles);
 }

@@ -34,24 +34,11 @@ public class NguoiDungServiceImlp implements INguoiDungService {
     IMapperService ims;
     ThongTinNDRepo dRepo;
 
-//    @Override
-//    public Page<ThongTinNDResponse> layDanhSachTTNguoiDung(Pageable pageable) {
-//        log.info("Tên: {}, Chức vụ: {}", SecurityContextHolder.getContext().getAuthentication().getName(), SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-////        return dRepo.layDanhSachNguoiDung(pageable).map(item -> ims.mapperObject(item, ThongTinNDResponse.class));
-//        return dRepo.layDanhSachNguoiDung(pageable).map(item -> ims.mapperObject(item, ThongTinNDResponse.class));
-//    }
-
     @Override
     public Page<ThongTinNDResponse> layDanhSachTTNguoiDung(Pageable pageable) {
         return dRepo.layDanhSachNguoiDung(pageable)
-                .map(item-> ims.mapperObject(item, ThongTinNDResponse.class))
-                ;
+                .map(item-> ims.mapperObject(item, ThongTinNDResponse.class));
     }
-//    @Override
-//    public Page<ThongTinNdVaChucVu> layDanhSachTTNguoiDung(Pageable pageable) {
-//        return dRepo.layDanhSachNguoiDung(pageable)
-////                .map(item-> ims.mapperObject(item, ThongTinNDResponse.class))
-//                ;
-//    }
+
 
 }

@@ -4,15 +4,13 @@
  */
 package com.example.dacn.basetemplate.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -25,24 +23,17 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ThongTinNDResponse {
 
     UUID id;
-
     String sdt;
-    @JsonProperty(value = "ho_ten")
+    @JsonProperty("ho_ten")
     String hoTen;
-    @JsonProperty(value = "ngay_sinh")
+    @JsonProperty("ngay_sinh")
     Date ngaySinh;
     String avatar;
-    @JsonProperty(value = "tai_khoan")
+    @JsonProperty("tai_khoan")
     TaiKhoanResponese taiKhoan;
 
-    @JsonProperty(value = "danh_sach_chuc_vu")
-    @Setter(value = AccessLevel.NONE)
-    Set<String> danhSachChucVu;
-
-    public void setDanhSachChucVu(List<String> danhSachChucVu) {
-        this.danhSachChucVu = new HashSet<>(danhSachChucVu);
-    }
 }

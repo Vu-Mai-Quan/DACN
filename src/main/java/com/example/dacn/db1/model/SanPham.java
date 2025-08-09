@@ -18,6 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "san_pham", schema = "dacn_repair_service_booking_system", indexes = {@Index(columnList = "ten_san_pham")})
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SanPham extends BaseEntityUpdateAt {
     @Column(name = "ten_san_pham", unique = true, nullable = false, columnDefinition = "nvarchar(200)")
