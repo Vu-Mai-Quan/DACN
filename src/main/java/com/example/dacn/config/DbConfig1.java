@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 /**
- *
  * @author ADMIN
  */
 @Configuration
@@ -32,10 +31,11 @@ import javax.sql.DataSource;
 public class DbConfig1 extends ADbConfig {
 
     {
-     
         this.props.put(Environment.HBM2DDL_AUTO, "update");
-        this.props.put(Environment.POOL_SIZE, "20");
-        this.props.put(Environment.JAKARTA_LOCK_TIMEOUT, "500");
+        this.props.put(Environment.STATEMENT_BATCH_SIZE, "20");
+        this.props.put(Environment.ORDER_INSERTS, "true");
+        this.props.put(Environment.ORDER_UPDATES, "true");
+        this.props.put(Environment.USE_SQL_COMMENTS, "true");
         this.props.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
     }
 
@@ -46,8 +46,7 @@ public class DbConfig1 extends ADbConfig {
         return super.dataSourceProperties();
     }
 
-    
-   
+
     @Bean(name = "db1DataSource")
     protected DataSource db1DataSource(@Qualifier("db1DataSourceProperties") DataSourceProperties dataSourceProperties) {
         return dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();

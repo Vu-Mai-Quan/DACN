@@ -14,7 +14,9 @@ import java.sql.Date;
 /**
  * @author ADMIN
  */
-@Table(name = "thong_tin_nguoi_dung", schema = "dacn_repair_service_booking_system")
+@Table(name = "thong_tin_nguoi_dung", schema = "dacn_repair_service_booking_system", indexes = {
+        @Index(columnList = "sdt, ho_ten")
+})
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,14 +28,17 @@ public class ThongTinNguoiDung extends BaseEntityUpdateAt {
 
     @Column(length = 13, nullable = false, unique = true)
     String sdt;
-    @Column(name = "ho_ten", length = 50)
+    @Column(name = "ho_ten", columnDefinition = "nvarchar(50)")
     String hoTen;
     @Column(name = "ngay_sinh")
     Date ngaySinh;
     @Column(length = 1000)
     String avatar;
+
     @OneToOne(mappedBy = "thongTinNguoiDung",
             cascade = CascadeType.ALL, orphanRemoval = true)
-
     TaiKhoan taiKhoan;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "thongTinNguoiDung")
+    NhanVien nhanVien;
 }

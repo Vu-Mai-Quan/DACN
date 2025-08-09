@@ -9,7 +9,6 @@ import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
 import com.example.dacn.db1.model.viewmodel.ThongTinNdVaChucVu;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ import java.util.function.Consumer;
 /**
  * @author ADMIN
  */
-@Slf4j
+
 @Component(value = "ttndTKRoleMapper")
 @RequiredArgsConstructor
 public class ThongTinNDVaTaiKhoanMapper implements IMapperService {
@@ -68,7 +67,6 @@ public class ThongTinNDVaTaiKhoanMapper implements IMapperService {
                 }).map(ThongTinNdVaChucVu::getRoleList, ThongTinNDResponse::setDanhSachChucVu);
             });
         }
-
         return source != null ? mapper.map(source, out) : null;
     }
 

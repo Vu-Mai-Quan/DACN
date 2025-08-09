@@ -3,36 +3,36 @@ server:
     context-path: /api/v1
 
 init-data:
-    admin:
-        email: ADMIN@gmai.com
-        password: 12345678
-    token:
-        secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-        expire-date: 36000000
-        issuer: dacn.com
-    token-refresh:
-        expire-date: 360000
-        
+  admin:
+    email: ADMIN@gmai.com
+    password: 12345678
+  token:
+    secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
+    expire-date: 36000000
+    issuer: dacn.com
+  token-refresh:
+    expire-date: 360000
+
 spring:
-    devtools:
-        restart:
-            additional-exclude: database/*
-    application:
-          name: dacn
-    main:
-        banner-mode: off
-    datasource:
-#datasource 1
-            db1:
-              url: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-              username: root
-              password: 1234
-              driver-class-name: com.mysql.cj.jdbc.Driver
-             
-#datasource 2
-            db2:
-              url: jdbc:sqlite:src/main/resources/database/mydb.sqlite3
-              driver-class-name: org.sqlite.JDBC
+  devtools:
+    restart:
+      additional-exclude: database/*
+  application:
+    name: dacn
+  main:
+    banner-mode: off
+  datasource:
+    #datasource 1
+    db1:
+      url: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
+      username: root
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+    #datasource 2
+    db2:
+      url: jdbc:sqlite:src/main/resources/database/mydb.sqlite3
+      driver-class-name: org.sqlite.JDBC
 
   
            

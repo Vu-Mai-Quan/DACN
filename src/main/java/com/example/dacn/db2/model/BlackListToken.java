@@ -7,15 +7,15 @@ package com.example.dacn.db2.model;
 import com.example.dacn.basetemplate.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
- *
  * @author ADMIN
  */
-@Table(name = "black_list_token")
+@Table(name = "black_list_token", schema = "main", indexes = {@Index(columnList = "token", name = "idx_token_black_list")})
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

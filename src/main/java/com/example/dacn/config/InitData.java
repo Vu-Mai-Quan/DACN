@@ -12,6 +12,10 @@ import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -31,24 +35,27 @@ import java.util.stream.Collectors;
  * @author ADMIN
  */
 @Component
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
 public class InitData implements ApplicationRunner {
 
-    private final ChucVuRepo chucVuRepo;
-    private final ThongTinNDRepo thongTinNDRepo;
-    private final TaiKhoanRepo khoanRepo;
-    private final PasswordEncoder encode;
-    private final String email, password;
+    final ChucVuRepo chucVuRepo;
+    final ThongTinNDRepo thongTinNDRepo;
+    final TaiKhoanRepo khoanRepo;
+    final PasswordEncoder encode;
 
-    public InitData(ChucVuRepo chucVuRepo, ThongTinNDRepo thongTinNDRepo,
-                    TaiKhoanRepo khoanRepo, PasswordEncoder encode,
-                    @Value("${init-data.admin.email}") String email, @Value("${init-data.admin.password}") String password) {
-        this.chucVuRepo = chucVuRepo;
-        this.thongTinNDRepo = thongTinNDRepo;
-        this.khoanRepo = khoanRepo;
-        this.encode = encode;
+    String email;
+
+    String password;
+
+    @Autowired
+    public void setEmail(@Value("${init-data.admin.email}") String email) {
         this.email = email;
-        this.password = password;
+    }
 
+    @Autowired
+    public void setPassword(@Value("${init-data.admin.password}") String password) {
+        this.password = password;
     }
 
     @Override
@@ -104,5 +111,6 @@ public class InitData implements ApplicationRunner {
             }
         }
     }
+
 
 }

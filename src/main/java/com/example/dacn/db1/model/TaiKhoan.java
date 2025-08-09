@@ -36,7 +36,7 @@ public class TaiKhoan
         implements UserDetails {
 
     @OneToOne(fetch = FetchType.LAZY, targetEntity = ThongTinNguoiDung.class)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", unique = true)
     @MapsId
     ThongTinNguoiDung thongTinNguoiDung;
 

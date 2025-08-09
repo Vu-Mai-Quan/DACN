@@ -4,20 +4,18 @@
  */
 package com.example.dacn.enumvalues;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
  *
  * @author ADMIN
  */
+@Getter
 @RequiredArgsConstructor
 public enum EnumTypeAccount {
     CLIENT("Khách hàng"), CUSTOMER("Nhân viên");
 
     private final String moTa;
-
-    public String getMoTa() {
-        return this.moTa;
-    }
 
 }
