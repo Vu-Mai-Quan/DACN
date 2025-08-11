@@ -6,6 +6,7 @@ package com.example.dacn.controller;
 
 import com.example.dacn.basetemplate.ErrorResponse;
 import com.example.dacn.basetemplate.dto.request.LoginDto;
+import com.example.dacn.basetemplate.dto.request.PhanQuyenRq;
 import com.example.dacn.basetemplate.dto.request.RegisterDto;
 import com.example.dacn.basetemplate.dto.response.BaseResponse;
 import com.example.dacn.service.IAuthService;
@@ -15,10 +16,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 /**
  * @author ADMIN
@@ -55,6 +56,25 @@ public class AuthController {
             String out = authService.dangKiTaiKhoan(dto);
             return ResponseEntity.ok(BaseResponse.builder()
                     .data(out)
+                    .status(HttpStatus.OK)
+                    .build());
+        } catch (EntityExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    ErrorResponse.builder()
+                            .message(e.getMessage())
+                            .status(HttpStatus.BAD_REQUEST)
+                            .url(request.getRequestURI())
+                            .build());
+        }
+    }
+
+
+    @PutMapping("admin/phan-quyen")
+    @PreAuthorize("hasRole('ADMIN')")
+    protected ResponseEntity<?> phanQuyenNguoiDung(HttpServletRequest request, @RequestBody Set<PhanQuyenRq> phanQuyenRq) {
+        try {
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .data(phanQuyenRq.isEmpty() ? Set.of() : authService.phanQuyenTaiKhoan(phanQuyenRq))
                     .status(HttpStatus.OK)
                     .build());
         } catch (EntityExistsException e) {

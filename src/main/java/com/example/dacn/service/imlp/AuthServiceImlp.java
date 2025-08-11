@@ -5,6 +5,7 @@
 package com.example.dacn.service.imlp;
 
 import com.example.dacn.basetemplate.dto.request.LoginDto;
+import com.example.dacn.basetemplate.dto.request.PhanQuyenRq;
 import com.example.dacn.basetemplate.dto.request.RegisterDto;
 import com.example.dacn.basetemplate.dto.response.LoginResponse;
 import com.example.dacn.basetemplate.dto.response.TaiKhoanResponese;
@@ -27,30 +28,39 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author ADMIN
  */
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class AuthServiceImlp implements IAuthService {
 
-    TaiKhoanRepo taikhoanRepo;
-    IJwtService jwtSevice;
-    PasswordEncoder encode;
-    RefreshTokenRepo rfTkRp;
-    RoleRepo roleRepo;
-    ThongTinNDRepo thongTinNDRepo;
+    final TaiKhoanRepo taikhoanRepo;
+    final IJwtService jwtSevice;
+    final PasswordEncoder encode;
+    final RefreshTokenRepo rfTkRp;
+    final RoleRepo roleRepo;
+    final ThongTinNDRepo thongTinNDRepo;
     IMapperService iMapperService;
+
+    @Autowired
+    public void setiMapperService(@Qualifier("ttndTKRoleMapper") IMapperService iMapperService) {
+        this.iMapperService = iMapperService;
+    }
 
     @Override
     @Transactional(transactionManager = "db2TransactionManager")
@@ -83,32 +93,68 @@ public class AuthServiceImlp implements IAuthService {
     }
 
     @Override
-    public TaiKhoanResponese phanQuyenTaiKhoan(UUID idTaiKhoan, Set<Role> roles) {
-      var tk =  taikhoanRepo.findById(idTaiKhoan).orElseThrow(EntityNotFoundException::new);
-      tk.setRoles(roles);
-      taikhoanRepo.save(tk);
+    @Transactional(transactionManager = "db1TransactionManager")
+    public Set<TaiKhoanResponese> phanQuyenTaiKhoan(Set<PhanQuyenRq> quyenRq) {
 
-      iMapperService.mapperObject(tk, TaiKhoanResponese.class, (mapper)->{
-        var typeMap =  mapper.getTypeMap(TaiKhoan.class, TaiKhoanResponese.class);
-        if (typeMap == null){
-            typeMap = mapper.createTypeMap(TaiKhoan.class, TaiKhoanResponese.class);
-            typeMap.addMappings(map->{
-                map.using(ctx->{
-                    return ctx;
-                });
-            });
+        Set<UUID> uuids = quyenRq.stream().map(PhanQuyenRq::getId).collect(Collectors.toSet());
+
+        List<TaiKhoan> taiKhoanList = taikhoanRepo.findAllById(uuids);
+
+        Map<UUID, TaiKhoan> userMap = taiKhoanList.stream()
+                .collect(Collectors.toMap(TaiKhoan::getId, u -> u));
+
+        Set<Role> roles = roleRepo.findAllByRoleNames(EnumRole.getRoles());
+
+        Map<String, Role> roleMap = roles.stream()
+                .collect(Collectors.toMap(item -> item.getRole().name(), r -> r));
+
+        for (var phanQuyenRq : quyenRq) {
+            TaiKhoan tk = userMap.get(phanQuyenRq.getId());
+            if (tk != null) {
+                Set<Role> fullRoles = phanQuyenRq.getRoles().stream()
+                        .map(item -> roleMap.get(item.name()))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                tk.setRoles(fullRoles);
+            }
         }
-      });
-      return null;
+
+        return getTaiKhoanResponese(taikhoanRepo.saveAll(userMap.values()));
     }
 
+
+    private Set<TaiKhoanResponese> getTaiKhoanResponese(List<TaiKhoan> taiKhoans) {
+        return taiKhoans.stream().map(item -> iMapperService.mapperObject(item, TaiKhoanResponese.class, taiKhoanToResponse())).collect(Collectors.toSet());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Consumer<ModelMapper> taiKhoanToResponse() {
+        return (mapper) -> {
+            try {
+                TypeMap<TaiKhoan, TaiKhoanResponese> typeMap = mapper.getTypeMap(TaiKhoan.class, TaiKhoanResponese.class);
+                if (typeMap == null) {
+                    typeMap = mapper.createTypeMap(TaiKhoan.class, TaiKhoanResponese.class);
+                    typeMap.addMappings(mapping -> {
+                        mapping.using(ctx ->
+                                ctx.getSource() == null ? Set.of() : ((Set<Role>) ctx.getSource()).stream().map(Role::getRole).collect(Collectors.toSet())
+                        ).map(TaiKhoan::getRoles, TaiKhoanResponese::setRoleList);
+                        mapping.map(TaiKhoan::getUsername, TaiKhoanResponese::setEmail);
+                    });
+
+
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Lỗi không thể chuyển đổi Set<Role> %s".formatted(e.getMessage()));
+            }
+        };
+
+    }
+
+
     private TaiKhoan taoTaiKhoan(RegisterDto registerDto) {
-        boolean email = taikhoanRepo.kiemTraEmailDaTonTai(registerDto.getEmail()) > 0,
-                sdt = thongTinNDRepo.kiemTraSdtTonTai(registerDto.getSdt()) > 0;
+        boolean email = taikhoanRepo.kiemTraEmailDaTonTai(registerDto.getEmail()) > 0;
         if (email) {
             throw new EntityExistsException("Tài khoản đã tồn tại");
-        } else if (sdt) {
-            throw new EntityExistsException("Số điện thoại đã tồn tại");
         } else {
             return TaiKhoan.builder()
                     .email(registerDto.getEmail())
@@ -121,7 +167,10 @@ public class AuthServiceImlp implements IAuthService {
     }
 
     private ThongTinNguoiDung taoThongTinNguoiDung(RegisterDto registerDto) {
-
+        var sdt = thongTinNDRepo.kiemTraSdtTonTai(registerDto.getSdt()) > 0;
+        if (sdt) {
+            throw new EntityExistsException("Số điện thoại đã tồn tại");
+        }
         return ThongTinNguoiDung.builder()
                 .sdt(registerDto.getSdt())
                 .avatar("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.vecteezy.com%2Ffree-vector%2Fanonymous-avatar&psig=AOvVaw1TrFmri1189c5VYhFz0eCT&ust=1754481236893000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCNi2hZnO844DFQAAAAAdAAAAABAE")

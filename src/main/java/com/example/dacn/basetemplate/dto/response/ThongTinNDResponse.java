@@ -4,6 +4,7 @@
  */
 package com.example.dacn.basetemplate.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,6 +32,7 @@ public class ThongTinNDResponse {
     @JsonProperty("ho_ten")
     String hoTen;
     @JsonProperty("ngay_sinh")
+    @JsonFormat(timezone = "utf-8", pattern = "dd-MM-yyyy")
     Date ngaySinh;
     String avatar;
     @JsonProperty("tai_khoan")

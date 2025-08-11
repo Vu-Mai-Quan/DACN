@@ -6,6 +6,7 @@ package com.example.dacn.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,8 @@ public class OtherConfig {
     @Bean
     protected ObjectMapper objectMapper() {
         var o = new ObjectMapper();
+        //đăng kí để có thể tuần tự hóa LocalDateTime
+        o.registerModule(new JavaTimeModule());
         o.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         return o;
     }

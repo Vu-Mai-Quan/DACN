@@ -7,6 +7,10 @@ package com.example.dacn.enumvalues;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author ADMIN
@@ -15,5 +19,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum EnumRole {
     ADMIN("Quản trị viên"),CLIENT("Khách hàng"),CUSTOMER("Nhân viên"),MANAGER("Quản lí");
-    private final String desciptions;
+    private final String descriptions;
+
+    public static Set<EnumRole> getRoles() {
+        return Arrays.stream(values()).collect(Collectors.toSet());
+    }
 }

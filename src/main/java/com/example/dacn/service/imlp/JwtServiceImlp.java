@@ -2,7 +2,6 @@ package com.example.dacn.service.imlp;
 
 import com.example.dacn.db1.model.TaiKhoan;
 import com.example.dacn.db1.repositories.TaiKhoanRepo;
-import com.example.dacn.db2.repositories.BlackListTokenRepo;
 import com.example.dacn.service.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -37,20 +36,20 @@ public class JwtServiceImlp implements IJwtService {
     Key key;
     String issue;
     TaiKhoanRepo khoanRepo;
-    BlackListTokenRepo blackListTokenRepo;
+
 
     public JwtServiceImlp(
             @Value("${init-data.token.secret-key}")  String secretKey,
             @Value("${init-data.token.expire-date}")  long expireDate,
             @Value("${init-data.token-refresh.expire-date}")  long refreshExpireDate,
             @Value("${init-data.token.issuer}") String issure,
-            TaiKhoanRepo khoanRepo,
-            BlackListTokenRepo blackListTokenRepo) {
+            TaiKhoanRepo khoanRepo
+            ) {
         this.expireDate = expireDate;
         this.refreshExpireDate = refreshExpireDate;
         this.issue = issure;
         this.khoanRepo = khoanRepo;
-        this.blackListTokenRepo = blackListTokenRepo;
+
         this.key = Keys.hmacShaKeyFor(Base64.encodeBase64(secretKey.getBytes(), true));
     }
 
@@ -68,6 +67,7 @@ public class JwtServiceImlp implements IJwtService {
 
     @Override
     public UserDetails kiemTraTaiKhoanTrongToken(String token) {
+
         String sub = extractClaims(token, Claims::getSubject);
         return khoanRepo.timTaiKhoanTheoEmail(sub).orElseThrow(() -> new EntityNotFoundException("Tài khoản %s".formatted(sub)));
 
@@ -75,11 +75,7 @@ public class JwtServiceImlp implements IJwtService {
 
     private Claims extractToken(String token) {
         try {
-            if (blackListTokenRepo.findByToken(token) > 0) {
-                throw new RuntimeException("Token đã bị khóa");
-            } else {
-                return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-            }
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (UnsupportedJwtException e) {
             throw new UnsupportedJwtException("Token không được hỗ trợ");
         } catch (SignatureException e) {
@@ -107,6 +103,7 @@ public class JwtServiceImlp implements IJwtService {
 
     @Override
     public boolean isRefreshToken(String token) {
+
         String getIssure = extractClaims(token, Claims::getIssuer);
         return getIssure.equals("refresh_token");
     }

@@ -4,12 +4,13 @@
  */
 package com.example.dacn.basetemplate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -27,7 +28,8 @@ public class ErrorResponse<T> {
     HttpStatus status;
     String message, url;
     @Builder.Default
-    Date time = new Date(System.currentTimeMillis());
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", shape = JsonFormat.Shape.STRING)
+    LocalDateTime time = LocalDateTime.now();
     T data;
 
 

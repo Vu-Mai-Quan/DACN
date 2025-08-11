@@ -5,6 +5,7 @@
 package com.example.dacn.config;
 
 import com.example.dacn.basetemplate.ErrorResponse;
+import com.example.dacn.db2.repositories.BlackListTokenRepo;
 import com.example.dacn.service.IJwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -36,6 +37,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
 
     private final IJwtService iJwtService;
     private final ObjectMapper mapper;
+    private final BlackListTokenRepo blackListTokenRepo;
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
@@ -54,7 +56,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             try {
                 String token = header.substring(7);
-                if (iJwtService.isRefreshToken(token)) {
+                if (blackListTokenRepo.findByToken(token) > 0 || iJwtService.isRefreshToken(token)) {
                     sendErrorResponse(request, response, "Token không hợp lệ");
                     return;
                 }
