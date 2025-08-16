@@ -34,3 +34,6 @@ build/
 /nbactions.xml
 /nb-configuration.xml
 /src/main/resources/database/
+
+### Khác ###
+/src/main/resources/application-prod.yaml
