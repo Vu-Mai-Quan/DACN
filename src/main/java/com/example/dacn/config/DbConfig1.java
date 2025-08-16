@@ -36,7 +36,9 @@ public class DbConfig1 extends ADbConfig {
         this.props.put(Environment.ORDER_INSERTS, "true");
         this.props.put(Environment.ORDER_UPDATES, "true");
         this.props.put(Environment.USE_SQL_COMMENTS, "true");
-        this.props.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+//        this.props.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+        this.props.put(Environment.DIALECT, "org.hibernate.community.dialect.SQLiteDialect");
+
     }
 
     @Bean(name = "db1DataSourceProperties")

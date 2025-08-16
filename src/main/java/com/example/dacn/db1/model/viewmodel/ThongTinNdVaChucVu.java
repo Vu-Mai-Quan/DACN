@@ -37,9 +37,6 @@ import java.util.UUID;
 @Entity
 @Immutable
 @Table(name = "thong_tin_nd_va_chuc_vu")
-@org.hibernate.annotations.NamedQueries({
-        @org.hibernate.annotations.NamedQuery(name = "ThongTinNdVaChucVu.findAll", query = "select u from ThongTinNdVaChucVu u")
-})
 public class ThongTinNdVaChucVu implements Serializable {
     @Serial
     private static final long serialVersionUID = -4138241098001404188L;

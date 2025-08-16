@@ -31,10 +31,10 @@ public class TaiKhoanResponese {
     String email;
     @JsonProperty("co_bi_khoa")
     @JsonDeserialize(using = Base64ToBooleanDeserializer.class)
-    boolean coBiKhoa;
+    Boolean coBiKhoa;
     @JsonProperty("da_kich_hoat")
     @JsonDeserialize(using = Base64ToBooleanDeserializer.class)
-    boolean daKichHoat;
+    Boolean daKichHoat;
     EnumTypeAccount type;
     @JsonProperty("role_list")
     Set<EnumRole> roleList;

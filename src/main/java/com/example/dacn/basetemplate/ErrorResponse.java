@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 
 /**
- *
  * @author ADMIN
  */
 @NoArgsConstructor
@@ -32,5 +31,14 @@ public class ErrorResponse<T> {
     LocalDateTime time = LocalDateTime.now();
     T data;
 
-
+    @Override
+    public String toString() {
+        return "{" +
+                "status:" + status +
+                ", message:'" + message + '\'' +
+                ", url:'" + url + '\'' +
+                ", time:" + time +
+                ", data:" + data +
+                '}';
+    }
 }

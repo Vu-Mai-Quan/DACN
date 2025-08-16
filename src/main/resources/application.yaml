@@ -2,40 +2,13 @@ server:
   servlet:
     context-path: /api/v1
 
-init-data:
-  admin:
-    email: ADMIN@gmai.com
-    password: 12345678
-  token:
-    secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-    expire-date: 360000000
-    issuer: dacn.com
-  token-refresh:
-    expire-date: 360000
-
 spring:
   jackson:
     time-zone: 'Asia/Ho_Chi_Minh'
-  devtools:
-    restart:
-      additional-exclude: database/*
+  profiles:
+    active: @spring.profiles.active@
   application:
     name: dacn
   main:
     banner-mode: off
-  datasource:
-    #datasource 1
-    db1:
-      url: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-      username: root
-      password: 1234
-      driver-class-name: com.mysql.cj.jdbc.Driver
 
-    #datasource 2
-    db2:
-      url: jdbc:sqlite:src/main/resources/database/mydb.sqlite3
-      driver-class-name: org.sqlite.JDBC
-
-  
-           
-              

@@ -39,6 +39,7 @@ public class AuthController {
                     .status(HttpStatus.OK)
                     .build());
         } catch (Exception e) {
+
             return ResponseEntity.badRequest().body(
                     ErrorResponse.builder()
                             .message(e.getMessage())
@@ -51,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/client/register")
-    protected ResponseEntity<?> register(@Valid @RequestBody RegisterDto dto, HttpServletRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterDto dto, HttpServletRequest request) {
         try {
             String out = authService.dangKiTaiKhoan(dto);
             return ResponseEntity.ok(BaseResponse.builder()
@@ -59,20 +60,28 @@ public class AuthController {
                     .status(HttpStatus.OK)
                     .build());
         } catch (EntityExistsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     ErrorResponse.builder()
                             .message(e.getMessage())
-                            .status(HttpStatus.BAD_REQUEST)
+                            .status(HttpStatus.CONFLICT)
                             .url(request.getRequestURI())
                             .build());
         }
     }
 
 
-    @PutMapping("admin/phan-quyen")
+    @PutMapping("{role}/phan-quyen")
     @PreAuthorize("hasRole('ADMIN')")
-    protected ResponseEntity<?> phanQuyenNguoiDung(HttpServletRequest request, @RequestBody Set<PhanQuyenRq> phanQuyenRq) {
+    public ResponseEntity<?> phanQuyenNguoiDung(HttpServletRequest request, @RequestBody Set<PhanQuyenRq> phanQuyenRq, @PathVariable("role") String roleParam) {
         try {
+            switch (roleParam.toLowerCase()) {
+                case "admin":
+                    System.out.println("admin");
+                    break;
+                case "manager":
+                    System.out.println("manager");
+                    break;
+            }
             return ResponseEntity.ok(BaseResponse.builder()
                     .data(phanQuyenRq.isEmpty() ? Set.of() : authService.phanQuyenTaiKhoan(phanQuyenRq))
                     .status(HttpStatus.OK)

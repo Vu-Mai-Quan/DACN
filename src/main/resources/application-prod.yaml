@@ -1,0 +1,14 @@
+#server:
+#  servlet:
+#    context-path: /api/v1
+#
+#spring:
+#  jackson:
+#    time-zone: 'Asia/Ho_Chi_Minh'
+#  profiles:
+#    active: @spring.profiles.active@
+#  application:
+#    name: dacn
+#  main:
+#    banner-mode: off
+

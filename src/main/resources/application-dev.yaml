@@ -1,0 +1,47 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  devtools:
+    restart:
+      additional-exclude: database/*
+    add-properties: true
+  datasource:
+    #datasource 1
+    db1:
+      url: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
+      username: root
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+    #datasource 2
+    db2:
+      url: jdbc:sqlite:src/main/resources/database/mydb.sqlite3
+      driver-class-name: org.sqlite.JDBC
+
+init-data:
+  admin:
+    email: ADMIN@gmail.com
+    password: 12345678
+    sdt: 0989209522
+  token:
+    secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
+    expire-date: 360000000
+    issuer: dacn.com
+  token-refresh:
+    expire-date: 360000
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+openapi:
+  service:
+    api-docs: dacn-backend
+    version: 1.0.0
+    url: http://localhost:8080
+    title: Dự án cá nhân của Quân
+
+

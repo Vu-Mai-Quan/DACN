@@ -38,4 +38,8 @@ public class Role extends BaseEntity {
         this.role = role;
     }
 
+    public Role getInstance(){
+        return this;
+    }
+
 }

@@ -44,19 +44,16 @@ public class InitData implements ApplicationRunner {
     final TaiKhoanRepo khoanRepo;
     final PasswordEncoder encode;
 
-    String email;
+    String email, password, sdt;
 
-    String password;
 
     @Autowired
-    public void setEmail(@Value("${init-data.admin.email}") String email) {
+    public void setEmailPassword(@Value("${init-data.admin.email}") String email, @Value("${init-data.admin.password}") String password, @Value("${init-data.admin.sdt}") String sdt) {
         this.email = email;
+        this.password = password;
+        this.sdt = sdt;
     }
 
-    @Autowired
-    public void setPassword(@Value("${init-data.admin.password}") String password) {
-        this.password = password;
-    }
 
     @Override
     @Transactional(transactionManager = "db1TransactionManager")
@@ -71,11 +68,11 @@ public class InitData implements ApplicationRunner {
             return;
         }
         try {
-            var ttnd = thongTinNDRepo.findBySdt("0989209522");
+            var ttnd = thongTinNDRepo.findBySdt(sdt);
             ThongTinNguoiDung nguoiDung = ttnd.orElseGet(ThongTinNguoiDung::new);
             nguoiDung.setAvatar("https://drive.google.com/file/d/1yiZz4XVRyHZjUFi1vTzSsHCr5o7cnBaf/view");
             nguoiDung.setHoTen("Quản trị viên");
-            nguoiDung.setSdt("0989209522");
+            nguoiDung.setSdt(sdt);
             nguoiDung.setNgaySinh(Date.valueOf("2002-06-28"));
             Set<Role> lsRoles = chucVuRepo.findAllInName();
             TaiKhoan khoan = new TaiKhoan();

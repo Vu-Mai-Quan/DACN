@@ -32,6 +32,10 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,12 +62,12 @@ public class AuthServiceImlp implements IAuthService {
     IMapperService iMapperService;
 
     @Autowired
-    public void setiMapperService(@Qualifier("ttndTKRoleMapper") IMapperService iMapperService) {
+    public void setIMapperService(@Qualifier("ttndTKRoleMapper") final IMapperService iMapperService) {
         this.iMapperService = iMapperService;
     }
 
     @Override
-    @Transactional(transactionManager = "db2TransactionManager")
+    @Transactional(transactionManager = "db1TransactionManager", rollbackFor = Exception.class, label = "Login method")
     public LoginResponse login(LoginDto loginDto) {
         TaiKhoan tk = taikhoanRepo.timTaiKhoanTheoEmail(loginDto.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Thông tin tài khoản hoặc mật khẩu không chính xác"));
@@ -83,8 +87,8 @@ public class AuthServiceImlp implements IAuthService {
     @Override
     @Transactional(transactionManager = "db1TransactionManager")
     public String dangKiTaiKhoan(RegisterDto registerDto) {
-        var tk = taoTaiKhoan(registerDto);
         var ttnd = taoThongTinNguoiDung(registerDto);
+        var tk = taoTaiKhoan(registerDto);
         tk.setThongTinNguoiDung(ttnd);
         ttnd.setTaiKhoan(tk);
         thongTinNDRepo.save(ttnd);
@@ -98,15 +102,11 @@ public class AuthServiceImlp implements IAuthService {
 
         Set<UUID> uuids = quyenRq.stream().map(PhanQuyenRq::getId).collect(Collectors.toSet());
 
-        List<TaiKhoan> taiKhoanList = taikhoanRepo.findAllById(uuids);
-
-        Map<UUID, TaiKhoan> userMap = taiKhoanList.stream()
+        Map<UUID, TaiKhoan> userMap = taikhoanRepo.findAllById(uuids).stream()
                 .collect(Collectors.toMap(TaiKhoan::getId, u -> u));
 
-        Set<Role> roles = roleRepo.findAllByRoleNames(EnumRole.getRoles());
-
-        Map<String, Role> roleMap = roles.stream()
-                .collect(Collectors.toMap(item -> item.getRole().name(), r -> r));
+        Map<String, Role> roleMap = roleRepo.findAllByRoleNames(EnumRole.getRoles()).stream()
+                .collect(Collectors.toMap(item -> item.getRole().name(), Role::getInstance));
 
         for (var phanQuyenRq : quyenRq) {
             TaiKhoan tk = userMap.get(phanQuyenRq.getId());

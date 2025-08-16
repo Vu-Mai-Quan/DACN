@@ -8,12 +8,14 @@ import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.UUID;
+
 /**
  *
  * @author ADMIN
  */
 public interface INguoiDungService {
-//    Page<ThongTinNDResponse> layDanhSachTTNguoiDung(Pageable pageable);
-//    Page<ThongTinNdVaChucVu> layDanhSachTTNguoiDung(Pageable pageable);
-    Page<ThongTinNDResponse> layDanhSachTTNguoiDung(Pageable pageable);
+
+    Page<ThongTinNDResponse> layDanhSachTTNguoiDung(String keyWord,String order,Pageable pageable);
+    ThongTinNDResponse getOne(UUID id);
 }

@@ -26,8 +26,17 @@ public interface ThongTinNDRepo extends JpaRepository<ThongTinNguoiDung, UUID> {
     @Query(value="select count(t.sdt) from thong_tin_nguoi_dung t WHERE t.sdt = :sdt limit 1", nativeQuery=true)
     int kiemTraSdtTonTai(@Param("sdt") String sdt);
 
-    @Query(name = "ThongTinNdVaChucVu.findAll")
+    @Query(value = "select u from ThongTinNdVaChucVu u")
     Page<ThongTinNdVaChucVu> layDanhSachNguoiDung(Pageable page);
+    @Query(value = """
+            select u from ThongTinNdVaChucVu u where u.hoTen like lower(concat('%',?1,'%')) or u.sdt like lower(concat('%',?1,'%'))
+            or json_extract(u.taiKhoan, '$.email') like lower(concat('%',?1,'%'))
+            """)
+    Page<ThongTinNdVaChucVu> timNguoiDungTheoKeyword(String keyword,
+                                                     Pageable pageable);
+
+    @Query(value = "select u from ThongTinNdVaChucVu u where u.id = :id")
+    Optional<ThongTinNdVaChucVu> layNguoiDungBangId(UUID id);
 
 
 }
