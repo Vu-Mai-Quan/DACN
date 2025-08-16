@@ -6,7 +6,6 @@ package com.example.dacn.controller;
 
 import com.example.dacn.basetemplate.ErrorResponse;
 import com.example.dacn.basetemplate.dto.response.BaseResponse;
-import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
 import com.example.dacn.service.INguoiDungService;
 import jakarta.persistence.NoResultException;
 import lombok.AccessLevel;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
