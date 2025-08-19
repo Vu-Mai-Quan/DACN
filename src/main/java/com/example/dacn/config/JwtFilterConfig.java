@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.manager.Constants;
 import org.modelmapper.internal.Pair;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +28,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Set;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
  * @author ADMIN Lớp được tạo ra để kiểm tra token có hợp lệ để đi tiếp không
@@ -51,7 +54,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
+        String header = request.getHeader(AUTHORIZATION);
 
         if (header != null && header.startsWith("Bearer ")) {
             try {

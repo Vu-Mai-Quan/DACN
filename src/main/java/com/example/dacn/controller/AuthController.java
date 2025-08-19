@@ -9,17 +9,25 @@ import com.example.dacn.basetemplate.dto.request.LoginDto;
 import com.example.dacn.basetemplate.dto.request.PhanQuyenRq;
 import com.example.dacn.basetemplate.dto.request.RegisterDto;
 import com.example.dacn.basetemplate.dto.response.BaseResponse;
+import com.example.dacn.db2.model.compositekey.IdRegisterToken;
 import com.example.dacn.service.IAuthService;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.service.spi.InjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author ADMIN
@@ -32,6 +40,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("/client/login")
+    @JacksonInject
     public ResponseEntity<?> login(@Valid @RequestBody LoginDto dto, HttpServletRequest request) {
         try {
             return ResponseEntity.ok(BaseResponse.builder()
@@ -39,10 +48,21 @@ public class AuthController {
                     .status(HttpStatus.OK)
                     .build());
         } catch (Exception e) {
-
+            StringBuilder builder = new StringBuilder();
+            switch (e.getMessage()) {
+                case "User is disabled":
+                    builder.append("Tài khoản chưa kích hoạt, vui lòng xem tin nhắn ở Email để kích hoạt tài khoản");
+                    break;
+                case "User account is locked":
+                    builder.append("Tài khoản đã bị khóa");
+                    break;
+                default:
+                    builder.append(e.getMessage());
+                    break;
+            }
             return ResponseEntity.badRequest().body(
                     ErrorResponse.builder()
-                            .message(e.getMessage())
+                            .message(builder.toString())
                             .status(HttpStatus.BAD_REQUEST)
                             .url(request.getRequestURI())
                             .build()
@@ -59,7 +79,7 @@ public class AuthController {
                     .data(out)
                     .status(HttpStatus.OK)
                     .build());
-        } catch (EntityExistsException e) {
+        } catch (EntityExistsException | MessagingException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     ErrorResponse.builder()
                             .message(e.getMessage())
@@ -72,7 +92,8 @@ public class AuthController {
 
     @PutMapping("{role}/phan-quyen")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> phanQuyenNguoiDung(HttpServletRequest request, @RequestBody Set<PhanQuyenRq> phanQuyenRq, @PathVariable("role") String roleParam) {
+    public ResponseEntity<?> phanQuyenNguoiDung(HttpServletRequest request, @RequestBody Set<PhanQuyenRq> phanQuyenRq,
+                                                @PathVariable("role") String roleParam) {
         try {
             switch (roleParam.toLowerCase()) {
                 case "admin":
@@ -93,6 +114,18 @@ public class AuthController {
                             .status(HttpStatus.BAD_REQUEST)
                             .url(request.getRequestURI())
                             .build());
+        }
+    }
+
+
+    @GetMapping("xac-thuc")
+    protected void confirmAccount(@RequestParam UUID id, @RequestParam String token,
+                                  HttpServletResponse response) throws IOException {
+        try {
+            authService.kiemTraTokenDangKi(new IdRegisterToken(id, token));
+            response.sendRedirect("https://www.google.com/search?q=gg+d%E1%BB%8Bch&oq=&gs_lcrp=EgZjaHJvbWUqBggBEEUYOzIOCAAQRRgnGDkYgAQYigUyBggBEEUYOzIGCAIQRRg7MgYIAxBFGDsyDAgEEAAYQxiABBiKBTINCAUQABiDARixAxiABDIGCAYQRRg8MgYIBxBFGDzSAQg0NzYxajBqN6gCALACAA&sourceid=chrome&ie=UTF-8");
+        } catch (Exception e) {
+            response.sendRedirect("https://www.google.com");
         }
     }
 }

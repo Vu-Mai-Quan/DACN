@@ -1,4 +1,17 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ali
+    password: ali
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+          auth: true
+          starttls:
+          timeout: 3000
+
   config:
     activate:
       on-profile: test

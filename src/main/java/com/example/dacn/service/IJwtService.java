@@ -8,6 +8,7 @@ import com.example.dacn.db1.model.TaiKhoan;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Date;
+import java.util.Map;
 
 /**
  *
@@ -15,7 +16,7 @@ import java.sql.Date;
  */
 public interface IJwtService {
 
-    String createToken(UserDetails details);
+    String createToken(Map<String, Object> claims, UserDetails userDetails);
    
     UserDetails kiemTraTaiKhoanTrongToken(String token);
     

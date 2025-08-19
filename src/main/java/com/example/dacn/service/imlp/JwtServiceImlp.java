@@ -19,10 +19,10 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.sql.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
- *
  * @author ADMIN
  */
 @Service
@@ -39,12 +39,12 @@ public class JwtServiceImlp implements IJwtService {
 
 
     public JwtServiceImlp(
-            @Value("${init-data.token.secret-key}")  String secretKey,
-            @Value("${init-data.token.expire-date}")  long expireDate,
-            @Value("${init-data.token-refresh.expire-date}")  long refreshExpireDate,
+            @Value("${init-data.token.secret-key}") String secretKey,
+            @Value("${init-data.token.expire-date}") long expireDate,
+            @Value("${init-data.token-refresh.expire-date}") long refreshExpireDate,
             @Value("${init-data.token.issuer}") String issure,
             TaiKhoanRepo khoanRepo
-            ) {
+    ) {
         this.expireDate = expireDate;
         this.refreshExpireDate = refreshExpireDate;
         this.issue = issure;
@@ -54,22 +54,26 @@ public class JwtServiceImlp implements IJwtService {
     }
 
     @Override
-    public String createToken(UserDetails details) {
+    public String createToken(Map<String, Object> claims, UserDetails userDetails) {
+        return buildToken(claims, userDetails, this.expireDate);
+    }
+
+    private String buildToken(Map<String, Object> claims, UserDetails userDetails, long expireDate) {
         return Jwts.builder()
-                .claim("role", details.getAuthorities())
+                .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setIssuer(issue)
                 .setExpiration(new Date(System.currentTimeMillis() + expireDate))
-                .setSubject(details.getUsername())
+                .setSubject(userDetails.getUsername())
                 .signWith(key)
                 .compact();
     }
 
+
     @Override
     public UserDetails kiemTraTaiKhoanTrongToken(String token) {
-
         String sub = extractClaims(token, Claims::getSubject);
-        return khoanRepo.timTaiKhoanTheoEmail(sub).orElseThrow(() -> new EntityNotFoundException("Tài khoản %s".formatted(sub)));
+        return khoanRepo.timTaiKhoanTheoEmail(sub).orElseThrow(() -> new EntityNotFoundException("Tài khoản %s không tồn tại".formatted(sub)));
 
     }
 

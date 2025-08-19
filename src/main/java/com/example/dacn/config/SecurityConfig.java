@@ -12,47 +12,64 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
  * @author ADMIN
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final ObjectMapper objectMapper;
-    @Bean
-    protected SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtFilterConfig config) throws Exception {
+    private final AuthenticationProvider authenticationProvider;
 
-        return httpSecurity
+    @Bean
+    protected SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtFilterConfig config
+                                              ) throws Exception {
+
+        httpSecurity
                 .addFilterBefore(config, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(AbstractHttpConfigurer::disable)
+
                 .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(rq -> rq
                         //                            .requestMatchers(HttpMethod.GET, "api/v1/user/*").hasAuthority("ADMIN")
                         .requestMatchers("/admin/*").hasRole("ADMIN").anyRequest().permitAll())
-                .cors(AbstractHttpConfigurer::disable)
-                .exceptionHandling(t->{
-                    t.authenticationEntryPoint((rq, rp, au)->{
-                        sendErrorResponse(rq,rp,au,"Đường dẫn cần xác thực người dùng",HttpStatus.FORBIDDEN);
+                .cors(withDefaults())
+
+                .exceptionHandling(t -> {
+                    t.authenticationEntryPoint((rq, rp, au) -> {
+                        sendErrorResponse(rq, rp, au, "Đường dẫn cần xác thực người dùng", HttpStatus.FORBIDDEN);
                     });
-                    t.accessDeniedHandler((rq, rp, au)->{
-                        sendErrorResponse(rq,rp,au,"Không có quyền truy cập",HttpStatus.UNAUTHORIZED);
+                    t.accessDeniedHandler((rq, rp, au) -> {
+                        sendErrorResponse(rq, rp, au, "Không có quyền truy cập", HttpStatus.UNAUTHORIZED);
                     });
                 })
+                .authenticationProvider(authenticationProvider)
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .formLogin(AbstractHttpConfigurer::disable);
+        return httpSecurity
                 .build();
     }
 
-    private <T extends Exception> void sendErrorResponse(HttpServletRequest rq, HttpServletResponse rp, T authenticationException, String message, HttpStatus status) throws IOException {
+    private <T extends Exception> void sendErrorResponse(HttpServletRequest rq, HttpServletResponse rp,
+                                                         T authenticationException, String message,
+                                                         HttpStatus status) throws IOException {
         rp.setStatus(status.value());
         rp.setContentType("application/json");
         rp.setCharacterEncoding("UTF-8");

@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,10 +49,10 @@ public class TaiKhoan
     String matKhau;
     @Column(name = "co_bi_khoa")
     @Getter(value = AccessLevel.NONE)
-    boolean coBiKhoa = false;
+    boolean coBiKhoa;
     @Column(name = "da_kich_hoat")
     @Getter(value = AccessLevel.NONE)
-    boolean daKichHoat = false;
+    boolean daKichHoat;
     @Column(length = 8, nullable = false)
     @Enumerated(EnumType.STRING)
     EnumTypeAccount type;
@@ -105,4 +106,9 @@ public class TaiKhoan
     public boolean isEnabled() {
         return daKichHoat;
     }
+
+//    @Override
+//    public String getName() {
+//        return this.email;
+//    }
 }

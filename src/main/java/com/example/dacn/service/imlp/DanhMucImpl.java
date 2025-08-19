@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service(value = "danhMucImlp")
-public class DanhMucImlp implements IParentProductService<DanhMucSanPham> {
+public class DanhMucImpl implements IParentProductService<DanhMucSanPham> {
     private final DanhMucSanPhamRepository repository;
 
-    public DanhMucImlp(final DanhMucSanPhamRepository repository) {
+    public DanhMucImpl(final DanhMucSanPhamRepository repository) {
         this.repository = repository;
     }
 

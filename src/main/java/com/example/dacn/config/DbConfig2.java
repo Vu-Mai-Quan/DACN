@@ -34,7 +34,7 @@ public class DbConfig2 extends ADbConfig {
     
 
     {
-        this.props.put(Environment.HBM2DDL_AUTO, "update");
+        this.props.put(Environment.HBM2DDL_AUTO, "none");
         this.props.put(Environment.DIALECT, "org.hibernate.community.dialect.SQLiteDialect");
 
     }

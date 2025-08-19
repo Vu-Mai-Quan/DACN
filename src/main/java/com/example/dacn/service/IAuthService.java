@@ -9,6 +9,8 @@ import com.example.dacn.basetemplate.dto.request.PhanQuyenRq;
 import com.example.dacn.basetemplate.dto.request.RegisterDto;
 import com.example.dacn.basetemplate.dto.response.LoginResponse;
 import com.example.dacn.basetemplate.dto.response.TaiKhoanResponese;
+import com.example.dacn.db2.model.compositekey.IdRegisterToken;
+import jakarta.mail.MessagingException;
 
 import java.util.Set;
 
@@ -19,7 +21,9 @@ import java.util.Set;
 public interface IAuthService {
     LoginResponse login(LoginDto loginDto);
 
-    String dangKiTaiKhoan(RegisterDto   registerDto);
+    String dangKiTaiKhoan(RegisterDto   registerDto) throws MessagingException;
 
     Set<TaiKhoanResponese> phanQuyenTaiKhoan(Set<PhanQuyenRq> quyenRq);
+
+    void kiemTraTokenDangKi(IdRegisterToken idRegisterToken) throws MessagingException;
 }
