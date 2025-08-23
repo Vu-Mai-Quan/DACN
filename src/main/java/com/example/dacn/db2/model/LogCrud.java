@@ -14,7 +14,6 @@ import java.sql.Date;
 import java.util.UUID;
 
 /**
- *
  * @author ADMIN
  */
 @Entity
@@ -26,22 +25,24 @@ import java.util.UUID;
 @Getter
 @IdClass(value = IdLogCrud.class)
 public class LogCrud {
-    
+
     @Column(name = "id_nguoi_dung")
     @Id
     UUID idNguoiDung;
-    
+
     @Column(name = "hanh_vi", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
     EnumBehavior hanhVi;
-    
+
     @Column(name = "id_tuong_tac")
     @Id
     UUID idTuongTac;
-    
+
     @Column(name = "bang_tuong_tac", length = 30, nullable = false)
     String bangTuongTac;
-    
+    @Column(name = "noi_dung", length = 300)
+    String noiDung;
+
     @Column(name = "create_at")
     @Id
     @Setter(value = AccessLevel.NONE)

@@ -19,16 +19,21 @@ import java.util.UUID;
 
 /**
  * Mapping for DB view
- * create view  thong_tin_nd_va_chuc_vu as select `tt`.`id`                                                     AS `id`,
- * `tt`.`ho_ten`                                                 AS `ho_ten`,
- * `tt`.`avatar`                                                 AS `avatar`,
- * `tt`.`ngay_sinh`                                              AS `ngay_sinh`,
- * `tt`.`sdt`                                                    AS `sdt`,
- * json_object('email', `tk`.`email`,
- * 'type', `tk`.`type`, 'co_bi_khoa', `tk`.`co_bi_khoa`, 'da_kich_hoat',                                                `tk`.`da_kich_hoat`, 'role_list', (select JSON_ARRAYAGG(r.role_name)
- * from tai_khoan_va_chuc_vu tkr
- * join role r on tkr.id_role = r.id                                                                                   where (tkr.id_tai_khoan = tt.id))) as `tai_khoan` from (thong_tin_nguoi_dung tt join tai_khoan tk on tt.id = tk.id)
- * group by tt.id;
+ * create view  select `tt`.`id`                                               AS `id`,
+ *        `tt`.`ho_ten`                                           AS `ho_ten`,
+ *        `tt`.`avatar`                                           AS `avatar`,
+ *        `tt`.`ngay_sinh`                                        AS `ngay_sinh`,
+ *        `tt`.`sdt`                                              AS `sdt`,
+ *        json_object('email', `tk`.`email`, 'type', `tk`.`type`, 'co_bi_khoa', `tk`.`co_bi_khoa`, 'da_kich_hoat',
+ *                    `tk`.`da_kich_hoat`, 'manager_id',
+ *                    if((hex(`tk`.`manager_id`) is null), 'null', hex(`tk`.`manager_id`)), 'role_list',
+ *                    (select json_arrayagg(`r`.`role_name`)
+ *                     from (`dacn_repair_service_booking_system`.`tai_khoan_va_chuc_vu` `tkr` join `dacn_repair_service_booking_system`.`role` `r`
+ *                           on ((`tkr`.`id_role` = `r`.`id`)))
+ *                     where (`tkr`.`id_tai_khoan` = `tt`.`id`))) AS `tai_khoan`
+ * from (`dacn_repair_service_booking_system`.`thong_tin_nguoi_dung` `tt` join `dacn_repair_service_booking_system`.`tai_khoan` `tk`
+ *       on ((`tt`.`id` = `tk`.`id`)))
+ * group by `tt`.`id`
  */
 @AllArgsConstructor
 @NoArgsConstructor

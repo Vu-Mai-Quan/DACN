@@ -1,4 +1,4 @@
-package com.example.dacn.service.imlp;
+package com.example.dacn.service.impl;
 
 import com.example.dacn.db1.model.HangSanXuat;
 import com.example.dacn.db1.repositories.HangSanXuatRepository;

@@ -1,12 +1,16 @@
 package com.example.dacn.db2.model;
 
-import com.example.dacn.basetemplate.BaseEntity;
 import com.example.dacn.db2.model.compositekey.IdRegisterToken;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Table(name = "token_register", indexes = @Index(columnList = "token"))
 @Entity

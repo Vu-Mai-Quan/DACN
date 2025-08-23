@@ -4,12 +4,14 @@
  */
 package com.example.dacn.db1.repositories;
 
+import com.example.dacn.db1.model.Role;
 import com.example.dacn.db1.model.TaiKhoan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -25,4 +27,7 @@ public interface TaiKhoanRepo extends JpaRepository<TaiKhoan, UUID> {
     Optional<TaiKhoan> timTaiKhoanTheoEmail(@Param("email") String email);
 
     Optional<TaiKhoan> findByEmail(String username);
+
+    @Query("select u.roles from TaiKhoan u where u.email = ?1")
+    Set<Role> findRolesByEmail(String email);
 }

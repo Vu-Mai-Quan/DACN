@@ -5,12 +5,13 @@
 package com.example.dacn.db2.model;
 
 import com.example.dacn.basetemplate.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import com.example.dacn.db2.model.compositekey.IdBlackListToken;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @author ADMIN
@@ -22,8 +23,17 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BlackListToken extends BaseEntity {
+public class BlackListToken {
+    @Id
+    IdBlackListToken idBlackListToken;
+    @Column(name = "thoi_han")
+    LocalDateTime thoiHan;
+    @Column(name = "da_bi_khoa")
+    boolean daBiKhoa;
 
-    @Column(length = 300)
-    String token;
+
+    @PostLoad
+    public void setDaBiKhoa() {
+        this.daBiKhoa = thoiHan.isBefore(LocalDateTime.now());
+    }
 }

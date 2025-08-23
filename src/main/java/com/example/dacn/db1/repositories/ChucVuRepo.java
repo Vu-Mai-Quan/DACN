@@ -20,4 +20,6 @@ public interface ChucVuRepo extends JpaRepository<Role, UUID>{
     Set<String> timHetTenChucVu();
     @Query("select r from Role r WHERE r.role IN (com.example.dacn.enumvalues.EnumRole.ADMIN, com.example.dacn.enumvalues.EnumRole.CUSTOMER,com.example.dacn.enumvalues.EnumRole.CLIENT,com.example.dacn.enumvalues.EnumRole.MANAGER)")
     Set<Role> findAllInName();
+
+
 }

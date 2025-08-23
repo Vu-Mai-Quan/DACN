@@ -9,13 +9,12 @@ import com.example.dacn.enumvalues.EnumTypeAccount;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.security.Principal;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,10 +60,17 @@ public class TaiKhoan
             inverseJoinColumns = @JoinColumn(name = "id_role"),
             name = "tai_khoan_va_chuc_vu")
     @ToString.Exclude
-    Set<Role> roles = new HashSet<>();
+    Set<Role> roles;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id", referencedColumnName = "id")
+    TaiKhoan manager;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "manager")
+    Set<TaiKhoan> taiKhoans;
 
     @OneToMany(mappedBy = "idNguoiDung", fetch = FetchType.LAZY)
-    Set<RefreshToken> refreshTokens = new HashSet<>();
+    Set<RefreshToken> refreshTokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -73,10 +79,6 @@ public class TaiKhoan
                 .collect(Collectors.toSet());
     }
 
-    //    public void setThongTinNguoiDung(ThongTinNguoiDung thongTinNguoiDung) {
-//        thongTinNguoiDung.setTaiKhoan(this);
-//        
-//    }
     @Override
     public String getPassword() {
         return this.matKhau;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -107,8 +109,5 @@ public class TaiKhoan
         return daKichHoat;
     }
 
-//    @Override
-//    public String getName() {
-//        return this.email;
-//    }
+
 }

@@ -5,9 +5,12 @@
 package com.example.dacn.config;
 
 import com.example.dacn.basetemplate.ErrorResponse;
+import com.example.dacn.db2.model.BlackListToken;
 import com.example.dacn.db2.repositories.BlackListTokenRepo;
 import com.example.dacn.service.IJwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.manager.Constants;
 import org.modelmapper.internal.Pair;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,7 +47,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-        Pair<String, Set<String>> pair = Pair.of("*/client/*", Set.of("GET", "POST", "PUT", "DELETE"));
+        Pair<String, Set<String>> pair = Pair.of("/client/**", Set.of("GET", "POST", "PUT", "DELETE"));
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         String servletPath = request.getRequestURL().toString();
         String method = request.getMethod();
@@ -53,13 +56,15 @@ public class JwtFilterConfig extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException, EntityNotFoundException {
         String header = request.getHeader(AUTHORIZATION);
 
         if (header != null && header.startsWith("Bearer ")) {
             try {
                 String token = header.substring(7);
-                if (blackListTokenRepo.findByToken(token) > 0 || iJwtService.isRefreshToken(token)) {
+                var btk = blackListTokenRepo.findByToken(token);
+                if (btk.isPresent() && btk.get().isDaBiKhoa() || iJwtService.isRefreshToken(token)) {
                     sendErrorResponse(request, response, "Token không hợp lệ");
                     return;
                 }
@@ -69,7 +74,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
-            } catch (Exception e) {
+            } catch (JwtException | AccessDeniedException | IOException | EntityNotFoundException e) {
                 sendErrorResponse(request, response, e.getMessage());
                 return;
             }
@@ -79,7 +84,8 @@ public class JwtFilterConfig extends OncePerRequestFilter {
 
     }
 
-    private void sendErrorResponse(HttpServletRequest rq, HttpServletResponse response, String message) throws IOException {
+    private void sendErrorResponse(HttpServletRequest rq, HttpServletResponse response,
+                                   String message) throws IOException {
         var errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED)
                 .url(rq.getRequestURI())

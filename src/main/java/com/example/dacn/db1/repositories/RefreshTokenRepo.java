@@ -25,5 +25,6 @@ public interface RefreshTokenRepo extends JpaRepository<RefreshToken, IdRefreshT
     @Query(name ="RefreshToken.GetTọkenAndExprired", nativeQuery = true)
     Optional<TokenAndExpriredView> getNewToken(@Param("id") UUID id);
 
-   
+
+//    Optional<RefreshToken> findByTokenOrderByExpriredAsc(String refreshToken);
 }

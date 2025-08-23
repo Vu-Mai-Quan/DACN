@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,6 +18,6 @@ import java.util.UUID;
  */
 public interface BlackListTokenRepo extends JpaRepository<BlackListToken, UUID> {
 
-    @Query(value="select COUNT(*) from black_list_token btk WHERE btk.token = :token limit 1", nativeQuery = true)
-    int findByToken(@Param("token") String token);
+    @Query(value="select * from black_list_token btk WHERE btk.token = :token order by btk.thoi_han desc limit 1", nativeQuery = true)
+    Optional<BlackListToken> findByToken(@Param("token") String token);
 }

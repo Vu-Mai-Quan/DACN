@@ -26,4 +26,6 @@ public interface IAuthService {
     Set<TaiKhoanResponese> phanQuyenTaiKhoan(Set<PhanQuyenRq> quyenRq);
 
     void kiemTraTokenDangKi(IdRegisterToken idRegisterToken) throws MessagingException;
+
+    String taoMoiTokenBangRefresh(String refreshToken);
 }

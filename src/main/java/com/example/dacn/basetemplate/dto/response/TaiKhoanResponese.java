@@ -38,5 +38,6 @@ public class TaiKhoanResponese {
     EnumTypeAccount type;
     @JsonProperty("role_list")
     Set<EnumRole> roleList;
-
+    @JsonProperty("manager_id")
+    String manager;
 }

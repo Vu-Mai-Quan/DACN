@@ -12,14 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class SecurityConfig {
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtFilterConfig config
-                                              ) throws Exception {
+    ) throws Exception {
 
         httpSecurity
                 .addFilterBefore(config, UsernamePasswordAuthenticationFilter.class)
@@ -49,11 +49,15 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(rq -> rq
                         //                            .requestMatchers(HttpMethod.GET, "api/v1/user/*").hasAuthority("ADMIN")
-                        .requestMatchers("/admin/*").hasRole("ADMIN").anyRequest().permitAll())
+                        .requestMatchers("/auth/client/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .requestMatchers("/auth/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/auth/customer/**").hasRole("CUSTOMER")
+                        .requestMatchers("/nguoi-dung/**").authenticated()
+                )
                 .cors(withDefaults())
-
                 .exceptionHandling(t -> {
-                    t.authenticationEntryPoint((rq, rp, au) -> {
+                    t.authenticationEntryPoint(
+                            (rq, rp, au) -> {
                         sendErrorResponse(rq, rp, au, "Đường dẫn cần xác thực người dùng", HttpStatus.FORBIDDEN);
                     });
                     t.accessDeniedHandler((rq, rp, au) -> {
@@ -83,4 +87,11 @@ public class SecurityConfig {
         rp.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 
+
+    @Bean
+    protected RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_MANAGER \n ROLE_MANAGER > ROLE_CUSTOMER \n ROLE_CUSTOMER > ROLE_CLIENT");
+        return roleHierarchy;
+    }
 }

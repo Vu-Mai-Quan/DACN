@@ -25,7 +25,7 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID id;
+    protected UUID id;
 
     @Column(name = "create_at")
     @Setter(AccessLevel.NONE)

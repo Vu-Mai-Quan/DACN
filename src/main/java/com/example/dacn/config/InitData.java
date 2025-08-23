@@ -12,8 +12,6 @@ import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
-import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.annotation.WebServlet;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -50,7 +48,9 @@ public class InitData implements ApplicationRunner {
 
 
     @Autowired
-    public void setEmailPassword(@Value("${init-data.admin.email}") String email, @Value("${init-data.admin.password}") String password, @Value("${init-data.admin.sdt}") String sdt) {
+    public void setEmailPassword(@Value("${init-data.admin.email}") String email,
+                                 @Value("${init-data.admin.password}") String password,
+                                 @Value("${init-data.admin.sdt}") String sdt) {
         this.email = email;
         this.password = password;
         this.sdt = sdt;
@@ -67,27 +67,33 @@ public class InitData implements ApplicationRunner {
 
     private void khoiTaoAdminChuaTonTai() throws Exception {
         if (khoanRepo.kiemTraEmailDaTonTai(email) > 0) {
-            return;
-        }
-        try {
-            var ttnd = thongTinNDRepo.findBySdt(sdt);
-            ThongTinNguoiDung nguoiDung = ttnd.orElseGet(ThongTinNguoiDung::new);
-            nguoiDung.setAvatar("https://drive.google.com/file/d/1yiZz4XVRyHZjUFi1vTzSsHCr5o7cnBaf/view");
-            nguoiDung.setHoTen("Quản trị viên");
-            nguoiDung.setSdt(sdt);
-            nguoiDung.setNgaySinh(Date.valueOf("2002-06-28"));
-            Set<Role> lsRoles = chucVuRepo.findAllInName();
-            TaiKhoan khoan = new TaiKhoan();
-            khoan.setEmail(email);
-            khoan.setMatKhau(encode.encode(password));
-            khoan.setDaKichHoat(true);
-            khoan.setRoles(lsRoles);
-            nguoiDung.setTaiKhoan(khoan);
-            khoan.setThongTinNguoiDung(nguoiDung);
-            khoan.setType(EnumTypeAccount.CUSTOMER);
-            thongTinNDRepo.save(nguoiDung);
-        } catch (Exception e) {
-            throw new Exception("Lỗi thêm người dùng", e);
+            if (!khoanRepo.findRolesByEmail(email).isEmpty()) {
+                return;
+            }
+            var tk = khoanRepo.findByEmail(email).get();
+            tk.setRoles(chucVuRepo.findAllInName());
+            khoanRepo.save(tk);
+        } else {
+            try {
+                var ttnd = thongTinNDRepo.findBySdt(sdt);
+                ThongTinNguoiDung nguoiDung = ttnd.orElseGet(ThongTinNguoiDung::new);
+                nguoiDung.setAvatar("https://drive.google.com/file/d/1yiZz4XVRyHZjUFi1vTzSsHCr5o7cnBaf/view");
+                nguoiDung.setHoTen("Quản trị viên");
+                nguoiDung.setSdt(sdt);
+                nguoiDung.setNgaySinh(Date.valueOf("2002-06-28"));
+                Set<Role> lsRoles = chucVuRepo.findAllInName();
+                TaiKhoan khoan = new TaiKhoan();
+                khoan.setEmail(email);
+                khoan.setMatKhau(encode.encode(password));
+                khoan.setDaKichHoat(true);
+                khoan.setRoles(lsRoles);
+                nguoiDung.setTaiKhoan(khoan);
+                khoan.setThongTinNguoiDung(nguoiDung);
+                khoan.setType(EnumTypeAccount.CUSTOMER);
+                thongTinNDRepo.save(nguoiDung);
+            } catch (Exception e) {
+                throw new Exception("Lỗi thêm người dùng", e);
+            }
         }
     }
 

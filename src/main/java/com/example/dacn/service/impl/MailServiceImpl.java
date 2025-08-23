@@ -1,4 +1,4 @@
-package com.example.dacn.service.imlp;
+package com.example.dacn.service.impl;
 
 import com.example.dacn.service.MailService;
 import jakarta.mail.MessagingException;
@@ -21,6 +21,7 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
     @Value("${spring.mail.username}")
     private String emailFrom;
+
     @Override
     @Async
     public void sendSimpleMail(String[] to, String subject, UUID id,

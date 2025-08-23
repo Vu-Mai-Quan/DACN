@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.dacn.service.imlp;
+package com.example.dacn.service.impl;
 
 import com.example.dacn.basetemplate.dto.request.LoginDto;
 import com.example.dacn.basetemplate.dto.request.PhanQuyenRq;
@@ -20,6 +20,7 @@ import com.example.dacn.db1.repositories.TaiKhoanRepo;
 import com.example.dacn.db1.repositories.ThongTinNDRepo;
 import com.example.dacn.db2.model.TokenRegister;
 import com.example.dacn.db2.model.compositekey.IdRegisterToken;
+import com.example.dacn.db2.repositories.BlackListTokenRepo;
 import com.example.dacn.db2.repositories.TokenRegisterRepository;
 import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
@@ -37,8 +38,13 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +72,7 @@ public class AuthServiceImpl implements IAuthService {
     final AuthenticationManager authenticationManager;
     final TokenRegisterRepository tokenRegisterRepository;
     final MailService mailService;
+    final BlackListTokenRepo blackListTokenRepo;
 
     @Autowired
     public void setIMapperService(@Qualifier("ttndTKRoleMapper") final IMapperService iMapperService) {
@@ -75,22 +82,20 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     @Transactional(transactionManager = "db1TransactionManager", rollbackFor = Exception.class, label = "Login method")
     public LoginResponse login(LoginDto loginDto) {
-//        TaiKhoan tk = taikhoanRepo.timTaiKhoanTheoEmail(loginDto.getUsername())
-//                .orElseThrow(() -> new EntityNotFoundException("Thông tin tài khoản hoặc mật khẩu không chính xác"));
-//        if (!encode.matches(loginDto.getPassword(), tk.getPassword())) {
-//            throw new EntityNotFoundException("Thông tin tài khoản hoặc mật khẩu không chính xác");
-//        }
-        var au = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+        Authentication au = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
         TaiKhoan tk = (TaiKhoan) au.getPrincipal();
         Optional<TokenAndExpriredView> rfRp = rfTkRp.getNewToken(tk.getId());
         String rf = rfRp.isPresent() && new Date(rfRp.get().getExprired()).after(new Date(System.currentTimeMillis())) ? rfRp.get().getToken() : insertRefreshToken(jwtSevice.createRefreshToken(tk), tk);
 
-        String token = jwtSevice.createToken(Map.of("roles", au.getAuthorities()), tk);
         return LoginResponse.builder()
-                .token(token)
+                .token(buildLoginToken(tk))
                 .refreshToken(rf)
                 .tenTaiKhoan(tk.getUsername())
                 .build();
+    }
+
+    private String buildLoginToken(UserDetails tk) {
+        return jwtSevice.createToken(Map.of("roles", tk.getAuthorities()), tk);
     }
 
     @Override
@@ -107,6 +112,12 @@ public class AuthServiceImpl implements IAuthService {
 
     }
 
+    @Override
+    public String taoMoiTokenBangRefresh(String refreshToken) {
+        UserDetails tk = jwtSevice.kiemTraTaiKhoanTrongToken(refreshToken);
+        return buildLoginToken(tk);
+    }
+
     @Transactional(transactionManager = "db2TransactionManager")
     protected TokenRegister saveToken(UUID id) {
         var tk = new TokenRegister();
@@ -118,6 +129,17 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     @Transactional(transactionManager = "db1TransactionManager")
     public Set<TaiKhoanResponese> phanQuyenTaiKhoan(Set<PhanQuyenRq> quyenRq) {
+        //Kiểm tra coi có role lớn hơn người dùng hiện tại đang phân quyền không
+        Set<EnumRole> flatRole = quyenRq.stream().flatMap(item -> item.getRoles().parallelStream()).collect(Collectors.toSet());
+
+        var roles = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean managerOrAdmin = flatRole.contains(EnumRole.ADMIN) || flatRole.contains(EnumRole.MANAGER),
+                coPhaiAdmin = !roles.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()).contains("ROLE_ADMIN");
+
+        if (managerOrAdmin && coPhaiAdmin) {
+            throw new AccessDeniedException("Bạn không có quyền phân quyền cao hơn");
+        }
 
         Set<UUID> uuids = quyenRq.stream().map(PhanQuyenRq::getId).collect(Collectors.toSet());
 
@@ -126,6 +148,7 @@ public class AuthServiceImpl implements IAuthService {
 
         Map<String, Role> roleMap = roleRepo.findAllByRoleNames(EnumRole.getRoles()).stream()
                 .collect(Collectors.toMap(item -> item.getRole().name(), Role::getInstance));
+
 
         for (var phanQuyenRq : quyenRq) {
             TaiKhoan tk = userMap.get(phanQuyenRq.getId());
@@ -145,19 +168,16 @@ public class AuthServiceImpl implements IAuthService {
     @Transactional("db1TransactionManager")
     public void kiemTraTokenDangKi(IdRegisterToken idRegisterToken) throws MessagingException {
         var token = tokenRegisterRepository.findByIdUserAndTokenOrderByTimeAsc(idRegisterToken).orElseThrow(() -> new EntityNotFoundException("Mã xác thực không hợp lệ"));
-        if (token != null) {
-            TaiKhoan taiKhoan = taikhoanRepo.findById(token.getId().getIdUser()).orElseThrow(() -> new EntityNotFoundException("Tài khoản không hợp lệ"));
-            boolean conThoiHan = token.getTime().after(new Date(System.currentTimeMillis()));
-            if (!conThoiHan) {
-                var newToken = saveToken(taiKhoan.id);
-                mailService.sendSimpleMail(new String[]{taiKhoan.getUsername()}, "Xác thực tài khoản", newToken.getId().getIdUser(), newToken.getId().getToken());
-                throw new RuntimeException("Token đã hết hạn, chúng tôi đã gửi lại mã xác thực mới cho bạn");
-            } else {
-                taiKhoan.setCoBiKhoa(false);
-                taiKhoan.setDaKichHoat(true);
-                taikhoanRepo.save(taiKhoan);
-            }
-
+        TaiKhoan taiKhoan = taikhoanRepo.findById(token.getId().getIdUser()).orElseThrow(() -> new EntityNotFoundException("Tài khoản không hợp lệ"));
+        tokenRegisterRepository.delete(token);
+        if (token.getTime().after(new Date(System.currentTimeMillis()))) {
+            taiKhoan.setCoBiKhoa(false);
+            taiKhoan.setDaKichHoat(true);
+            taikhoanRepo.save(taiKhoan);
+        } else {
+            var newToken = saveToken(taiKhoan.getId());
+            mailService.sendSimpleMail(new String[]{taiKhoan.getUsername()}, "Xác thực tài khoản", newToken.getId().getIdUser(), newToken.getId().getToken());
+            throw new RuntimeException("Token đã hết hạn, chúng tôi đã gửi lại mã xác thực mới cho bạn");
         }
     }
 

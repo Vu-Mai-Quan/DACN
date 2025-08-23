@@ -2,7 +2,6 @@ package com.example.dacn.db2.model.compositekey;
 
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.EmbeddedId;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

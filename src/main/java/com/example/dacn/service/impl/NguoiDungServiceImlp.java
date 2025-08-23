@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.dacn.service.imlp;
+package com.example.dacn.service.impl;
 
 import com.example.dacn.basetemplate.dto.response.ThongTinNDResponse;
 import com.example.dacn.db1.model.viewmodel.ThongTinNdVaChucVu;
@@ -43,14 +43,17 @@ public class NguoiDungServiceImlp implements INguoiDungService {
     }
 
     @Override
+//    @PostFilter("filterObject.taiKhoan.manager == authentication.principal.id.toString() || hasRole('ADMIN')")
     public Page<ThongTinNDResponse> layDanhSachTTNguoiDung(String keyWord, String order, Pageable pageable) {
 //        Thực ra chỉ cần truyền vào '' là lấy hết dữ liệu
+//        log.info("id: {}", ((TaiKhoan) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         return StringUtils.hasLength(keyWord) ? mappingRp(dRepo.timNguoiDungTheoKeyword(keyWord, pageable))
                 : mappingRp(dRepo.layDanhSachNguoiDung(pageable));
 
     }
 
     private Page<ThongTinNDResponse> mappingRp(Page<ThongTinNdVaChucVu> page) {
+
         return page.map(item -> ims.mapperObject(item, ThongTinNDResponse.class));
     }
 
@@ -60,6 +63,7 @@ public class NguoiDungServiceImlp implements INguoiDungService {
         var rp = dRepo.layNguoiDungBangId(id).orElseThrow(NoResultException::new);
         return ims.mapperObject(rp, ThongTinNDResponse.class);
     }
+
 
 
 }
