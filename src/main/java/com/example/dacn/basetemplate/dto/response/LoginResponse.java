@@ -4,6 +4,8 @@
  */
 package com.example.dacn.basetemplate.dto.response;
 
+import com.example.dacn.basetemplate.LogIdResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
@@ -19,11 +21,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LoginResponse {
+public class LoginResponse extends LogIdResponse {
 
     @JsonProperty(value = "ten_tai_khoan")
     String tenTaiKhoan;
     String token;
     @JsonProperty(value = "refresh_token")
     String refreshToken;
+    @JsonIgnore
+    boolean taiCheToken;
 }

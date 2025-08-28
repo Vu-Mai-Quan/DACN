@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 /**
- *
  * @author ADMIN
  */
 @Configuration
@@ -31,11 +30,13 @@ import javax.sql.DataSource;
 )
 public class DbConfig2 extends ADbConfig {
 
-    
 
     {
-        this.props.put(Environment.HBM2DDL_AUTO, "update");
+        this.props.put(Environment.HBM2DDL_AUTO, "none");
         this.props.put(Environment.DIALECT, "org.hibernate.community.dialect.SQLiteDialect");
+        this.props.put("hibernate.id.new_generator_mappings", "false");
+        this.props.put(Environment.QUERY_STATISTICS_MAX_SIZE, "5000");
+
 
     }
 
@@ -47,13 +48,15 @@ public class DbConfig2 extends ADbConfig {
     }
 
     @Bean(name = "db2DataSource")
-    protected DataSource db2DataSource(@Qualifier("DataSourcePropertiesSqlite") DataSourceProperties dataSourceProperties) {
+    protected DataSource db2DataSource(
+            @Qualifier("DataSourcePropertiesSqlite") DataSourceProperties dataSourceProperties) {
         return dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
     @Override
     @Bean(name = "db2EntityManagerFactory")
-    protected LocalContainerEntityManagerFactoryBean containerEntityManagerFactoryBean(@Qualifier("db2DataSource") DataSource dataSource) {
+    protected LocalContainerEntityManagerFactoryBean containerEntityManagerFactoryBean(
+            @Qualifier("db2DataSource") DataSource dataSource) {
         var r = super.containerEntityManagerFactoryBean(dataSource);
         r.setPackagesToScan("com.example.dacn.db2");
         r.setJpaPropertyMap(this.props);
@@ -62,7 +65,8 @@ public class DbConfig2 extends ADbConfig {
 
     @Override
     @Bean(name = "db2TransactionManager")
-    protected PlatformTransactionManager dbTransactionManager(@Qualifier("db2EntityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory) {
+    protected PlatformTransactionManager dbTransactionManager(
+            @Qualifier("db2EntityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory) {
         return super.dbTransactionManager(entityManagerFactory); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
 }

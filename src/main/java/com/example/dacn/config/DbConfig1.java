@@ -7,6 +7,7 @@ package com.example.dacn.config;
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -29,16 +30,13 @@ import javax.sql.DataSource;
         transactionManagerRef = "db1TransactionManager"
 )
 public class DbConfig1 extends ADbConfig {
-
+    @Value("${spring.datasource.db1.dialect}")
+    private String dialect;
     {
         this.props.put(Environment.HBM2DDL_AUTO, "none");
-        this.props.put(Environment.STATEMENT_BATCH_SIZE, "20");
-        this.props.put(Environment.ORDER_INSERTS, "true");
-        this.props.put(Environment.ORDER_UPDATES, "true");
-        this.props.put(Environment.USE_SQL_COMMENTS, "true");
-        this.props.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
-//        this.props.put(Environment.DIALECT, "org.hibernate.community.dialect.SQLiteDialect");
 
+        this.props.put(Environment.USE_SQL_COMMENTS, "true");
+        this.props.put(Environment.DIALECT, dialect);
     }
 
     @Bean(name = "db1DataSourceProperties")

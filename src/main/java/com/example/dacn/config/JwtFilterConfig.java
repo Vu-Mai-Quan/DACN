@@ -5,7 +5,6 @@
 package com.example.dacn.config;
 
 import com.example.dacn.basetemplate.ErrorResponse;
-import com.example.dacn.db2.model.BlackListToken;
 import com.example.dacn.db2.repositories.BlackListTokenRepo;
 import com.example.dacn.service.IJwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;

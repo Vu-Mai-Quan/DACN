@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -106,7 +109,9 @@ public class JwtServiceImlp implements IJwtService {
     }
 
     @Override
-    public Date exprired(String token) {
-        return new Date(extractClaims(token, Claims::getExpiration).getTime());
+    public LocalDateTime exprired(String token) {
+       var instant = Instant.ofEpochMilli(extractClaims(token, Claims::getExpiration).getTime());
+        ZoneId zoneId = ZoneId.systemDefault();
+        return LocalDateTime.ofInstant(instant, zoneId);
     }
 }

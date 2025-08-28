@@ -4,6 +4,7 @@
  */
 package com.example.dacn.basetemplate.dto.response;
 
+import com.example.dacn.basetemplate.LogIdResponse;
 import com.example.dacn.config.annotations.Base64ToBooleanDeserializer;
 import com.example.dacn.enumvalues.EnumRole;
 import com.example.dacn.enumvalues.EnumTypeAccount;
@@ -25,7 +26,7 @@ import java.util.Set;
 @Getter
 @ToString
 @Setter
-public class TaiKhoanResponese {
+public class TaiKhoanResponese extends LogIdResponse {
 
 
     String email;
@@ -40,4 +41,6 @@ public class TaiKhoanResponese {
     Set<EnumRole> roleList;
     @JsonProperty("manager_id")
     String manager;
+
+
 }

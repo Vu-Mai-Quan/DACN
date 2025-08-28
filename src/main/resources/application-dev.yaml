@@ -25,7 +25,7 @@ spring:
       username: root
       password: 1234
       driver-class-name: com.mysql.cj.jdbc.Driver
-
+      dialect: org.hibernate.dialect.MySQLDialect
     #datasource 2
     db2:
       url: jdbc:sqlite:src/main/resources/database/mydb.sqlite3
@@ -38,10 +38,11 @@ init-data:
     sdt: 0989209522
   token:
     secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-    expire-date: 360000000
+    expire-date: 600
     issuer: dacn.com
   token-refresh:
-    expire-date: 360000
+    expire-date: 36
+
 
 springdoc:
   api-docs:

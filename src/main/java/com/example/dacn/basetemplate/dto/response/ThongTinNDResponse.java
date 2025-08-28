@@ -4,6 +4,7 @@
  */
 package com.example.dacn.basetemplate.dto.response;
 
+import com.example.dacn.basetemplate.LogIdResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,9 +26,10 @@ import java.util.UUID;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ThongTinNDResponse {
+public class ThongTinNDResponse extends LogIdResponse {
 
-    UUID id;
+    @JsonProperty("id_nguoi_dung")
+    UUID idNguoiDung;
     String sdt;
     @JsonProperty("ho_ten")
     String hoTen;
@@ -37,5 +39,7 @@ public class ThongTinNDResponse {
     String avatar;
     @JsonProperty("tai_khoan")
     TaiKhoanResponese taiKhoan;
+
+
 
 }

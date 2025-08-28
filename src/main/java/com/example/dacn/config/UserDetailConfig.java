@@ -37,7 +37,7 @@ public class UserDetailConfig {
 
     @Bean
     protected UserDetailsService userDetailsService() {
-        return (username) -> taiKhoanRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Thông tin tài khoản hoặc mật khẩu không chính xác"));
+        return (username) -> taiKhoanRepo.timTaiKhoanTheoEmail(username).orElseThrow(() -> new UsernameNotFoundException("Thông tin tài khoản hoặc mật khẩu không chính xác"));
     }
 
     //

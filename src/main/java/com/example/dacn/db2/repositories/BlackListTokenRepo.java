@@ -18,6 +18,9 @@ import java.util.UUID;
  */
 public interface BlackListTokenRepo extends JpaRepository<BlackListToken, UUID> {
 
-    @Query(value="select * from black_list_token btk WHERE btk.token = :token order by btk.thoi_han desc limit 1", nativeQuery = true)
+    @Query(value="select * from black_list_token btk WHERE btk.token = :token limit 1", nativeQuery = true)
     Optional<BlackListToken> findByToken(@Param("token") String token);
+
+    @Query("select case when (count(btk.daBiKhoa) > 0) then btk.daBiKhoa else true end from BlackListToken btk where btk.idUser = ?1 and btk.token = ?2")
+    boolean tokenDaBiKhoaHayChua(UUID idUser,String token);
 }

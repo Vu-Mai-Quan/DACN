@@ -27,6 +27,9 @@ public abstract class ADbConfig {
     {
         this.props.put(Environment.SHOW_SQL, "true");
         this.props.put(Environment.FORMAT_SQL, "true");
+        this.props.put(Environment.STATEMENT_BATCH_SIZE, "50");
+        this.props.put(Environment.ORDER_INSERTS, "true");
+        this.props.put(Environment.ORDER_UPDATES, "true");
     }
 
     protected LocalContainerEntityManagerFactoryBean containerEntityManagerFactoryBean(

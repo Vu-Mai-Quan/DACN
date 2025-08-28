@@ -6,7 +6,6 @@ package com.example.dacn.db1.repositories;
 
 import com.example.dacn.basetemplate.dto.response.TokenAndExpriredView;
 import com.example.dacn.db1.model.RefreshToken;
-import com.example.dacn.db1.model.compositekey.IdRefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +17,7 @@ import java.util.UUID;
  *
  * @author ADMIN
  */
-public interface RefreshTokenRepo extends JpaRepository<RefreshToken, IdRefreshToken> {
+public interface RefreshTokenRepo extends JpaRepository<RefreshToken, UUID> {
 
 //    @Query(value = "select * from refresh_token rft where rft.id_nguoi_dung = :id order by rft.exprired desc limit 1")
 //    Optional<TokenAndExprired> getNewToken(@Param("id") UUID id);

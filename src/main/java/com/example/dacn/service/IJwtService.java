@@ -7,7 +7,7 @@ package com.example.dacn.service;
 import com.example.dacn.db1.model.TaiKhoan;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -24,5 +24,5 @@ public interface IJwtService {
     
     boolean isRefreshToken(String token);
     
-    Date exprired(String token);
+    LocalDateTime exprired(String token);
 }

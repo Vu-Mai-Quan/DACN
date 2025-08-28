@@ -41,16 +41,20 @@ public class ThongTinNDVaTaiKhoanMapper implements IMapperService {
         TypeMap<ThongTinNdVaChucVu, ThongTinNDResponse> typeMap = mapper.getTypeMap(ThongTinNdVaChucVu.class, ThongTinNDResponse.class);
         if (typeMap == null) {
             typeMap = mapper.createTypeMap(ThongTinNdVaChucVu.class, ThongTinNDResponse.class);
-            typeMap.addMappings(mapping -> mapping
-                    .using(ctx -> {
-                        String taiKhoanJson = (String) ctx.getSource();
-                        try {
-                            return objectCodec.readValue(taiKhoanJson, TaiKhoanResponese.class);
-                        } catch (IOException e) {
-                            throw new RuntimeException("Lỗi mapping TaiKhoanResponese", e);
-                        }
-                    })
-                    .map(ThongTinNdVaChucVu::getTaiKhoan, ThongTinNDResponse::setTaiKhoan));
+            typeMap.addMappings(mapping -> {
+                mapping
+                        .using(ctx -> {
+                            String taiKhoanJson = (String) ctx.getSource();
+                            try {
+                                return objectCodec.readValue(taiKhoanJson, TaiKhoanResponese.class);
+                            } catch (IOException e) {
+                                throw new RuntimeException("Lỗi mapping TaiKhoanResponese", e);
+                            }
+                        })
+                        .map(ThongTinNdVaChucVu::getTaiKhoan, ThongTinNDResponse::setTaiKhoan);
+                mapping.map(ThongTinNdVaChucVu::getId, ThongTinNDResponse::setIdNguoiDung);
+            });
+
         }
         return source != null ? mapper.map(source, out) : null;
     }

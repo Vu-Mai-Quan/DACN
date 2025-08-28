@@ -4,19 +4,16 @@
  */
 package com.example.dacn.db2.model;
 
-import com.example.dacn.basetemplate.BaseEntity;
-import com.example.dacn.db2.model.compositekey.IdBlackListToken;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
  * @author ADMIN
  */
-@Table(name = "black_list_token", schema = "main", indexes = {@Index(columnList = "token", name = "idx_token_black_list")})
+@Table(name = "black_list_token", schema = "main", indexes = {@Index(columnList = "id_user, token", name = "idx_token_black_list")})
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,15 +22,18 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BlackListToken {
     @Id
-    IdBlackListToken idBlackListToken;
-    @Column(name = "thoi_han")
-    LocalDateTime thoiHan;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    UUID id;
+    @Column(name = "id_user")
+    UUID idUser;
+    @Column(length = 300)
+    String token;
     @Column(name = "da_bi_khoa")
     boolean daBiKhoa;
 
-
-    @PostLoad
-    public void setDaBiKhoa() {
-        this.daBiKhoa = thoiHan.isBefore(LocalDateTime.now());
+    public BlackListToken(UUID idUser, String token, boolean daBiKhoa) {
+        this.idUser = idUser;
+        this.token = token;
+        this.daBiKhoa = daBiKhoa;
     }
 }

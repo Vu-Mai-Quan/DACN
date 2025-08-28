@@ -6,16 +6,18 @@ package com.example.dacn.db1.repositories;
 
 import com.example.dacn.db1.model.Role;
 import com.example.dacn.db1.model.TaiKhoan;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 /**
- *
  * @author ADMIN
  */
 public interface TaiKhoanRepo extends JpaRepository<TaiKhoan, UUID> {
@@ -30,4 +32,10 @@ public interface TaiKhoanRepo extends JpaRepository<TaiKhoan, UUID> {
 
     @Query("select u.roles from TaiKhoan u where u.email = ?1")
     Set<Role> findRolesByEmail(String email);
+
+    //    @Query("SELECT tk FROM TaiKhoan tk WHERE tk.id in ?1")
+    @EntityGraph(value = "TaiKhoan.fetchRole")
+    @Override
+    @NonNull
+    List<TaiKhoan> findAllById(@NonNull Iterable<UUID> id);
 }

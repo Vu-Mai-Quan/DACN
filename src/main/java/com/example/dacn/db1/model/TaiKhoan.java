@@ -9,7 +9,6 @@ import com.example.dacn.enumvalues.EnumTypeAccount;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +27,9 @@ import java.util.stream.Collectors;
 @Setter
 @Table(name = "tai_khoan", indexes = {
         @Index(columnList = "email", name = "email_idx")
+})
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "TaiKhoan.fetchRole",attributeNodes = {@NamedAttributeNode("roles")})
 })
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
