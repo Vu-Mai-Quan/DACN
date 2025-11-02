@@ -57,4 +57,9 @@ openapi:
     url: http://localhost:8080
     title: Dự án cá nhân của Quân
 
+logging:
+  level:
+    org:
+      hibernate:
+        cfg: DEBUG
 

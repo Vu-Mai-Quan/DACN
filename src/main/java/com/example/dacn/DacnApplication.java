@@ -6,12 +6,14 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class })
+@SpringBootApplication
 @EnableAsync
 public class DacnApplication {
 
 	public static void main(String[] args) {
-         
+        System.out.println(args[0]);
+        System.out.println(System.getProperty("spring.profiles.active"));
+        System.out.println(System.getenv("NAME"));
 		SpringApplication.run(DacnApplication.class, args);
 	}
 
