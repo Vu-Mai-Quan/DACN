@@ -37,4 +37,4 @@ build/
 
 ### Khác ###
 /src/main/resources/application-prod.yaml
-.env
+*.env
