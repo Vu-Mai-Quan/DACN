@@ -17,10 +17,9 @@ public class DacnApplication {
     public static void main(String[] args) {
         System.out.println(args[0]);
         System.out.println(System.getProperty("spring.profiles.active"));
-        System.out.println(System.getenv("NAME"));
+        System.out.println(System.getenv("TEST"));
         var app = SpringApplication.run(DacnApplication.class, args);
-        Source source = new Source(12, "kạdk");
-
+        Source source = new Source(12, "Vũ Mai","Quân");
         System.out.println(app.getBean(MapperClass.class).toDestination(source));
     }
 

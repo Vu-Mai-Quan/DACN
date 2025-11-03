@@ -9,6 +9,10 @@ import org.mapstruct.Mapping;
 public abstract class MapperClass {
 
     @Mapping(target = "destinationId", source = "source.sourceId")
-    @Mapping(target = "destinationName", source = "source.sourceName")
+    @Mapping(target = "destinationName", expression = "java(fullName(source.getSourceFName(),source.getSourceLName()))")
     public abstract Destination toDestination(Source source);
+
+    protected String fullName(String fName, String lName) {
+        return "%s %s".formatted(fName, lName);
+    }
 }

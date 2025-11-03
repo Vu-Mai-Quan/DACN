@@ -18,7 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
-
+*.env
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -37,4 +37,4 @@ build/
 
 ### Khác ###
 /src/main/resources/application-prod.yaml
-*.env
+

@@ -32,12 +32,9 @@ spring:
       driver-class-name: org.sqlite.JDBC
 
 init-data:
-  admin:
-    email: ADMIN@gmail.com
-    password: 12345678
-    sdt: 0989209522
+  admin: { email: ${ EMAIL_ADMIN }, password: ${ PASSWORD_ADMIN }, sdt: ${ SDT_ADMIN } }
   token:
-    secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
+    secret-key: ${SECRET_KEY}
     expire-date: 600
     issuer: dacn.com
   token-refresh:
