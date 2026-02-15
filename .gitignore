@@ -37,4 +37,11 @@ build/
 
 ### Khác ###
 /src/main/resources/application-prod.yaml
+/src/main/resources/application-test.yaml
+/src/main/resources/database/*
+/src/main/resources/db/*
+/Scripts/
+/Scripts/*
+.dbeaver
+.dbeaver/*
 

@@ -3,6 +3,18 @@ server:
     context-path: /api/v1
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USERNAME_MAIL}
+    password: ${PASSWORD_MAIL}
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+          auth: true
+          starttls:
+          timeout: 3000
   jackson:
     time-zone: 'Asia/Ho_Chi_Minh'
   profiles:
@@ -11,4 +23,8 @@ spring:
     name: dacn
   main:
     banner-mode: off
+
+
+
+
 

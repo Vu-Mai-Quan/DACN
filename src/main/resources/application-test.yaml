@@ -1,16 +1,4 @@
 spring:
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: vumaiquan28062002@gmail.com
-    password: ofdu kzxx hfoh vqzk
-    properties:
-      mail:
-        smtp:
-          trust: "*"
-          auth: true
-          starttls:
-          timeout: 3000
   config:
     activate:
       on-profile: test
@@ -33,11 +21,11 @@ spring:
 
 init-data:
   admin:
-    email: ADMINTEST@gmail.com
-    password: 12345678
-    sdt: 0989209522
+    email: ${ EMAIL_ADMIN }
+    password: ${ PASSWORD_ADMIN }
+    sdt: ${ SDT_ADMIN }
   token:
-    secret-key: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
+    secret-key: ${SECRET_KEY}
     expire-date: 360000000
     issuer: dacn.com
   token-refresh:

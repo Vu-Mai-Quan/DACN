@@ -1,11 +1,12 @@
 package com.example.dacn;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import lombok.RequiredArgsConstructor;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RequiredArgsConstructor
 class DacnApplicationTests {
-
+   
 
 }

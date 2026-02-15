@@ -1,0 +1,82 @@
+{"properties": [
+  {
+    "name": "spring.datasource.db1.url",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.db1.url'"
+  },
+  {
+    "name": "spring.datasource.db1.username",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.db1.username'"
+  },
+  {
+    "name": "spring.datasource.db1.password",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.db1.password'"
+  },
+  {
+    "name": "spring.datasource.db1.driver-class-name",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.db1.driver-class-name'"
+  },
+  {
+    "name": "spring.datasource.db1.dialect",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.db1.dialect'"
+  },
+  {
+    "name": "init-data.admin.email",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.admin.email'"
+  },
+  {
+    "name": "init-data.admin.password",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.admin.password'"
+  },
+  {
+    "name": "init-data.admin.sdt",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.admin.sdt'"
+  },
+  {
+    "name": "init-data.token.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.token.secret-key'"
+  },
+  {
+    "name": "init-data.token.expire-date",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.token.expire-date'"
+  },
+  {
+    "name": "init-data.token.issuer",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.token.issuer'"
+  },
+  {
+    "name": "init-data.token-refresh.expire-date",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.token-refresh.expire-date'"
+  },
+  {
+    "name": "openapi.service.api-docs",
+    "type": "java.lang.String",
+    "description": "A description for 'openapi.service.api-docs'"
+  },
+  {
+    "name": "openapi.service.version",
+    "type": "java.lang.String",
+    "description": "A description for 'openapi.service.api-docs'"
+  },
+  {
+    "name": "openapi.service.url",
+    "type": "java.lang.String",
+    "description": "A description for 'openapi.service.api-docs'"
+  },
+  {
+    "name": "openapi.service.title",
+    "type": "java.lang.String",
+    "description": "A description for 'openapi.service.api-docs'"
+  }
+]}

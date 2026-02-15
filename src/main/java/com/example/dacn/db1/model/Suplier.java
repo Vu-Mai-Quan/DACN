@@ -1,0 +1,36 @@
+package com.example.dacn.db1.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+/**
+ * Đây là nhà cung cấp sản phẩm
+ */
+@Entity
+@Table(name="tbl_suplier")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
+public class Suplier {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Short id;
+	
+	@Column(length = 100)
+	String name;
+	
+	@Email(message = "Email không đúng định dạng")
+	String email;
+	
+	@Column(name="address")
+	String diaChi;
+}
