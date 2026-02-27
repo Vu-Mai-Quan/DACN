@@ -1,5 +1,6 @@
 package com.example.dacn.db1.model;
 
+import com.example.dacn.template.enumModel.StoreStatus;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CurrentTimestamp;
@@ -17,7 +18,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
@@ -28,32 +28,26 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Getter
 public class Store {
-	@RequiredArgsConstructor
-	@Getter
-	public static enum StoreStatus {
-		ACTIVE("Kích hoạt"), DISABLED("Đã ẩn");
 
-		private final String descriptions;
-	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Short id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    final Short id;
 
-	@Column(length = 150, unique = true, nullable = false)
-	String name;
+    @Column(length = 150, unique = true, nullable = false)
+    String name;
 
-	@Column
-	@Enumerated(EnumType.STRING)
-	StoreStatus status;
-	
-	@Column(name="create_at", updatable = false)
-	@CurrentTimestamp(event = EventType.INSERT)
-	LocalDateTime createAt;
+    @Column
+    @Enumerated(EnumType.STRING)
+    StoreStatus status;
 
-	public String getName() {
-		// TODO Auto-generated method stub
-		return name;
-	}
+    @Column(name = "create_at", updatable = false)
+    @CurrentTimestamp(event = EventType.INSERT)
+    final LocalDateTime createAt;
+
+    public String getName() {
+        // TODO Auto-generated method stub
+        return name;
+    }
 
 }

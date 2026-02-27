@@ -1,5 +1,6 @@
 package com.example.dacn.db1.model;
 
+import com.example.dacn.template.enumModel.UserStatus;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,81 +43,75 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Getter
 @AllArgsConstructor
-@NamedEntityGraphs({
-	@NamedEntityGraph(name = "nguoiDung.Role",attributeNodes = {
-			@NamedAttributeNode(value = "chucVus")
-	})
-})
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "nguoiDung.Role", attributeNodes = {
+        @NamedAttributeNode(value = "chucVus")
+    })
+})
 @NoArgsConstructor
-public class NguoiDung extends BaseEntity implements UserDetails {
+public final class NguoiDung extends BaseEntity implements UserDetails {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1316862142648128006L;
-	@Column(unique = true, length = 100)
-	@Email(message = "Email đang sai định dạng")
-	String username;
-	@Setter
-	String password;
-	
-	@Enumerated(EnumType.STRING)
-	@Setter
-	UserStatus status;
+    @Column(unique = true, length = 100)
+    @Email(message = "Email đang sai định dạng")
+    String username;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "store_id", foreignKey = @ForeignKey(name = "fk_user_and_store"))
-	Store store;
+    @Setter
+    String password;
 
-	@JsonIgnore
-	@Exclude
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-		name = "nguoi_dung_va_chuc_vu", joinColumns = @JoinColumn(name = "id_nguoi_dung"),
-		inverseJoinColumns = @JoinColumn(name = "id_chuc_vu"))
-	@Default
-	Set<ChucVu> chucVus = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    @Setter
+    UserStatus status;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return chucVus.stream().map(cv -> new SimpleGrantedAuthority(cv.getAuthority()))
-				.collect(Collectors.toSet());
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", foreignKey = @ForeignKey(name = "fk_user_and_store"))
+    Store store;
 
-	@Override
-	public String getPassword() {
-		return password;
-	}
+    @JsonIgnore
+    @Exclude
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "nguoi_dung_va_chuc_vu", joinColumns = @JoinColumn(name = "id_nguoi_dung"),
+            inverseJoinColumns = @JoinColumn(name = "id_chuc_vu"))
+    @Default
+    Set<ChucVu> chucVus = new HashSet<>();
 
-	@Override
-	public String getUsername() {
-		return username;
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return chucVus.stream().map(cv -> new SimpleGrantedAuthority(cv.getAuthority()))
+                .collect(Collectors.toSet());
+    }
 
-	public static enum UserStatus {
-		KHOA, KICH_HOAT, DANG_KI;
-	}
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return this.status != UserStatus.DANG_KI;
-	}
+    @Override
+    public String getUsername() {
+        return username;
+    }
 
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return status != UserStatus.KHOA;
-	}
+    @Override
+    public boolean isAccountNonExpired() {
+        // TODO Auto-generated method stub
+        return this.status != UserStatus.DANG_KI;
+    }
 
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return status.equals(UserStatus.KICH_HOAT);
-	}
+    @Override
+    public boolean isAccountNonLocked() {
+        // TODO Auto-generated method stub
+        return status != UserStatus.KHOA;
+    }
 
-	public void addChucVu(ChucVu cv) {
-		this.chucVus.add(cv);
-	}
+    @Override
+    public boolean isEnabled() {
+        // TODO Auto-generated method stub
+        return status.equals(UserStatus.KICH_HOAT);
+    }
+
+    public void addChucVu(ChucVu cv) {
+        this.chucVus.add(cv);
+    }
+
 }

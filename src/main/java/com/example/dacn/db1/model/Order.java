@@ -29,26 +29,24 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 public class Order {
 
-	@Id
-	@Column(updatable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+    @Id
+    @Column(updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-	@Enumerated(EnumType.STRING)
-	OrderStatus status;
+    @Enumerated(EnumType.STRING)
+    OrderStatus status;
 
-	@ColumnDefault(value = "0.0")
-	@Column(name = "total_amount", precision = 18, scale = 3)
-	@Default
-	BigDecimal totalAmount = BigDecimal.valueOf(0.0);
+    @ColumnDefault(value = "0.0")
+    @Column(name = "total_amount", precision = 18, scale = 3)
+    @Default
+    BigDecimal totalAmount = BigDecimal.valueOf(0.0);
 
-	@OneToMany(mappedBy = "order")
-	Set<OrderItem> items;
+    @OneToMany(mappedBy = "order")
+    Set<OrderItem> items;
 
-	
-
-	public static enum OrderStatus {
-		CREATED, CONFIRMED, SHIPPED, COMPLETED, CANCELLED;
-	}
+    public static enum OrderStatus {
+        CREATED, CONFIRMED, SHIPPED, COMPLETED, CANCELLED;
+    }
 
 }

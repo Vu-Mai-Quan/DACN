@@ -1,5 +1,7 @@
 package com.example.dacn.db1.model;
 
+import com.example.dacn.validations.MinNumberGroup;
+import com.example.dacn.template.enumModel.ProductStatus;
 import java.math.BigDecimal;
 
 import com.example.dacn.template.BaseEntity;
@@ -75,10 +77,4 @@ public class Product extends BaseEntity {
         this.quantity -= quantity;
     }
 
-    public static enum ProductStatus {
-        DANG_BAN, NGUNG_BAN, DANG_NHAP_HANG;
-    }
-
-    public static interface MinNumberGroup {
-    }
 }
