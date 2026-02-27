@@ -12,22 +12,21 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-
 @RestController
 @RequestMapping("/auth/")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController {
 
-	NguoiDungService dungService;
-	
-	@GetMapping("login")
-	public ResponseEntity<?> login(@org.springframework.web.bind.annotation.RequestBody LoginDto param) {
-		try {
-			return ResponseEntity.ok().body(dungService.login(param));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(e);
-		}
-	}
-	
+    NguoiDungService dungService;
+
+    @GetMapping("login")
+    public ResponseEntity<?> login(@org.springframework.web.bind.annotation.RequestBody LoginDto param) {
+        try {
+            return ResponseEntity.ok().body(dungService.login(param));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
 }

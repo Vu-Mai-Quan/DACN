@@ -45,3 +45,4 @@ build/
 .dbeaver
 .dbeaver/*
 
+/nbactions-dev.xml
