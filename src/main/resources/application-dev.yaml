@@ -5,35 +5,25 @@ spring:
   devtools:
     restart:
       additional-exclude: database/*
+      
   jpa:
     open-in-view: false
-#    hibernate:
-#      ddl-auto: 'create-drop'
-#    properties:
-#      hibernate:
-#        show_sql: true
-#        format_sql: true
-#        use_sql_comments: true
-#        highlight_sql: true
-#        jdbc:
-#          time_zone: Asia/Ho_Chi_Minh
-#        database: mysql
-#        dialect: org.hibernate.dialect.MySQLDialect
-#        connection.pool_size: 10
-#        connection:
-#          autocommit: true
+    properties: 
+      hibernate:
+        '[show_sql]': true
+        '[format_sql]': true
+        '[use_sql_comments]': true
+        '[highlight_sql]': true
+        '[jdbc.time_zone]': Asia/Ho_Chi_Minh
+        '[connection.pool_size]': 10
+        '[connection.autocommit]': true
+        '[hbm2ddl.auto]': 'none'
   datasource:
-#    url: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-#    username: root
-#    password: 1234
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-    #datasource 1
     db1:
-      url: jdbc:mysql://localhost:3306/dacn_repair_service_booking_system
-      username: root
-      password: 1234
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      dialect: org.hibernate.dialect.MySQL8Dialect
+      jdbc-url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      encoding: UTF-8
     #datasource 2
 #    db2:
 #      url: jdbc:sqlite:src/main/resources/database/mydb.sqlite3
@@ -41,12 +31,13 @@ spring:
 
 init-data:
   admin:
-    email: ${ EMAIL_ADMIN }
-    password: ${ PASSWORD_ADMIN }
+    email: ${EMAIL_ADMIN}
+    password: ${PASSWORD_ADMIN}
     sdt: ${ SDT_ADMIN }
   token:
-    secret-key: ${SECRET_KEY}
-    expire-date: 600
+    secret-key-access: ${SECRET_KEY_ACCESS}
+    secret-key-refresh: ${SECRET_KEY_REFRESH}
+    expire-date: 6
     issuer: dacn.com
   token-refresh:
     expire-date: 36

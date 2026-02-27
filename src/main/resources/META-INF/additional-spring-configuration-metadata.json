@@ -1,6 +1,6 @@
 {"properties": [
   {
-    "name": "spring.datasource.db1.url",
+    "name": "spring.datasource.db1.jdbc-url",
     "type": "java.lang.String",
     "description": "A description for 'spring.datasource.db1.url'"
   },
@@ -78,5 +78,25 @@
     "name": "openapi.service.title",
     "type": "java.lang.String",
     "description": "A description for 'openapi.service.api-docs'"
+  },
+  {
+    "name": "spring.datasource.db1.encoding",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.db1.encoding'"
+  },
+  {
+    "name": "spring.datasource.db1.user",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.db1.user'"
+  },
+  {
+    "name": "init-data.token.secret-key-access",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.token.secret-key-access'"
+  },
+  {
+    "name": "init-data.token.secret-key-refresh",
+    "type": "java.lang.String",
+    "description": "A description for 'init-data.token.secret-key-refresh'"
   }
 ]}
