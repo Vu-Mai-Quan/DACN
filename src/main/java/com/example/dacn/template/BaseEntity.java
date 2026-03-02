@@ -31,8 +31,5 @@ public abstract class BaseEntity {
 	@UpdateTimestamp
 	LocalDateTime updateAt;
 
-	
-
-	
 
 }

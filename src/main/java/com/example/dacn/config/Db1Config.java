@@ -18,34 +18,32 @@ import org.springframework.transaction.support.AbstractPlatformTransactionManage
 import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Value;
 
-
+@Slf4j
 @EnableJpaRepositories(
 	basePackages = "com.example.dacn.db1",
 	entityManagerFactoryRef = "abstractEntityManagerFactoryBean",
 	transactionManagerRef = "db1TrManager")
 @Configuration
-/**
- * @EnableTransactionManagement spring bật sẵn rồi, thường không cần bật;
- */
 @RequiredArgsConstructor
 public class Db1Config {
 
-
-
 	@ConfigurationProperties(prefix = "spring.datasource.db1")
 	@Bean
-	DataSource dataSource() {
-		var sql = DataSourceBuilder.create()
-				.type(HikariDataSource.class).build();
+	DataSource dataSourceDbOne() {
+		var sql = DataSourceBuilder.create().type(HikariDataSource.class).build();
 		return sql;
-	};
+	}
 
 	@Bean
 	AbstractEntityManagerFactoryBean abstractEntityManagerFactoryBean(
-			EntityManagerFactoryBuilder builder, DataSource dataSource,
+			EntityManagerFactoryBuilder builder, DataSource dataSourceDbOne,
 			JpaProperties jpaProperties) {
-		return builder.dataSource(dataSource).properties(jpaProperties.getProperties())
+		return builder.dataSource(dataSourceDbOne)
+				.properties(jpaProperties.getProperties()).persistenceUnit("db1")
 				.packages("com.example.dacn.db1").build();
 	}
 
@@ -57,4 +55,10 @@ public class Db1Config {
 		return jpa;
 	}
 
+	@Bean(initMethod = "migrate")
+	Flyway flywayDb1(DataSource dataSourceDbOne) {
+
+		return Flyway.configure().dataSource(dataSourceDbOne)
+				.locations("classpath:db/migration/db1").baselineOnMigrate(true).load();
+	}
 }

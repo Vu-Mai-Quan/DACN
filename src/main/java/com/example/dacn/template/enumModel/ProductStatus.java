@@ -4,11 +4,15 @@
  */
 package com.example.dacn.template.enumModel;
 
+import org.springframework.security.core.GrantedAuthority;
+
 /**
  *
  * @author ADMIN
  */
 public enum ProductStatus {
-    DANG_BAN, NGUNG_BAN, DANG_NHAP_HANG
+    DANG_BAN, NGUNG_BAN, DANG_NHAP_HANG;
+
+    
 
 }

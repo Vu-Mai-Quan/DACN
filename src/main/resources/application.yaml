@@ -1,7 +1,6 @@
 server:
   servlet:
     context-path: /api/v1
-
 spring:
   mail:
     host: smtp.gmail.com
@@ -18,12 +17,13 @@ spring:
   jackson:
     time-zone: 'Asia/Ho_Chi_Minh'
   profiles:
-    active: @spring.profiles.active@
+    active: '@spring.profiles.active@'
   application:
     name: dacn
   main:
     banner-mode: off
-
+  
+    
 
 
 

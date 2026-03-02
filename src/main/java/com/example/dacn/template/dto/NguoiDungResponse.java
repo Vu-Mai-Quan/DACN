@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
 public class NguoiDungResponse {
 	UUID id;

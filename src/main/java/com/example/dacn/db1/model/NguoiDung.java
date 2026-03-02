@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.dacn.template.BaseEntity;
@@ -50,9 +49,9 @@ import lombok.experimental.FieldDefaults;
     })
 })
 @NoArgsConstructor
-public final class NguoiDung extends BaseEntity implements UserDetails {
+public final class NguoiDung extends BaseEntity {
 
-    @Column(unique = true, length = 100)
+    @Column(unique = true, length = 100, updatable = false)
     @Email(message = "Email đang sai định dạng")
     String username;
 
@@ -64,50 +63,26 @@ public final class NguoiDung extends BaseEntity implements UserDetails {
     UserStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id", foreignKey = @ForeignKey(name = "fk_user_and_store"))
+    @JoinColumn(name = "store_id", foreignKey = @ForeignKey(
+            name = "fk_user_and_store"))
     Store store;
 
     @JsonIgnore
     @Exclude
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "nguoi_dung_va_chuc_vu", joinColumns = @JoinColumn(name = "id_nguoi_dung"),
+            name = "nguoi_dung_va_chuc_vu", joinColumns = @JoinColumn(
+                    name = "id_nguoi_dung"),
             inverseJoinColumns = @JoinColumn(name = "id_chuc_vu"))
     @Default
     Set<ChucVu> chucVus = new HashSet<>();
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return chucVus.stream().map(cv -> new SimpleGrantedAuthority(cv.getAuthority()))
-                .collect(Collectors.toSet());
-    }
-
-    @Override
     public String getPassword() {
         return password;
     }
 
-    @Override
     public String getUsername() {
         return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
-        return this.status != UserStatus.DANG_KI;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
-        return status != UserStatus.KHOA;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        // TODO Auto-generated method stub
-        return status.equals(UserStatus.KICH_HOAT);
     }
 
     public void addChucVu(ChucVu cv) {

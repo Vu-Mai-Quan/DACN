@@ -27,11 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.dacn.db1.model.ChucVu;
 import com.example.dacn.db1.model.ChucVu.RoleName;
 import com.example.dacn.db1.model.NguoiDung;
-import com.example.dacn.template.enumModel.UserStatus;
+
 import com.example.dacn.db1.repositories.ChucVuRepo;
 import com.example.dacn.db1.repositories.NguoiDungRepo;
-import jakarta.persistence.EntityManager;
-
+import com.example.dacn.template.enumModel.UserStatus;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +42,10 @@ import lombok.extern.slf4j.Slf4j;
 public class BeanConfig {
 
     @Bean
-    UserDetailsService detailsService(NguoiDungRepo R) {
-        return (username) -> R.findByName(username).orElseThrow(
-                () -> new UsernameNotFoundException("Username or password fail"));
+    UserDetailsService detailsService(NguoiDungRepo rp) {
+        return (username) -> rp.findByEmailUser(username).orElseThrow(
+                () -> new UsernameNotFoundException(
+                        "Username or password fail"));
     }
 
     @Bean
@@ -55,11 +55,13 @@ public class BeanConfig {
 
     @Bean
     UserCache userCache() {
-        return new SpringCacheBasedUserCache(new ConcurrentMapCache("userDetailCanche"));
+        return new SpringCacheBasedUserCache(new ConcurrentMapCache(
+                "userDetailCanche"));
     }
 
     @Bean("basicLoginProvider")
-    AuthenticationProvider authenticationProvider(UserDetailsService detailsService,
+    AuthenticationProvider authenticationProvider(
+            UserDetailsService detailsService,
             PasswordEncoder encoder, UserCache userCache) {
         var dao = new DaoAuthenticationProvider(encoder);
         dao.setUserDetailsService(detailsService);
@@ -81,7 +83,7 @@ public class BeanConfig {
         return (arg) -> {
             initSevice.createChucVu();
             initSevice.createNguoiDung();
-            initSevice.createView();
+
         };
     }
 
@@ -99,36 +101,13 @@ public class BeanConfig {
         @Value("${init-data.admin.password}")
         String password;
 
-        EntityManager abstractEntityManagerFactoryBean;
-
-        public void createView() {
-            try {
-               abstractEntityManagerFactoryBean.getTransaction().begin();
-                var dropTableView = abstractEntityManagerFactoryBean.createNativeQuery("""
-drop table if exists nguoi_dung_view;
-                                                                            """);
-              var createNdView =   abstractEntityManagerFactoryBean.createNativeQuery("""
-create view if exists nguoi_dung_view as
-     select nd.id, nd.username, nd.password, st.name as 'store_name', json_group_array(cv."name"), nd.status from tbl_user nd left join tbl_store st
-      on nd.store_id = st.id left join nguoi_dung_va_chuc_vu ndcv on nd.id = ndcv.id_nguoi_dung
-   join tbl_chuc_vu cv on ndcv.id_chuc_vu = cv.id order by nd.username;
-                                                                   """);
-              dropTableView.executeUpdate();
-              createNdView.executeUpdate();
-              abstractEntityManagerFactoryBean.getTransaction().commit();
-            } catch (Exception e) {
-                abstractEntityManagerFactoryBean.getTransaction().rollback();
-                System.out.println(e.getMessage());
-            }
-        }
-
         @Transactional("db1TrManager")
         public void createChucVu() {
             var lsCvExist = chucVuRepo.findAll();
 
             var lsCvName = Arrays.asList(RoleName.values()).stream();
 
-            var lsDbNameCv = lsCvExist.stream().map(item -> item.getAuthority())
+            var lsDbNameCv = lsCvExist.stream().map(item -> item.getName().name())
                     .collect(Collectors.toSet());
 
             var data = lsCvName.filter(item -> !lsDbNameCv.contains(item.name()))
@@ -141,14 +120,13 @@ create view if exists nguoi_dung_view as
         public void createNguoiDung() {
             var ls = chucVuRepo.findAll();
             var nd = dungRepo.findByName(username)
-                    .orElse(NguoiDung.builder().password(encoder.encode(password))
+                    .orElse(NguoiDung.builder().password(encoder.
+                            encode(password))
                             .username(username).status(UserStatus.KICH_HOAT)
                             .chucVus(new HashSet<>(ls)).build());
             if (nd.getChucVus().size() != ls.size()) {
                 nd.getChucVus().addAll(ls);
             }
-            nd.setStatus(UserStatus.KICH_HOAT);
-            nd.setPassword(encoder.encode(password));
             dungRepo.saveAndFlush(nd);
         }
     }

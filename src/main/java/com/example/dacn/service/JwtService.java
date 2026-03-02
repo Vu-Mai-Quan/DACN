@@ -4,14 +4,14 @@ import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.example.dacn.db1.model.NguoiDung;
+import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 
 public interface JwtService {
 	String createJwt(ParamJwt jwt);
 
 	Collection<? extends GrantedAuthority> getRoles(String jwt);
 
-	public static record ParamJwt(NguoiDung nguoiDung, TypeToken type) {
+	public static record ParamJwt(NguoiDungView nguoiDung, TypeToken type) {
 
 	}
 
