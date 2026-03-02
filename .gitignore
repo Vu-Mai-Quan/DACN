@@ -46,3 +46,6 @@ build/
 .dbeaver/*
 
 /nbactions-dev.xml
+
+/mvnw
+/mvnw.cmd
