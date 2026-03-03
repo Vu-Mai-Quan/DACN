@@ -1,21 +1,23 @@
 package com.example.dacn.service;
 
+import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.example.dacn.db1.model.viewmodel.NguoiDungView;
+public interface JwtService<T> {
 
-public interface JwtService {
-	String createJwt(ParamJwt jwt);
+    String createJwt(T jwt);
 
-	Collection<? extends GrantedAuthority> getRoles(String jwt);
+    Map<String, ?> getTokenProperties(String token);
 
-	public static record ParamJwt(NguoiDungView nguoiDung, TypeToken type) {
+    public static enum TypeToken {
+        REFRESH, ACCESS;
+    }
 
-	}
+    public static record ParamJwt (NguoiDungView nguoiDungView, TypeToken typeToken){
 
-	public static enum TypeToken {
-		REFRESH, ACCESS;
-	}
+        
+    }
 }

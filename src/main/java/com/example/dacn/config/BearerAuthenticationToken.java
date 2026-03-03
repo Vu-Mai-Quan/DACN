@@ -25,9 +25,9 @@ public class BearerAuthenticationToken extends AbstractBearerToken {
     private final Map<String, ?> tokenProperties;
 
     BearerAuthenticationToken(JwtAuthentication authentication,
-            BearerPrincical bearerPrincical) {
+            BearerPrincical bearerPrincical, Collection<? extends GrantedAuthority> authorities) {
         super(authentication.token(), null, bearerPrincical,
-                bearerPrincical.getAuthoritys());
+                authorities);
         Assert.isTrue(authentication.typeToken() == ACCESS,
                 "credentials must be a ACCESS token");
         this.tokenProperties = Collections.unmodifiableMap(
@@ -43,37 +43,42 @@ public class BearerAuthenticationToken extends AbstractBearerToken {
     @Getter
     public static abstract class BearerPrincical implements Principal {
 
-        private final Map<String, ?> tokenProperties = new HashMap<>();
+        private final Map<String, Object> tokenProperties = new HashMap<>();
 
         @SuppressWarnings("unchecked")
         public <A> A getAttribute(String name) {
             return (A) this.tokenProperties.get(name);
         }
 
-        public abstract Collection<? extends GrantedAuthority> getAuthoritys();
+    
     }
 
+    @RequiredArgsConstructor
     public static class BearerPrincicalImlp extends BearerPrincical {
 
-        @Override
-        @SuppressWarnings("unchecked")
-        public Collection<? extends GrantedAuthority> getAuthoritys() {
-            Object roles = getAttribute("roles");
+        private final String username;
 
-            if (!(roles instanceof Collection)) {
-                return Collections.emptySet();
-            }
-            for (var item : (Collection<?>) roles) {
-                if (!(item instanceof GrantedAuthority)) {
-                    return Collections.emptySet();
-                }
-            }
-            return (Collection<? extends GrantedAuthority>) roles;
-        }
+//        @Override
+//        @SuppressWarnings("unchecked")
+//        public Collection<? extends GrantedAuthority> getAuthoritys() {
+//            Object roles = getAttribute("roles");
+//
+//            if (!(roles instanceof Collection)) {
+//                return Collections.emptySet();
+//            }
+//            for (var item : (Collection<?>) roles) {
+//                if (!(item instanceof GrantedAuthority)) {
+//                    return Collections.emptySet();
+//                }
+//            }
+//            return (Collection<? extends GrantedAuthority>) roles;
+//        }
 
         @Override
         public String getName() {
-            return Objects.requireNonNullElse(getAttribute("username"),
+
+            return Objects.requireNonNullElse(
+                    username.isBlank() ? "anonymous" : username,
                     "anonymous");
         }
     }

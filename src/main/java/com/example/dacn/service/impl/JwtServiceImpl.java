@@ -2,7 +2,6 @@ package com.example.dacn.service.impl;
 
 import com.example.dacn.db1.model.ChucVu;
 import java.security.Key;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -20,12 +19,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class JwtServiceImpl implements JwtService {
+public class JwtServiceImpl implements JwtService<JwtService.ParamJwt> {
 
     Key key, keyRefresh;
     long expreTimeRefresh, expreTimeAccess;
@@ -43,57 +45,60 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String createJwt(ParamJwt jwt) {
-        return switch (jwt.type()) {
-
+    public String createJwt(ParamJwt paramJwt) {
+        return switch (paramJwt.typeToken()) {
             case ACCESS ->
-                createAccessToken(jwt.nguoiDung());
+                createRefreshToken(paramJwt.nguoiDungView().getId());
             case REFRESH ->
-                createRefreshToken(jwt.nguoiDung());
+                createAccessToken(paramJwt.nguoiDungView());
             default ->
-                throw new IllegalArgumentException("Unexpected value: " + jwt.
-                        type());
+                throw new IllegalArgumentException(
+                        "Unexpected value: " + paramJwt.typeToken());
 
         };
     }
 
-    private String createRefreshToken(NguoiDungView nguoiDung) {
-        return createTokenBuider(keyRefresh, expreTimeRefresh,
-                nguoiDung.getId().toString(), nguoiDung.getUsername()).compact();
+    @Override
+    public Map<String, ?> getTokenProperties(String token) {
+        return getClaimFromBody(token, Function.identity());
     }
 
-    private JwtBuilder createTokenBuider(Key key, long time, String subj,
-            String isIss) {
-        return Jwts.builder().signWith(key).setSubject(subj)
-                .setExpiration(Date.from(Instant.now()))
-                .setIssuedAt(new Date(System.currentTimeMillis() + time))
-                .setIssuer(isIss);
+    private String createRefreshToken(UUID id) {
+
+        return createTokenBuider(keyRefresh,
+                TypeToken.REFRESH, expreTimeRefresh).setId(id.toString()).compact();
+    }
+
+    private JwtBuilder createTokenBuider(Key key,
+            TypeToken typeToken, long exp) {
+        return Jwts.builder()
+                .signWith(key)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + exp))
+                .setHeaderParam("typ", typeToken);
     }
 
     private String createAccessToken(NguoiDungView nguoiDung) {
-
-        return createTokenBuider(key, expreTimeAccess, nguoiDung.getId().
-                toString(),
-                nguoiDung.getUsername())
-                .claim("roles", nguoiDung.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority).toList())
-                .compact();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", nguoiDung.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).toList());
+        claims.put("username", nguoiDung.getUsername());
+        claims.put("storeName", nguoiDung.getStoreName());
+        return createTokenBuider(key, TypeToken.ACCESS, expreTimeAccess)
+                .setClaims(claims).compact();
 
     }
-    
-    
-    
 
-    @Override
-    public Collection<? extends GrantedAuthority> getRoles(String jwt) {
-        // TODO Auto-generated method stub
-
-        return getClaimFromBody(jwt, claims -> {
-            List<?> lsRole = claims.get("roles", List.class);
-            return lsRole.stream().map(String.class::cast).
-                    map(ChucVu.RoleName::castStringToRole).toList();
-        });
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getRoles(String jwt) {
+//        // TODO Auto-generated method stub
+//
+//        return getClaimFromBody(jwt, claims -> {
+//            List<?> lsRole = claims.get("roles", List.class);
+//            return lsRole.stream().map(String.class::cast).
+//                    map(ChucVu.RoleName::castStringToRole).toList();
+//        });
+//    }
 
     private Claims paseBodyJwt(String jwt) {
         // TODO Auto-generated method stub

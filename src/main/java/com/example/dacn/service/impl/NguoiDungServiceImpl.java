@@ -22,34 +22,35 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class NguoiDungServiceImpl implements NguoiDungService {
 
-	NguoiDungRepo ndRepo;
-	AuthenticationManager authenticationManager;
-	JwtService jwtServiceImpl;
+    NguoiDungRepo ndRepo;
+    AuthenticationManager authenticationManager;
+    JwtService<JwtService.ParamJwt> jwtServiceImpl;
 
+    @Override
+    public boolean createNguoiDung(NguoiDungDto dung) {
+        ndRepo.findAll();
+        return false;
+    }
 
+    @Override
+    public LoginResponse login(LoginDto login) {
+        var au = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(
+                        login.username(),
+                        login.password()));
+        var nd = NguoiDungView.class.cast(au.getPrincipal());
 
-	@Override
-	public boolean createNguoiDung(NguoiDungDto dung) {
-		ndRepo.findAll();
-		return false;
-	}
+        var ndR = NguoiDungResponse.builder().id(nd.getId())
+                .username(nd.getUsername()).isActive(nd.isEnabled())
+                .roles(nd.getAuthorities()).build();
 
-	@Override
-	public LoginResponse login(LoginDto login) {
-		var au = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(login.username(),
-						login.password()));
-		var nd = NguoiDungView.class.cast(au.getPrincipal());
-
-		var ndR = NguoiDungResponse.builder().id(nd.getId())
-				.username(nd.getUsername()).isActive(nd.isEnabled())
-				.roles(nd.getAuthorities()).build();
-
-		return LoginResponse.builder()
-				.refreshToken(
-						jwtServiceImpl.createJwt(new ParamJwt(nd, TypeToken.REFRESH)))
-				.accessToken(jwtServiceImpl.createJwt(new ParamJwt(nd, TypeToken.ACCESS)))
-				.nguoiDung(ndR).build();
-	}
+        return LoginResponse.builder()
+                .refreshToken(
+                        jwtServiceImpl.createJwt(new ParamJwt(nd,
+                                TypeToken.REFRESH)))
+                .accessToken(jwtServiceImpl.createJwt(new ParamJwt(nd,
+                        TypeToken.ACCESS)))
+                .nguoiDung(ndR).build();
+    }
 
 }
