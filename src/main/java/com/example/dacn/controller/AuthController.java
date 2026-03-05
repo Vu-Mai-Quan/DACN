@@ -15,6 +15,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import static com.example.dacn.service.JwtService.TypeToken.ACCESS;
+import static com.example.dacn.service.JwtService.TypeToken.REFRESH;
 
 @RestController
 @RequestMapping("/auth/")
@@ -36,14 +38,16 @@ public class AuthController {
     @GetMapping("login")
     public ResponseEntity<Object> login(@RequestBody LoginDto param) {
         var resLogin = dungService.login(param);
-        ResponseCookie accessToken = ResponseCookie.from("accessToken",
+        ResponseCookie accessToken = ResponseCookie.from(
+                ACCESS.name(),
                 resLogin.accessToken())
                 .sameSite("lax")
                 .httpOnly(true)
                 .path("/")
                 .secure(true)
                 .maxAge(Duration.ofMinutes(this.timeAgeAccess))
-                .build(), refreshToken = ResponseCookie.from("refreshToken",
+                .build(), refreshToken = ResponseCookie.from(
+                        REFRESH.name(),
                         resLogin.refreshToken())
                         .sameSite("lax")
                         .httpOnly(true)

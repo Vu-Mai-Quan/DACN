@@ -4,17 +4,17 @@
  */
 package com.example.dacn.config;
 
-import static com.example.dacn.service.JwtService.TypeToken.ACCESS;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import javax.security.auth.Subject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.util.Assert;
 
 /**
  *
@@ -24,12 +24,11 @@ public class BearerAuthenticationToken extends AbstractBearerToken {
 
     private final Map<String, ?> tokenProperties;
 
-    BearerAuthenticationToken(JwtAuthentication authentication,
+    BearerAuthenticationToken(String authentication,
             BearerPrincical bearerPrincical, Collection<? extends GrantedAuthority> authorities) {
-        super(authentication.token(), null, bearerPrincical,
+        super(authentication, null, bearerPrincical,
                 authorities);
-        Assert.isTrue(authentication.typeToken() == ACCESS,
-                "credentials must be a ACCESS token");
+     
         this.tokenProperties = Collections.unmodifiableMap(
                 bearerPrincical.getTokenProperties());
     }
@@ -39,9 +38,27 @@ public class BearerAuthenticationToken extends AbstractBearerToken {
         return tokenProperties; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    @Override
+    public String getName() {
+        Object username = this.tokenProperties.get("username");
+
+        if (username instanceof String s) {
+            return s;
+        }
+
+        return "anonymous";
+    }
+
+    @Override
+    public boolean implies(Subject sbjct) {
+        return super.implies(sbjct); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
+    
+    
+
     @RequiredArgsConstructor
     @Getter
-    public static abstract class BearerPrincical implements Principal {
+    public static abstract class BearerPrincical  {
 
         private final Map<String, Object> tokenProperties = new HashMap<>();
 
@@ -54,9 +71,9 @@ public class BearerAuthenticationToken extends AbstractBearerToken {
     }
 
     @RequiredArgsConstructor
-    public static class BearerPrincicalImlp extends BearerPrincical {
+    public static class BearerPrincicalImlp{
 
-        private final String username;
+     
 
 //        @Override
 //        @SuppressWarnings("unchecked")
@@ -74,12 +91,6 @@ public class BearerAuthenticationToken extends AbstractBearerToken {
 //            return (Collection<? extends GrantedAuthority>) roles;
 //        }
 
-        @Override
-        public String getName() {
-
-            return Objects.requireNonNullElse(
-                    username.isBlank() ? "anonymous" : username,
-                    "anonymous");
-        }
+      
     }
 }

@@ -16,6 +16,10 @@ import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 import com.example.dacn.service.JwtService;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import static io.jsonwebtoken.Header.TYPE;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -47,9 +51,9 @@ public class JwtServiceImpl implements JwtService<JwtService.ParamJwt> {
     @Override
     public String createJwt(ParamJwt paramJwt) {
         return switch (paramJwt.typeToken()) {
-            case ACCESS ->
-                createRefreshToken(paramJwt.nguoiDungView().getId());
             case REFRESH ->
+                createRefreshToken(paramJwt.nguoiDungView().getId());
+            case ACCESS ->
                 createAccessToken(paramJwt.nguoiDungView());
             default ->
                 throw new IllegalArgumentException(
@@ -75,7 +79,7 @@ public class JwtServiceImpl implements JwtService<JwtService.ParamJwt> {
                 .signWith(key)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + exp))
-                .setHeaderParam("typ", typeToken);
+                .setHeaderParam(TYPE, typeToken);
     }
 
     private String createAccessToken(NguoiDungView nguoiDung) {
@@ -99,17 +103,21 @@ public class JwtServiceImpl implements JwtService<JwtService.ParamJwt> {
 //                    map(ChucVu.RoleName::castStringToRole).toList();
 //        });
 //    }
-
-    private Claims paseBodyJwt(String jwt) {
+    @Override
+    public Jws<Claims> paseJwt(String jwt) {
         // TODO Auto-generated method stub
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(
-                jwt)
-                .getBody();
+                jwt);
     }
 
     private <T> T getClaimFromBody(String jwt, Function<Claims, T> function) {
-        Claims claims = paseBodyJwt(jwt);
+        Claims claims = paseJwt(jwt).getBody();
         return function.apply(claims);
+    }
+
+    @Override
+    public Header<?> getHeader(String jwt) {
+        return paseJwt(jwt).getHeader();
     }
 
 }

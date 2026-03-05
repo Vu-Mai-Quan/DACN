@@ -12,10 +12,14 @@ import com.example.dacn.service.JwtService.TypeToken;
 import com.example.dacn.service.NguoiDungService;
 import com.example.dacn.template.dto.NguoiDungDto;
 import com.example.dacn.template.dto.NguoiDungResponse;
+import com.example.dacn.ultil.NdViewSpecification;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 @RequiredArgsConstructor
@@ -53,4 +57,28 @@ public class NguoiDungServiceImpl implements NguoiDungService {
                 .nguoiDung(ndR).build();
     }
 
+    @Override
+    public Page<NguoiDungView> readAllNd(Pageable pageable,
+            NguoiDungViewParamSearch dungSearchParam) {
+        Specification<NguoiDungView> buildQuery = Specification.where(null);
+        if (dungSearchParam != null) {
+            if (stringIsValid(dungSearchParam.username())) {
+                buildQuery.and(NdViewSpecification.searchParam(
+                        dungSearchParam.username().trim()));
+            }
+            if (stringIsValid(dungSearchParam.store())) {
+                buildQuery.and(NdViewSpecification.searchStore(
+                        dungSearchParam.store().trim()));
+            }
+            if (stringIsValid(dungSearchParam.username())) {
+                buildQuery.and(NdViewSpecification.searchParam(
+                        dungSearchParam.userStatus()));
+            }
+        }
+        return ndRepo.findAllNdView(pageable, buildQuery);
+    }
+
+    private boolean stringIsValid(String string) {
+        return string != null && !string.isBlank() && !string.isEmpty();
+    }
 }

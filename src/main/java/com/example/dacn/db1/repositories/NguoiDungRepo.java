@@ -9,8 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.dacn.db1.model.NguoiDung;
 import com.example.dacn.db1.model.viewmodel.NguoiDungView;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface NguoiDungRepo extends JpaRepository<NguoiDung, UUID> {
+public interface NguoiDungRepo extends JpaRepository<NguoiDung, UUID>, JpaSpecificationExecutor<NguoiDungView> {
 
     @Query("select nd from NguoiDung nd where nd.username = ?1")
     @EntityGraph(value = "nguoiDung.Role")
@@ -18,5 +22,8 @@ public interface NguoiDungRepo extends JpaRepository<NguoiDung, UUID> {
 
     @Query(name = "NguoiDungView.findUsername")
     Optional<NguoiDungView> findByEmailUser(String username);
+
+    @Query(name = "NguoiDungView.findAll")
+    Page<NguoiDungView> findAllNdView(Pageable pageable, Specification<NguoiDungView> specification);
 
 }

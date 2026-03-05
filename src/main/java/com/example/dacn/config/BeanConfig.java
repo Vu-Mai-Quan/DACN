@@ -30,6 +30,7 @@ import com.example.dacn.db1.model.NguoiDung;
 
 import com.example.dacn.db1.repositories.ChucVuRepo;
 import com.example.dacn.db1.repositories.NguoiDungRepo;
+import com.example.dacn.service.JwtService;
 import com.example.dacn.template.enumModel.UserStatus;
 
 import lombok.AccessLevel;
@@ -72,9 +73,10 @@ public class BeanConfig {
 
     @Bean
     AuthenticationManager authenticationManager(HttpSecurity http,
-            AuthenticationProvider basicLoginProvider) throws Exception {
+            AuthenticationProvider basicLoginProvider, JwtService<?> jwtService) throws Exception {
         var man = http.getSharedObject(AuthenticationManagerBuilder.class);
         man.authenticationProvider(basicLoginProvider);
+        man.authenticationProvider(new BearerAuthenticationProvider(jwtService));
         return man.build();
     }
 

@@ -1,23 +1,36 @@
 package com.example.dacn.service;
 
+import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 import com.example.dacn.template.dto.NguoiDungDto;
 import com.example.dacn.template.dto.NguoiDungResponse;
+import com.example.dacn.template.enumModel.UserStatus;
 
 import lombok.Builder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-public interface NguoiDungService  {
+public interface NguoiDungService {
 
-	boolean createNguoiDung(NguoiDungDto dung);
+    boolean createNguoiDung(NguoiDungDto dung);
 
-	LoginResponse login(LoginDto login);
+    LoginResponse login(LoginDto login);
 
-	public static record LoginDto(String username, String password) {
+    @Builder
+    public static record NguoiDungViewParamSearch(String username,
+            String store, UserStatus userStatus) {
 
-	}
+    }
 
-	@Builder
-	public static record LoginResponse(String refreshToken, String accessToken,
-			NguoiDungResponse nguoiDung) {
+    Page<NguoiDungView> readAllNd(Pageable pageable,
+            NguoiDungViewParamSearch dungViewParamSearch);
 
-	}
+    public static record LoginDto(String username, String password) {
+
+    }
+
+    @Builder
+    public static record LoginResponse(String refreshToken, String accessToken,
+            NguoiDungResponse nguoiDung) {
+
+    }
 }

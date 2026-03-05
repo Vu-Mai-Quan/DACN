@@ -1,9 +1,7 @@
 package com.example.dacn.config;
 
-import com.example.dacn.service.JwtService;
 import java.io.IOException;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
@@ -25,6 +23,7 @@ public class SpamFilter extends OncePerRequestFilter {
             HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         log.info("Vào spam");
+        System.out.println("jwt");
         filterChain.doFilter(request, response);
 
     }

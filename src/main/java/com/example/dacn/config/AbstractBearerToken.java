@@ -4,10 +4,8 @@
  */
 package com.example.dacn.config;
 
-import com.example.dacn.service.JwtService;
 import java.util.Collection;
 import java.util.Map;
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,12 +17,7 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractBearerToken extends AbstractAuthenticationToken {
 
-    @Builder
-    public static record JwtAuthentication(String token,
-            JwtService.TypeToken typeToken) {
-
-    }
-
+   
     
     private final Object credentials;
     private Object principal;
@@ -40,6 +33,7 @@ public abstract class AbstractBearerToken extends AbstractAuthenticationToken {
         this.credentials = credentials;
         this.principal = principal;
         this.token = token;
+        super.setAuthenticated(true);
     }
 
     protected AbstractBearerToken(String token,

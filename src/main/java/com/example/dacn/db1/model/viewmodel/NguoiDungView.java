@@ -6,6 +6,7 @@ package com.example.dacn.db1.model.viewmodel;
 
 import com.example.dacn.db1.model.ChucVu;
 import com.example.dacn.template.enumModel.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -59,12 +60,14 @@ public class NguoiDungView implements Serializable, UserDetails {
     String username;
     @Size(max = 255)
     @Column(name = "password")
+    @JsonIgnore
     String password;
     @Size(max = 150)
     @Column(name = "store_name")
     String storeName;
     @Size(max = 2000000000)
     @Column(name = "roles")
+    @JsonIgnore
     String roles;
     @Size(max = 255)
     @Column(name = "status")
