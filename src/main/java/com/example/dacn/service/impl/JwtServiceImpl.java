@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Example;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -112,6 +113,7 @@ public class JwtServiceImpl implements JwtService<JwtService.ParamJwt> {
 
     private <T> T getClaimFromBody(String jwt, Function<Claims, T> function) {
         Claims claims = paseJwt(jwt).getBody();
+
         return function.apply(claims);
     }
 

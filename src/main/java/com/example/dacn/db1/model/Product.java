@@ -24,12 +24,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "tbl_product", indexes = @Index(columnList = "name ASC"), uniqueConstraints = {
-    @UniqueConstraint(name = "uq_store_and_sku", columnNames = {"id_store", "sku"})
-})
+@Table(name = "tbl_product", indexes = @Index(columnList = "name ASC"),
+        uniqueConstraints = {
+            @UniqueConstraint(name = "uq_store_and_sku",
+                    columnNames = {"id_store", "sku"})
+        })
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @Getter
@@ -40,30 +43,37 @@ public class Product extends BaseEntity {
     String name;
 
     @Column(name = "image_url", length = 300)
+    @Setter
     String imageUrl;
 
     @Column(length = 100, nullable = false)
-    @Pattern(regexp = "^\\d{2}-[A-Z]{3}-[a-z]{2}$", message = "Cấu trúc sku không hợp lệ")
+    @Pattern(regexp = "^\\d{2}-[A-Z]{3}-[a-z]{2}$",
+            message = "Cấu trúc sku không hợp lệ")
     String sku;
 
     @DecimalMin(
-            groups = MinNumberGroup.class, value = "0.0", message = "price not small than 0.0")
+            groups = MinNumberGroup.class, value = "0.0",
+            message = "price not small than 0.0")
     @Column(precision = 18, scale = 3)
     BigDecimal price;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Setter
     ProductStatus status;
 
     @ManyToOne()
     @JoinColumn(name = "create_by_user_id", nullable = false)
+    @Setter
     NguoiDung createBy;
 
     @ManyToOne
     @JoinColumn(name = "id_store", unique = true, nullable = false)
+    @Setter
     Store store;
 
-    @Min(value = 0, message = "Số lượng không được < 0", groups = MinNumberGroup.class)
+    @Min(value = 0, message = "Số lượng không được < 0",
+            groups = MinNumberGroup.class)
     @Default
     int quantity = 0;
 
@@ -72,7 +82,8 @@ public class Product extends BaseEntity {
 
     public void setStock(int quantity) {
         if (quantity > this.quantity) {
-            throw new RuntimeException("Số lượng hàng mua lớn hơn tổng sản phẩm tồn tại");
+            throw new RuntimeException(
+                    "Số lượng hàng mua lớn hơn tổng sản phẩm tồn tại");
         }
         this.quantity -= quantity;
     }
