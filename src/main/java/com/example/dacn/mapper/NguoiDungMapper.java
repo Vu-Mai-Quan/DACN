@@ -1,27 +1,24 @@
 package com.example.dacn.mapper;
 
-import java.util.Collection;
-
+import com.example.dacn.db1.model.viewmodel.NguoiDungView;
+import com.example.dacn.template.dto.NguoiDungResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.example.dacn.db1.model.viewmodel.NguoiDungView;
+import java.util.Collection;
 
 @Mapper(componentModel = "spring")
 public interface NguoiDungMapper {
 
-    @Mapping(expression = "java(buidResNd(nd))", target = "roles")
+    @Mapping(expression = "java(buildResNd(nd))", target = "roles")
     @Mapping(target = "storeName", source = "nd.storeName")
     @Mapping(target = "isActive", expression = "java(nd.isEnabled())")
     @Mapping(target = "id", expression = "java(nd.getId())")
-    com.example.dacn.template.dto.NguoiDungResponse toResponse(NguoiDungView nd);
+    NguoiDungResponse toResponse(NguoiDungView nd);
 
-//	public static record NguoiDungResponse(UUID id ,String username, String storeName,
-//			Collection<? extends GrantedAuthority> roles, boolean isActive) {
-//
-//	}
-    default Collection<? extends GrantedAuthority> buidResNd(NguoiDungView nd) {
+
+    default Collection<? extends GrantedAuthority> buildResNd(NguoiDungView nd) {
         return nd.getAuthorities();
     }
 }

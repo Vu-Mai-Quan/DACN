@@ -1,13 +1,12 @@
 package com.example.dacn.config;
 
-import static com.example.dacn.service.JwtService.TypeToken.ACCESS;
 import java.io.IOException;
 
+import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,38 +19,34 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final AuthenticationManager authenManager;
+    private final AuthenticationManager authedManager;
 
     JwtFilter(AuthenticationManager authenticationManager) {
-        this.authenManager = authenticationManager;
+        this.authedManager = authenticationManager;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response, FilterChain filterChain)
+                                    @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        Cookie[] cookies = request.getCookies();
-        String token = null;
-        for (var item : cookies) {
-            if (item.getName().equals(ACCESS.name()) && item.getValue() != null && !item.getValue().isBlank()) {
-                token = item.getValue();
-                break;
-            }
-        }
+        boolean isTokenExist = request.getHeader("Authorization") == null || request.getHeader(
+                "Authorization").isEmpty() || request.getHeader(
+                "Authorization").isBlank();
+        String token = isTokenExist
+                ? null : request.getHeader("Authorization").substring(7);
+
         try {
             if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 var authentication = new BearerAuthentication(token);
                 authentication.setDetails(new WebAuthenticationDetails(request));
-                AbstractBearerToken bearerAuthen = (AbstractBearerToken) authenManager.authenticate(
-                        authentication);
-                SecurityContextHolder.getContext().setAuthentication(bearerAuthen);
-               
+                AbstractBearerToken bearerAuthed = (AbstractBearerToken) authedManager.authenticate(authentication);
+                SecurityContextHolder.getContext().setAuthentication(bearerAuthed);
             }
             filterChain.doFilter(request, response);
         } catch (AuthenticationException e) {
             throw new AuthenticationServiceException("token không hợp lệ", e);
         }
     }
+
 
 }

@@ -46,3 +46,5 @@ build/
 .dbeaver/*
 
 /nbactions-dev.xml
+/uploads/
+/temps/

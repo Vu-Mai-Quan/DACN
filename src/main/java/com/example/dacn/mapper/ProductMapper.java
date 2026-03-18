@@ -6,11 +6,14 @@ package com.example.dacn.mapper;
 
 import com.example.dacn.db1.model.Product;
 import com.example.dacn.template.dto.ProductDto;
-import org.mapstruct.AfterMapping;
+import com.example.dacn.template.enumModel.ProductStatus;
+import lombok.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  *
@@ -19,17 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    @Mapping(target = "imageUrl",
-            expression = "java(getUrl(productDto.getFile()))")
+
+    @Mapping(target = "sku", ignore = true)
     @Mapping(target = "store", ignore = true)
     @Mapping(target = "createBy", ignore = true)
     @Mapping(target = "version", ignore = true)
-    @Mapping(target = "quantity", source = "productDto.quantity")
-    Product productDtoToProduct(ProductDto productDto);
+    Product productDtoToProduct(@MappingTarget Product product, ProductDto productDto);
 
+    ProductResponse productToProductResponse(Product product);
 
-    default String getUrl(MultipartFile multipartFile) {
-
-        return multipartFile.getOriginalFilename();
+    @Builder
+    record ProductResponse(UUID id, String imageUrl, String name, BigDecimal price, int quantity,
+                           ProductStatus status) {
     }
 }

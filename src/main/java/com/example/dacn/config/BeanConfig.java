@@ -32,6 +32,7 @@ import com.example.dacn.db1.repositories.ChucVuRepo;
 import com.example.dacn.db1.repositories.NguoiDungRepo;
 import com.example.dacn.service.JwtService;
 import com.example.dacn.template.enumModel.UserStatus;
+import java.nio.file.Path;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,10 @@ public class BeanConfig {
     UserCache userCache() {
         return new SpringCacheBasedUserCache(new ConcurrentMapCache(
                 "userDetailCanche"));
+    }
+    @Bean
+    Path path(){
+    return Path.of(System.getProperty("user.dir"));
     }
 
     @Bean("basicLoginProvider")

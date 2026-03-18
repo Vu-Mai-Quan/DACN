@@ -4,6 +4,10 @@ import java.util.Objects;
 
 import javax.sql.DataSource;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.PersistenceUnits;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -34,8 +38,7 @@ public class Db1Config {
 	@ConfigurationProperties(prefix = "spring.datasource.db1")
 	@Bean
 	DataSource dataSourceDbOne() {
-		var sql = DataSourceBuilder.create().type(HikariDataSource.class).build();
-		return sql;
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
 	}
 
 	@Bean
@@ -43,16 +46,15 @@ public class Db1Config {
 			EntityManagerFactoryBuilder builder, DataSource dataSourceDbOne,
 			JpaProperties jpaProperties) {
 		return builder.dataSource(dataSourceDbOne)
-				.properties(jpaProperties.getProperties()).persistenceUnit("db1")
+				.properties(jpaProperties.getProperties())
 				.packages("com.example.dacn.db1").build();
 	}
 
 	@Bean
 	AbstractPlatformTransactionManager db1TrManager(
 			AbstractEntityManagerFactoryBean abstractEntityManagerFactoryBean) {
-		var jpa = new JpaTransactionManager(
-				Objects.requireNonNull(abstractEntityManagerFactoryBean.getObject()));
-		return jpa;
+        return new JpaTransactionManager(
+                Objects.requireNonNull(abstractEntityManagerFactoryBean.getObject()));
 	}
 
 	@Bean(initMethod = "migrate")

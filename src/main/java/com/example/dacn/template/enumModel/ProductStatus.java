@@ -11,7 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
  * @author ADMIN
  */
 public enum ProductStatus {
-    DANG_BAN, NGUNG_BAN, DANG_NHAP_HANG;
+    CREATING, DANG_BAN, NGUNG_BAN, DANG_NHAP_HANG, DISABLE;
 
     
 

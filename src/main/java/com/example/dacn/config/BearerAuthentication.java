@@ -12,10 +12,9 @@ import org.springframework.util.Assert;
  *
  * @author ADMIN
  */
-public class BearerAuthentication extends AbstractAuthenticationToken {
+public final class BearerAuthentication extends AbstractAuthenticationToken {
 
- 
-    
+
     private final Object token;
 
     public BearerAuthentication(Object token) {

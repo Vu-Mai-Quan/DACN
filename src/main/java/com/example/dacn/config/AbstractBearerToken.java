@@ -15,12 +15,12 @@ import org.springframework.util.Assert;
  *
  * @author ADMIN
  */
-public abstract class AbstractBearerToken extends AbstractAuthenticationToken {
+public sealed abstract class AbstractBearerToken  extends AbstractAuthenticationToken  permits BearerAuthenticationToken{
 
    
     
     private final Object credentials;
-    private Object principal;
+    private final Object principal;
     @Getter
     private final String token;
 

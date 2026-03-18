@@ -1,0 +1,12 @@
+{
+  "groups": [
+    {
+      "name": "spring.datasource.db1",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.example.dacn.config.Db1Config",
+      "sourceMethod": "dataSourceDbOne()"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

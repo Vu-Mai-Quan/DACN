@@ -11,29 +11,29 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
  * @author ADMIN
  */
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @Getter
 @Builder
-public class ProductDto {
+@NoArgsConstructor
+public final class ProductDto {
 
-    String name, sku;
+    UUID id;
 
-    UUID createByNV;
+    String name, imageUrl;
 
     int quantity;
-
-    MultipartFile file;
 
     short idStore;
 
     BigDecimal price;
+
     ProductStatus status;
 }

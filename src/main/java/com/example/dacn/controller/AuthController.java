@@ -15,50 +15,36 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
-import static com.example.dacn.service.JwtService.TypeToken.ACCESS;
 import static com.example.dacn.service.JwtService.TypeToken.REFRESH;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/auth/")
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 public class AuthController {
 
     NguoiDungService dungService;
-    long timeAgeAccess, timeAgeRefresh;
+    @Value("${init-data.token-refresh.expire-date}")
+    long timeAgeRefresh;
 
-    public AuthController(NguoiDungService dungService,
-            @Value("${init-data.token-access.expire-date}") int timeAgeAccess,
-            @Value("${init-data.token-refresh.expire-date}") int timeAgeRefresh) {
-        this.dungService = dungService;
-        this.timeAgeAccess = timeAgeAccess;
-        this.timeAgeRefresh = timeAgeRefresh;
-    }
-
-    @GetMapping("login")
+    @GetMapping("public/login")
     public ResponseEntity<Object> login(@RequestBody LoginDto param) {
         var resLogin = dungService.login(param);
-        ResponseCookie accessToken = ResponseCookie.from(
-                ACCESS.name(),
-                resLogin.accessToken())
+        ResponseCookie refreshToken = ResponseCookie.from(
+                REFRESH.name(),
+                resLogin.refreshToken())
                 .sameSite("lax")
                 .httpOnly(true)
                 .path("/")
                 .secure(true)
-                .maxAge(Duration.ofMinutes(this.timeAgeAccess))
-                .build(), refreshToken = ResponseCookie.from(
-                        REFRESH.name(),
-                        resLogin.refreshToken())
-                        .sameSite("lax")
-                        .httpOnly(true)
-                        .path("/")
-                        .secure(true)
-                        .maxAge(Duration.ofMinutes(this.timeAgeRefresh))
-                        .build();
+                .maxAge(Duration.ofMinutes(this.timeAgeRefresh))
+                .build();
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, accessToken.toString(),
+                .header(HttpHeaders.SET_COOKIE,
                         refreshToken.toString()).body(
-                resLogin.nguoiDung());
+                "{\"tokenAccess\":\"%s\"}".formatted(resLogin.accessToken()));
     }
 
 }

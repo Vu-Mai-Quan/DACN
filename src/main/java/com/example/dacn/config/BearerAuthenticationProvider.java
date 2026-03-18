@@ -8,18 +8,17 @@ import com.example.dacn.db1.model.ChucVu;
 import com.example.dacn.service.JwtService;
 import io.jsonwebtoken.JwtException;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.Assert;
 
 import com.example.dacn.config.BearerAuthenticationToken.BearerPrincical;
 import static com.example.dacn.service.JwtService.TypeToken.ACCESS;
 import io.jsonwebtoken.Header;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -36,39 +35,40 @@ public final class BearerAuthenticationProvider implements
     }
     
     @Override
-    @SuppressWarnings("unchecked")
-    public Authentication authenticate(Authentication authentication)  {
+    public Authentication authenticate(Authentication authentication) {
         Assert.isInstanceOf(BearerAuthentication.class, authentication,
                 "This provider not suppots");
         Assert.notNull(authentication, "authentication is not null");
-        BearerAuthentication bearerAuthentication = BearerAuthentication.class.cast(
-                authentication);
-        var paserToken = jwtService.paseJwt(
+        BearerAuthentication bearerAuthentication = (BearerAuthentication) authentication;
+        var passerToken = jwtService.paseJwt(
                 bearerAuthentication.getPrincipal().toString());
-        var isAccess = paserToken.getHeader().get(Header.TYPE).toString().equals(
+        var isAccess = passerToken.getHeader().get(Header.TYPE).toString().equals(
                 ACCESS.name());
         Assert.isTrue(isAccess, "Token phải là access");
         try {
-            var readProps = paserToken.getBody();
+            var readProps = passerToken.getBody();
             
-            Optional<Object> rolesIsExist = Optional.ofNullable(readProps.get("roles"));
+            Optional<Object> rolesIsExist = Optional.ofNullable(readProps.get(
+                    "roles"));
             
-            List<?> roles = (List<?>) rolesIsExist.orElseGet(() -> List.of());
+            List<?> roles = (List<?>) rolesIsExist.orElseGet(List::of);
             
-            var setAuthorites = roles.stream().filter(String.class::isInstance).map(
+            var setAuthorities = roles.stream().filter(String.class::isInstance).map(
                     String.class::cast).map(ChucVu.RoleName::castStringToRole).collect(
                     Collectors.toSet());
             
-            BearerPrincical bearerPrincical = new BearerPrincical() {};
+            BearerPrincical bearerPrincical = new BearerPrincical() {
+            };
             bearerPrincical.getTokenProperties().putAll(readProps);
             
-            AbstractBearerToken bearerTokenSucces = new BearerAuthenticationToken(
-                    authentication.toString(), bearerPrincical, setAuthorites);
-            if (bearerTokenSucces.getDetails() == null) {
+            AbstractBearerToken bearerTokenSuccess = new BearerAuthenticationToken(
+                    authentication.toString(), UUID.fromString(
+                    readProps.getSubject()), bearerPrincical, setAuthorities);
+            if (bearerTokenSuccess.getDetails() == null) {
                 bearerAuthentication.setDetails(
                         bearerAuthentication.getDetails());
             }
-            return bearerTokenSucces;
+            return bearerTokenSuccess;
         } catch (JwtException e) {
             throw new AuthenticationServiceException(e.getMessage(), e);
         }

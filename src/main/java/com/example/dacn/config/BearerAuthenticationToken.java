@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import javax.security.auth.Subject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,13 @@ import org.springframework.security.core.GrantedAuthority;
  *
  * @author ADMIN
  */
-public class BearerAuthenticationToken extends AbstractBearerToken {
+public final class BearerAuthenticationToken extends AbstractBearerToken {
 
     private final Map<String, ?> tokenProperties;
 
-    BearerAuthenticationToken(String authentication,
+    BearerAuthenticationToken(String authentication,UUID id,
             BearerPrincical bearerPrincical, Collection<? extends GrantedAuthority> authorities) {
-        super(authentication, null, bearerPrincical,
+        super(authentication, id, bearerPrincical,
                 authorities);
      
         this.tokenProperties = Collections.unmodifiableMap(

@@ -2,6 +2,7 @@ package com.example.dacn.db1.model;
 
 import com.example.dacn.validations.MinNumberGroup;
 import com.example.dacn.template.enumModel.ProductStatus;
+
 import java.math.BigDecimal;
 
 import com.example.dacn.template.BaseEntity;
@@ -19,34 +20,31 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import lombok.Builder.Default;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "tbl_product", indexes = @Index(columnList = "name ASC"),
+@Table(name = "tbl_product", indexes = @Index(columnList = "name ASC, sku DESC"),
         uniqueConstraints = {
-            @UniqueConstraint(name = "uq_store_and_sku",
-                    columnNames = {"id_store", "sku"})
+                @UniqueConstraint(name = "uq_store_and_sku",
+                        columnNames = {"id_store", "sku"})
         })
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Product extends BaseEntity {
 
-    @Column(length = 200, unique = true, nullable = false)
+    @Column(length = 200, unique = true)
     String name;
 
     @Column(name = "image_url", length = 300)
     @Setter
     String imageUrl;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     @Pattern(regexp = "^\\d{2}-[A-Z]{3}-[a-z]{2}$",
             message = "Cấu trúc sku không hợp lệ")
     String sku;
@@ -68,7 +66,7 @@ public class Product extends BaseEntity {
     NguoiDung createBy;
 
     @ManyToOne
-    @JoinColumn(name = "id_store", unique = true, nullable = false)
+    @JoinColumn(name = "id_store")
     @Setter
     Store store;
 
@@ -80,12 +78,16 @@ public class Product extends BaseEntity {
     @Version
     Long version;
 
-    public void setStock(int quantity) {
-        if (quantity > this.quantity) {
-            throw new RuntimeException(
-                    "Số lượng hàng mua lớn hơn tổng sản phẩm tồn tại");
-        }
-        this.quantity -= quantity;
+    public ProductStatus getStatus() {
+        return this.name == null ? ProductStatus.CREATING : this.status;
     }
+
+    //    public void setStock(int quantity) {
+//        if (quantity > this.quantity) {
+//            throw new RuntimeException(
+//                    "Số lượng hàng mua lớn hơn tổng sản phẩm tồn tại");
+//        }
+//        this.quantity -= quantity;
+//    }
 
 }

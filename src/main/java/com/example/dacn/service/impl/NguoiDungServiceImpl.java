@@ -44,17 +44,13 @@ public class NguoiDungServiceImpl implements NguoiDungService {
                         login.password()));
         var nd = NguoiDungView.class.cast(au.getPrincipal());
 
-        var ndR = NguoiDungResponse.builder().id(nd.getId())
-                .username(nd.getUsername()).isActive(nd.isEnabled())
-                .roles(nd.getAuthorities()).build();
-
         return LoginResponse.builder()
                 .refreshToken(
                         jwtServiceImpl.createJwt(new ParamJwt(nd,
                                 TypeToken.REFRESH)))
                 .accessToken(jwtServiceImpl.createJwt(new ParamJwt(nd,
                         TypeToken.ACCESS)))
-                .nguoiDung(ndR).build();
+                .build();
     }
 
     @Override

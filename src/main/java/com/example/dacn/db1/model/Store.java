@@ -18,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
@@ -27,12 +28,13 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @Getter
+@NoArgsConstructor
 public class Store {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    final Short id;
+    Short id;
 
     @Column(length = 150, unique = true, nullable = false)
     String name;
@@ -43,11 +45,15 @@ public class Store {
 
     @Column(name = "create_at", updatable = false)
     @CurrentTimestamp(event = EventType.INSERT)
-    final LocalDateTime createAt;
+    LocalDateTime createAt;
 
-    public String getName() {
-        // TODO Auto-generated method stub
-        return name;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public void setStatus(StoreStatus status) {
+        this.status = status;
+    }
+
+ 
 }

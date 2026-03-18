@@ -16,7 +16,7 @@ public interface NguoiDungService {
     LoginResponse login(LoginDto login);
 
     @Builder
-    public static record NguoiDungViewParamSearch(String username,
+    record NguoiDungViewParamSearch(String username,
             String store, UserStatus userStatus) {
 
     }
@@ -24,13 +24,12 @@ public interface NguoiDungService {
     Page<NguoiDungView> readAllNd(Pageable pageable,
             NguoiDungViewParamSearch dungViewParamSearch);
 
-    public static record LoginDto(String username, String password) {
+    record LoginDto(String username, String password) {
 
     }
 
     @Builder
-    public static record LoginResponse(String refreshToken, String accessToken,
-            NguoiDungResponse nguoiDung) {
+    record LoginResponse(String refreshToken, String accessToken) {
 
     }
 }

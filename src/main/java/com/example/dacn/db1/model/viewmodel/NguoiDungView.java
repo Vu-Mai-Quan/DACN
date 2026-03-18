@@ -19,12 +19,10 @@ import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -102,7 +100,6 @@ public class NguoiDungView implements Serializable, UserDetails {
     @Override
     public boolean isEnabled() {
         // TODO Auto-generated method stub
-        System.out.println(this.status);
         return status.equals(UserStatus.KICH_HOAT);
     }
 

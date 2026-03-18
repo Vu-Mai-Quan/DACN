@@ -23,7 +23,6 @@ public class SpamFilter extends OncePerRequestFilter {
             HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         log.info("Vào spam");
-        System.out.println("jwt");
         filterChain.doFilter(request, response);
 
     }

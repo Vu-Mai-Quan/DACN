@@ -1,10 +1,11 @@
 package com.example.dacn.service;
 
 import com.example.dacn.db1.model.viewmodel.NguoiDungView;
+import com.example.dacn.service.impl.JwtServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwt;
+
 import java.util.Map;
 
 
@@ -15,14 +16,16 @@ public interface JwtService<T> {
     Map<String, ?> getTokenProperties(String token);
 
     Jws<Claims> paseJwt(String jwt);
-    public static enum TypeToken {
+
+    enum TypeToken {
         REFRESH, ACCESS;
     }
-    Header<?> getHeader(String jwt);
-    
-    
-    public static record ParamJwt (NguoiDungView nguoiDungView, TypeToken typeToken){
 
-        
+    Header<?> getHeader(String jwt);
+
+
+    record ParamJwt(NguoiDungView nguoiDungView, TypeToken typeToken) {
+
+
     }
 }
