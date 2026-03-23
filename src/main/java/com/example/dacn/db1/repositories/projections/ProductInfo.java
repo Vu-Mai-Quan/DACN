@@ -21,23 +21,23 @@ public interface ProductInfo {
 
     ProductStatus getStatus();
 
-    int getQuantity();
+    Integer getQuantity();
 
-    NguoiDungInfo getCreateBy();
-
-    StoreInfo getStore();
+//    NguoiDungInfo getCreateBy();
+//
+//    StoreInfo getStore();
 
     /**
      * Projection for {@link com.example.dacn.db1.model.NguoiDung}
      */
-    interface NguoiDungInfo {
-        String getUsername();
-    }
+//    interface NguoiDungInfo {
+//        String getUsername();
+//    }
 
     /**
      * Projection for {@link com.example.dacn.db1.model.Store}
      */
-    interface StoreInfo {
-        String getName();
-    }
+//    interface StoreInfo {
+//        String getStoreName();
+//    }
 }

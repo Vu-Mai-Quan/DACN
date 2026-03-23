@@ -5,35 +5,50 @@
 package com.example.dacn.db1.repositories;
 
 import com.example.dacn.db1.model.Product;
-
-import java.util.Optional;
-import java.util.UUID;
-
 import com.example.dacn.db1.repositories.projections.ProductInfo;
-import io.micrometer.core.lang.NonNullApi;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 
+import java.util.Optional;
+import java.util.UUID;
+
 /**
  *
  * @author ADMIN
  */
-public interface ProductRepo extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
+public interface ProductRepo extends JpaRepository<Product, UUID> {
     Optional<ProductInfo> findBySku(String sku);
 
-    Optional<ProductInfo> findByName(String name);
+    @EntityGraph(value = "Product.images")
+    Optional<Product> findByName(String name);
+
 
     @NonNull
-    @Query("""
-            select p.id, p.name, p.imageUrl, p.price, u.username, s.name, p.sku, p.status, p.quantity
-            from Product p join p.store s join p.createBy u
-            """)
+//    @Query("""
+//            select p.id as id, p.name as name, p.imageUrl as imageUrl, p.price as price, u.username as username,\s
+//            s.storeName as storeName,\s
+//            p.sku as sku, p.status as status,\s
+//            p.quantity as quantity
+//            from Product p join p.store s join p.createBy u
+//           \s""")
+    @Query("from Product p")
     Page<ProductInfo> findAllProduct(@NonNull Pageable pageable);
 
+    @EntityGraph(value = "Product.detail")
+    @Query("select p from Product p where p.id = ?1")
+    Optional<Product> getDetailProductById(UUID id);
+
+
+    //    @EntityGraph(value = "Product.images")
+    @Override
+    @NonNull
+    Optional<Product> findById(@NonNull UUID id);
 //    Page<Product> findAll(Pageable pageable, Specification<Product> specification);
+
+
 }

@@ -112,7 +112,7 @@ public class BeanConfig {
         public void createChucVu() {
             var lsCvExist = chucVuRepo.findAll();
 
-            var lsCvName = Arrays.asList(RoleName.values()).stream();
+            var lsCvName = Arrays.stream(RoleName.values());
 
             var lsDbNameCv = lsCvExist.stream().map(item -> item.getName().name())
                     .collect(Collectors.toSet());

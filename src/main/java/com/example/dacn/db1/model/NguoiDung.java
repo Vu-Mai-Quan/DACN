@@ -9,7 +9,8 @@ import lombok.*;
 import lombok.Builder.Default;
 import lombok.ToString.Exclude;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.ColumnDefault;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +27,7 @@ import java.util.Set;
         })
 })
 @NoArgsConstructor
-public final class NguoiDung extends BaseEntity {
+public class NguoiDung extends BaseEntity {
 
     @Column(unique = true, length = 100, updatable = false)
     @Email(message = "Email đang sai định dạng")
@@ -53,6 +54,24 @@ public final class NguoiDung extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "id_chuc_vu"))
     @Default
     Set<ChucVu> chucVus = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "createBy", fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    Set<Product> products = new HashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NguoiDung nguoiDung = (NguoiDung) o;
+
+        return new EqualsBuilder().append(getId(), nguoiDung.getId()).append(username, nguoiDung.username).append(password, nguoiDung.password).append(status, nguoiDung.status).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getId()).append(username).append(password).append(status).toHashCode();
+    }
 }

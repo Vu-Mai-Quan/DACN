@@ -45,33 +45,29 @@ public final class BearerAuthenticationProvider implements
         var isAccess = passerToken.getHeader().get(Header.TYPE).toString().equals(
                 ACCESS.name());
         Assert.isTrue(isAccess, "Token phải là access");
-        try {
-            var readProps = passerToken.getBody();
-            
-            Optional<Object> rolesIsExist = Optional.ofNullable(readProps.get(
-                    "roles"));
-            
-            List<?> roles = (List<?>) rolesIsExist.orElseGet(List::of);
-            
-            var setAuthorities = roles.stream().filter(String.class::isInstance).map(
-                    String.class::cast).map(ChucVu.RoleName::castStringToRole).collect(
-                    Collectors.toSet());
-            
-            BearerPrincical bearerPrincical = new BearerPrincical() {
-            };
-            bearerPrincical.getTokenProperties().putAll(readProps);
-            
-            AbstractBearerToken bearerTokenSuccess = new BearerAuthenticationToken(
-                    authentication.toString(), UUID.fromString(
-                    readProps.getSubject()), bearerPrincical, setAuthorities);
-            if (bearerTokenSuccess.getDetails() == null) {
-                bearerAuthentication.setDetails(
-                        bearerAuthentication.getDetails());
-            }
-            return bearerTokenSuccess;
-        } catch (JwtException e) {
-            throw new AuthenticationServiceException(e.getMessage(), e);
+        var readProps = passerToken.getBody();
+
+        Optional<Object> rolesIsExist = Optional.ofNullable(readProps.get(
+                "roles"));
+
+        List<?> roles = (List<?>) rolesIsExist.orElseGet(List::of);
+
+        var setAuthorities = roles.stream().filter(String.class::isInstance).map(
+                String.class::cast).map(ChucVu.RoleName::castStringToRole).collect(
+                Collectors.toSet());
+
+        BearerPrincical bearerPrincical = new BearerPrincical() {
+        };
+        bearerPrincical.getTokenProperties().putAll(readProps);
+
+        AbstractBearerToken bearerTokenSuccess = new BearerAuthenticationToken(
+                authentication.toString(), UUID.fromString(
+                readProps.getSubject()), bearerPrincical, setAuthorities);
+        if (bearerTokenSuccess.getDetails() == null) {
+            bearerAuthentication.setDetails(
+                    bearerAuthentication.getDetails());
         }
+        return bearerTokenSuccess;
         
     }
     

@@ -3,6 +3,7 @@ package com.example.dacn.db1.model;
 import com.example.dacn.template.enumModel.StoreStatus;
 import java.time.LocalDateTime;
 
+import lombok.*;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.generator.EventType;
 
@@ -14,11 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
@@ -36,9 +32,11 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Short id;
 
-    @Column(length = 150, unique = true, nullable = false)
-    String name;
+    @Setter
+    @Column(length = 150, unique = true, nullable = false, name = "name")
+    String storeName;
 
+    @Setter
     @Column
     @Enumerated(EnumType.STRING)
     StoreStatus status;
@@ -47,13 +45,5 @@ public class Store {
     @CurrentTimestamp(event = EventType.INSERT)
     LocalDateTime createAt;
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public void setStatus(StoreStatus status) {
-        this.status = status;
-    }
-
- 
 }

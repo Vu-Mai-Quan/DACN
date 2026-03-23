@@ -35,7 +35,7 @@ public class StoreController {
     @PostMapping("jwt/create")
 //    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN')")
     ResponseEntity<String> create(@RequestBody Store store) {
-        store.setName(store.getName().trim());
+        store.setStoreName(store.getStoreName().trim());
         boolean res = storeSevice.createStore(store);
         return ResponseEntity.status(res ? 200 : 404).body(
                 res ? "{'message':'Tạo thành công'}" : "{'message': 'Thất bại'}");

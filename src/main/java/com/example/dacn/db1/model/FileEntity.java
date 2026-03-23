@@ -1,6 +1,7 @@
 package com.example.dacn.db1.model;
 
 import java.math.BigInteger;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,14 +31,13 @@ public abstract class FileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private BigInteger id;
+    private Long id;
 
     private String url;
 
     @Column(name = "system_path", nullable = false)
     @JsonIgnore
     private String systemPath;
-    @Column(name = "storeRef", nullable = false)
-    private String storeRef;
+
 
 }

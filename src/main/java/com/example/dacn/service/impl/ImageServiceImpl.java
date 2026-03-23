@@ -8,11 +8,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.dacn.db1.model.FileEntity;
@@ -29,20 +34,15 @@ public class ImageServiceImpl implements com.example.dacn.service.ImageService {
     private final FileRepo fileRepo;
 
     @Override
-    public FileEntity createFile(MultipartFile fileEntity, String storeDic) {
-        String fileName = UUID.randomUUID() + "_" + fileEntity.getOriginalFilename();
-        Path folderName = Paths.get(storeDic),
-                uploads = Path.of("uploads").resolve(folderName);
-
+    @Transactional("db1TrManager")
+    public FileEntity createFile(MultipartFile fileEntity) {
+        Path uploads = Path.of("uploads");
         try {
             if (!uploads.toFile().exists()) {
                 Files.createDirectory(uploads);
             }
-            FileEntity file = ImageEntity.builder().storeRef(storeDic)
-                    .url(folderName.resolve(fileName).toString())
-                    .systemPath(uploads.resolve(fileName).toAbsolutePath().toString())
-                    .isMain(false).build(), fileSuccess = fileRepo.save(file);
-            Files.copy(fileEntity.getInputStream(), uploads.resolve(fileName),
+            FileEntity file = fileEntityFactory(fileEntity, uploads), fileSuccess = fileRepo.save(file);
+            Files.copy(fileEntity.getInputStream(), uploads.resolve(fileSuccess.getUrl()),
                     StandardCopyOption.REPLACE_EXISTING);
             return fileSuccess;
         } catch (IOException | EntityExistsException e) {
@@ -51,9 +51,18 @@ public class ImageServiceImpl implements com.example.dacn.service.ImageService {
 
     }
 
+    private FileEntity fileEntityFactory(MultipartFile fileEntity, Path uploads) {
+        UUID randomUuid = UUID.randomUUID();
+        String fileName = randomUuid + "_" + fileEntity.getOriginalFilename();
+        return ImageEntity.builder()
+                .url(fileName)
+                .systemPath(uploads.resolve(fileName).toAbsolutePath().toString())
+                .build();
+    }
+
     @Override
     public boolean removeFile(long id) {
-        var ref = fileRepo.findById(BigInteger.valueOf(id));
+        var ref = fileRepo.findById(id);
         if (ref.isPresent()) {
             fileRepo.delete(ref.get());
             try {
@@ -79,9 +88,28 @@ public class ImageServiceImpl implements com.example.dacn.service.ImageService {
     }
 
     @Override
-    public List<FileEntity> loadAll(String storeRef) {
+    @Transactional("db1TrManager")
+    public List<FileEntity> createMultipleFile(List<MultipartFile> files) {
+        Path uploads = Path.of("uploads");
+        Map<FileEntity, MultipartFile> item =
+                files.stream().collect(Collectors.toMap(mut -> this.fileEntityFactory(mut, uploads),
+                        Function.identity()));
+        List<FileEntity> lsSuccess = this.fileRepo.saveAll(item.keySet());
+        item.forEach((key, value) -> {
+            try {
+                Files.copy(value.getInputStream(), uploads.resolve(key.getUrl()),
+                        StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        });
+        return lsSuccess;
+    }
+
+    @Override
+    public List<FileEntity> loadAll(Set<Long> storeRef) {
 //    	var data = fileRepo.findAll();
-        return fileRepo.findByStoreRef(storeRef);
+        return fileRepo.findAllById(storeRef);
 //        return data;
     }
 }

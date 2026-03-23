@@ -13,5 +13,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface StoreRepo extends JpaRepository<Store, Short> {
 
-   boolean existsByName(String name);
+   boolean existsByStoreName(String name);
 }

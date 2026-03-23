@@ -10,8 +10,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigInteger;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,36 +28,35 @@ public class ImageController {
 
     @PostMapping()
     public ResponseEntity<?> createImages(
-            @NonNull @RequestParam("file") MultipartFile file,
-            @RequestParam String imageId) {
+            @NonNull @RequestParam("file") MultipartFile file) {
         if (file.getContentType() == null || !file.getContentType().startsWith(
                 "image/")) {
             return ResponseEntity.badRequest().body(
                     "{\"message\": \"Định dạng file ko phù hợp\"}");
         }
-        var path = imageService.createFile(file, imageId);
+        var path = imageService.createFile(file);
         return ResponseEntity.ok(path);
 //return ResponseEntity.ok(imageId);
     }
 
-    @GetMapping(path = "{idImage}/{filename:.+}")
-    public ResponseEntity<?> getImage(@PathVariable String idImage, @PathVariable String filename) {
-        Resource resource = imageService.loadFile(idImage + "/" + filename);
+    @GetMapping(path = "{filename:.+}")
+    public ResponseEntity<?> getImage(@PathVariable String filename) {
+        Resource resource = imageService.loadFile( filename);
         if (!resource.exists()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(resource);
     }
 
-    @GetMapping("{idImage}")
-    public ResponseEntity<?> getImage(@PathVariable String idImage) {
+    @GetMapping
+    public ResponseEntity<?> getImage(@RequestBody Set<Long> idImage) {
         var resource = imageService.loadAll(idImage);
         return ResponseEntity.ok(resource);
     }
-    
+
     @DeleteMapping("{idImage}")
     public ResponseEntity<Void> deleteImage(@PathVariable Long idImage) {
         return imageService.removeFile(idImage) ? ResponseEntity.ok().build()
-        		: ResponseEntity.badRequest().build();
+                : ResponseEntity.badRequest().build();
     }
-    
+
 
 }

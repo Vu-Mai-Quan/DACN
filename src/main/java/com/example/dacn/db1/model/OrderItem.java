@@ -2,6 +2,7 @@ package com.example.dacn.db1.model;
 
 import java.math.BigDecimal;
 
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.Column;
@@ -14,11 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Builder.Default;
-import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
@@ -27,6 +24,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @Getter
+@NoArgsConstructor
 public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

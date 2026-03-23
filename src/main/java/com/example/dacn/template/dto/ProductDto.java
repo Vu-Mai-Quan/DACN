@@ -25,9 +25,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public final class ProductDto {
 
-    UUID id;
 
-    String name, imageUrl;
+    String name;
 
     int quantity;
 

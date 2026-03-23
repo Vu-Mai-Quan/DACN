@@ -2,6 +2,7 @@ package com.example.dacn.config;
 
 import java.io.IOException;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -43,8 +44,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(bearerAuthed);
             }
             filterChain.doFilter(request, response);
-        } catch (AuthenticationException e) {
+        } catch ( JwtException | AuthenticationException   e) {
             throw new AuthenticationServiceException("token không hợp lệ", e);
+
         }
     }
 

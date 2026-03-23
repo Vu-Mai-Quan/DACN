@@ -4,18 +4,23 @@
  */
 package com.example.dacn.controller;
 
+import com.example.dacn.db1.model.FileEntity;
+import com.example.dacn.db1.model.Product;
+import com.example.dacn.mapper.ProductMapper;
+import com.example.dacn.service.ImageService;
 import com.example.dacn.service.ProductService;
 import com.example.dacn.template.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.FileUrlResource;
-import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.MalformedURLException;
-import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -27,13 +32,35 @@ import java.nio.file.Paths;
 public class ProductController {
 
     private final ProductService productService;
+    private final ImageService imageService;
 
-    @PostMapping()
-    public ResponseEntity<?> createProduct() {
-        return ResponseEntity.ok(productService.createProduct());
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createProduct(@RequestPart("productDto") ProductDto productDto,
+                                           @RequestPart("file") List<MultipartFile> file) {
+        var listPath = imageService.createMultipleFile(file).stream().collect(Collectors.toMap(FileEntity::getId,
+                FileEntity::getUrl));
+        return ResponseEntity.ok(productService.createProduct(productDto, listPath));
     }
 
+//    @GetMapping
+//    ResponseEntity<?> getAllProduct(@PageableDefault() Pageable pageable) {
+//
+//        return ResponseEntity.ok(productService.getAllProduct(pageable, null));
+//    }
 
-    ;
+    @GetMapping("")
+    ResponseEntity<ProductMapper.ProductDetailResponse> disableProduct(@RequestParam String name) {
+        return  ResponseEntity.ok((ProductMapper.ProductDetailResponse)productService.getProductByName(name));
+    }
 
+    @PutMapping
+    ResponseEntity<Void> updateProduct(@RequestBody ProductDto productDto) {
+        return productService.updateProduct(productDto, null, null) ? ResponseEntity.ok().build() :
+                ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("{id}")
+    ResponseEntity<?> getProductById(@PathVariable UUID id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
 }

@@ -8,10 +8,10 @@ import com.example.dacn.db1.model.Store;
 import com.example.dacn.db1.repositories.StoreRepo;
 import com.example.dacn.service.StoreSevice;
 import com.example.dacn.template.enumModel.StoreStatus;
-import jakarta.persistence.EntityExistsException;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
-import org.springframework.stereotype.Service;
 
 /**
  *
@@ -29,11 +29,11 @@ public class StoreSeviceImpl implements StoreSevice {
 
     @Override
     public boolean createStore(Store store) {
-        if (store.getName() == null || store.getStatus() == null) {
+        if (store.getStoreName() == null || store.getStatus() == null) {
             return false;
         }
-        if (store.getName() != null && this.storeRepo.existsByName(
-                store.getName().trim())) {
+        if (this.storeRepo.existsByStoreName(
+                        store.getStoreName().trim())) {
             return false;
         }
         storeRepo.save(store);
@@ -46,7 +46,7 @@ public class StoreSeviceImpl implements StoreSevice {
         if (store.isEmpty()) {
             return false;
         }
-        store.get().setName(name);
+        store.get().setStoreName(name);
         var storeSave = storeRepo.save(store.get());
         return Objects.isNull(storeSave);
     }

@@ -3,6 +3,7 @@ package com.example.dacn.db1.model;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.Column;
@@ -14,11 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Builder.Default;
-import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 @Table(name = "tbl_order")
@@ -27,6 +24,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Order {
 
     @Id
