@@ -10,7 +10,6 @@ import com.example.dacn.db1.model.Product;
 import com.example.dacn.db1.repositories.NguoiDungRepo;
 import com.example.dacn.db1.repositories.ProductRepo;
 import com.example.dacn.db1.repositories.StoreRepo;
-import com.example.dacn.db1.repositories.projections.ProductInfo;
 import com.example.dacn.mapper.ProductMapper;
 import com.example.dacn.service.ProductService;
 import com.example.dacn.template.dto.ProductDto;
@@ -19,17 +18,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.parser.Entity;
-import java.math.BigInteger;
 import java.text.Normalizer;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.example.dacn.template.enumModel.StoreStatus.DISABLED;
 

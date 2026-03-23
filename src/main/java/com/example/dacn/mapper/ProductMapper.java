@@ -11,7 +11,6 @@ import com.example.dacn.template.enumModel.ProductStatus;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Builder;
 import org.mapstruct.Mapper;
-import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 

@@ -1,9 +1,5 @@
 package com.example.dacn.service.impl;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.stereotype.Service;
-
 import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 import com.example.dacn.db1.repositories.NguoiDungRepo;
 import com.example.dacn.service.JwtService;
@@ -11,15 +7,16 @@ import com.example.dacn.service.JwtService.ParamJwt;
 import com.example.dacn.service.JwtService.TypeToken;
 import com.example.dacn.service.NguoiDungService;
 import com.example.dacn.template.dto.NguoiDungDto;
-import com.example.dacn.template.dto.NguoiDungResponse;
 import com.example.dacn.ultil.NdViewSpecification;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

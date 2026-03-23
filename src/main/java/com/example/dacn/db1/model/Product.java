@@ -1,16 +1,8 @@
 package com.example.dacn.db1.model;
 
-import com.example.dacn.validations.MinNumberGroup;
-import com.example.dacn.template.enumModel.ProductStatus;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import com.example.dacn.template.BaseEntity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.dacn.template.enumModel.ProductStatus;
+import com.example.dacn.validations.MinNumberGroup;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -20,7 +12,10 @@ import lombok.Builder.Default;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(

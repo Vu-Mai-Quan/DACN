@@ -2,7 +2,6 @@ package com.example.dacn.controller;
 
 import com.example.dacn.service.ImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigInteger;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController

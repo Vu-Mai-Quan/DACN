@@ -1,12 +1,12 @@
 package com.example.dacn.template.idmodel;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.UUID;
 
 @Embeddable
 @Builder

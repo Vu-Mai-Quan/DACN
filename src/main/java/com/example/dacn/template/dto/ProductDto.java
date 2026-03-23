@@ -5,14 +5,10 @@
 package com.example.dacn.template.dto;
 
 import com.example.dacn.template.enumModel.ProductStatus;
-import java.math.BigDecimal;
-import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.math.BigDecimal;
 
 /**
  *

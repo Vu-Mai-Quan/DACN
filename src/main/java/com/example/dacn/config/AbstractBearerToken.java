@@ -4,12 +4,13 @@
  */
 package com.example.dacn.config;
 
-import java.util.Collection;
-import java.util.Map;
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  *

@@ -1,13 +1,9 @@
 package com.example.dacn.config;
 
-import java.util.Objects;
-
-import javax.sql.DataSource;
-
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceUnit;
-import jakarta.persistence.PersistenceUnits;
-import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,18 +11,13 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.AbstractEntityManagerFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 
-import com.zaxxer.hikari.HikariDataSource;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Value;
+import javax.sql.DataSource;
+import java.util.Objects;
 
 @Slf4j
 @EnableJpaRepositories(

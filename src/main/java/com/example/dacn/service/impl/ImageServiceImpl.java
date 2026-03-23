@@ -1,7 +1,17 @@
 package com.example.dacn.service.impl;
 
+import com.example.dacn.db1.model.FileEntity;
+import com.example.dacn.db1.model.ImageEntity;
+import com.example.dacn.db1.repositories.FileRepo;
+import jakarta.persistence.EntityExistsException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.Resource;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,19 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileUrlResource;
-import org.springframework.core.io.Resource;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.dacn.db1.model.FileEntity;
-import com.example.dacn.db1.model.ImageEntity;
-import com.example.dacn.db1.repositories.FileRepo;
-
-import jakarta.persistence.EntityExistsException;
-import lombok.RequiredArgsConstructor;
 
 @Slf4j
 @org.springframework.stereotype.Service

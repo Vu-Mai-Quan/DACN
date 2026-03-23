@@ -4,8 +4,6 @@
  */
 package com.example.dacn.template.enumModel;
 
-import org.springframework.security.core.GrantedAuthority;
-
 /**
  *
  * @author ADMIN

@@ -4,18 +4,12 @@
  */
 package com.example.dacn.config;
 
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import javax.security.auth.Subject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+
+import javax.security.auth.Subject;
+import java.util.*;
 
 /**
  *

@@ -5,14 +5,11 @@
 package com.example.dacn.controller;
 
 import com.example.dacn.db1.model.FileEntity;
-import com.example.dacn.db1.model.Product;
 import com.example.dacn.mapper.ProductMapper;
 import com.example.dacn.service.ImageService;
 import com.example.dacn.service.ProductService;
 import com.example.dacn.template.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

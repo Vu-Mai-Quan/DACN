@@ -4,19 +4,11 @@
  */
 package com.example.dacn.service;
 
-import com.example.dacn.db1.model.Product;
-import com.example.dacn.db1.repositories.projections.ProductInfo;
 import com.example.dacn.mapper.ProductMapper;
 import com.example.dacn.template.dto.ProductDto;
 
-import java.math.BigInteger;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *

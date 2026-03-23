@@ -4,14 +4,8 @@
  */
 package com.example.dacn.ultil;
 
-import com.example.dacn.db1.model.NguoiDung;
 import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 import com.example.dacn.template.enumModel.UserStatus;
-import jakarta.persistence.criteria.Order;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.query.criteria.JpaOrder;
-import org.hibernate.query.sqm.tree.select.SqmSortSpecification;
 import org.springframework.data.jpa.domain.Specification;
 
 /**

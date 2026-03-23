@@ -1,9 +1,16 @@
 package com.example.dacn.config;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-
+import com.example.dacn.db1.model.ChucVu;
+import com.example.dacn.db1.model.ChucVu.RoleName;
+import com.example.dacn.db1.model.NguoiDung;
+import com.example.dacn.db1.repositories.ChucVuRepo;
+import com.example.dacn.db1.repositories.NguoiDungRepo;
+import com.example.dacn.service.JwtService;
+import com.example.dacn.template.enumModel.UserStatus;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -24,20 +31,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.dacn.db1.model.ChucVu;
-import com.example.dacn.db1.model.ChucVu.RoleName;
-import com.example.dacn.db1.model.NguoiDung;
-
-import com.example.dacn.db1.repositories.ChucVuRepo;
-import com.example.dacn.db1.repositories.NguoiDungRepo;
-import com.example.dacn.service.JwtService;
-import com.example.dacn.template.enumModel.UserStatus;
 import java.nio.file.Path;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Configuration(proxyBeanMethods = false)
 @Slf4j

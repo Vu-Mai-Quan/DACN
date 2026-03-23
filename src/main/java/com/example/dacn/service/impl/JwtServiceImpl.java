@@ -1,33 +1,24 @@
 package com.example.dacn.service.impl;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.function.Function;
-
+import com.example.dacn.db1.model.viewmodel.NguoiDungView;
+import com.example.dacn.service.JwtService;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import com.example.dacn.db1.model.viewmodel.NguoiDungView;
-import com.example.dacn.service.JwtService;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-
-import static io.jsonwebtoken.Header.TYPE;
-
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-
+import java.security.Key;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
+import static io.jsonwebtoken.Header.TYPE;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

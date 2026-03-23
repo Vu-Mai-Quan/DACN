@@ -4,21 +4,20 @@
  */
 package com.example.dacn.config;
 
+import com.example.dacn.config.BearerAuthenticationToken.BearerPrincical;
 import com.example.dacn.db1.model.ChucVu;
 import com.example.dacn.service.JwtService;
-import io.jsonwebtoken.JwtException;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import io.jsonwebtoken.Header;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
-import com.example.dacn.config.BearerAuthenticationToken.BearerPrincical;
-import static com.example.dacn.service.JwtService.TypeToken.ACCESS;
-import io.jsonwebtoken.Header;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.example.dacn.service.JwtService.TypeToken.ACCESS;
 
 /**
  *

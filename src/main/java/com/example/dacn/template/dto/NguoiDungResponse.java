@@ -1,15 +1,14 @@
 package com.example.dacn.template.dto;
 
-import java.util.Collection;
-import java.util.UUID;
-
-import org.springframework.security.core.GrantedAuthority;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Builder

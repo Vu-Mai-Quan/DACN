@@ -2,9 +2,7 @@ package com.example.dacn.service;
 
 import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 import com.example.dacn.template.dto.NguoiDungDto;
-import com.example.dacn.template.dto.NguoiDungResponse;
 import com.example.dacn.template.enumModel.UserStatus;
-
 import lombok.Builder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
