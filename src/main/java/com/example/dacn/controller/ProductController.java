@@ -33,10 +33,18 @@ public class ProductController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createProduct(@RequestPart("productDto") ProductDto productDto,
-                                           @RequestPart("file") List<MultipartFile> file) {
-        var listPath = imageService.createMultipleFile(file).stream().collect(Collectors.toMap(FileEntity::getId,
-                FileEntity::getUrl));
-        return ResponseEntity.ok(productService.createProduct(productDto, listPath));
+                                           @RequestPart("files") List<MultipartFile> files) {
+        var fileEntities = imageService.createMultipleFile(files);
+        var listPath = !fileEntities.isEmpty() ? fileEntities.stream().collect(Collectors.toMap(FileEntity::getId,
+                FileEntity::getUrl)): null;
+
+        var product = productService.createProduct(productDto, listPath);
+
+        if (product == null) {
+            imageService.removeAllById(fileEntities);
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(product);
     }
 
 //    @GetMapping
@@ -47,7 +55,7 @@ public class ProductController {
 
     @GetMapping("")
     ResponseEntity<ProductMapper.ProductDetailResponse> disableProduct(@RequestParam String name) {
-        return  ResponseEntity.ok((ProductMapper.ProductDetailResponse)productService.getProductByName(name));
+        return ResponseEntity.ok((ProductMapper.ProductDetailResponse) productService.getProductByName(name));
     }
 
     @PutMapping

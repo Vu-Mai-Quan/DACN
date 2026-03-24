@@ -57,19 +57,17 @@ public class ImageServiceImpl implements com.example.dacn.service.ImageService {
     }
 
     @Override
-    public boolean removeAllById(Set<Long> ids) {
-        var files = fileRepo.findAllById(ids);
-        fileRepo.deleteAll(files);
-        taskExecutor.execute(() -> files.forEach(file -> {
+    public void removeAllById(Iterable<FileEntity> ids) {
+//        var files = fileRepo.findAllById(ids);
+        fileRepo.deleteAll(ids);
+        taskExecutor.execute(() -> ids.forEach(file -> {
             try {
                 Files.deleteIfExists(Paths.get(file.getSystemPath()));
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
         }));
-        return true;
     }
-
 
 
     @Override
@@ -102,6 +100,7 @@ public class ImageServiceImpl implements com.example.dacn.service.ImageService {
     @Override
     @Transactional("db1TrManager")
     public List<FileEntity> createMultipleFile(List<MultipartFile> files) {
+        if (files.isEmpty()) return Collections.emptyList();
         Path uploads = Path.of("uploads");
         Map<FileEntity, MultipartFile> item =
                 files.stream().collect(Collectors.toMap(mut -> this.fileEntityFactory(mut, uploads),

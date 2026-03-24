@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     ProductMapper productMapper;
     StoreRepo storeRepo;
     NguoiDungRepo nguoiDungRepo;
-    ImageService imageService;
+
 
     @Override
     @Transactional("db1TrManager")
@@ -76,12 +76,10 @@ public class ProductServiceImpl implements ProductService {
         Product p = productMapper.productDtoToProduct(product, productDto);
         try {
             return productMapper.productToProductResponse(productRepo.save(p));
-        }catch (Exception e){
-            if( file != null && !file.isEmpty()){
-                imageService.removeAllById(file.keySet());
-            };
+        } catch (Exception e) {
             return null;
         }
+
     }
 
     private final Random RANDOM = new Random();

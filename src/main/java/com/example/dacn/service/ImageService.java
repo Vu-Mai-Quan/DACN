@@ -19,5 +19,5 @@ public interface ImageService {
 
     List<FileEntity> loadAll(Set<Long> urls);
 
-    boolean removeAllById(Set<Long> ids);
+    void removeAllById(Iterable<FileEntity> ids);
 }
