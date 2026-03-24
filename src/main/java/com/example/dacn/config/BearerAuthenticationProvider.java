@@ -4,10 +4,11 @@
  */
 package com.example.dacn.config;
 
-import com.example.dacn.config.BearerAuthenticationToken.BearerPrincical;
+import com.example.dacn.config.BearerAuthenticationToken.BearerPrincipal;
 import com.example.dacn.db1.model.ChucVu;
 import com.example.dacn.service.JwtService;
 import io.jsonwebtoken.Header;
+import io.jsonwebtoken.JwtException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
@@ -34,7 +35,7 @@ public final class BearerAuthenticationProvider implements
     }
     
     @Override
-    public Authentication authenticate(Authentication authentication) {
+    public Authentication authenticate(Authentication authentication) throws JwtException {
         Assert.isInstanceOf(BearerAuthentication.class, authentication,
                 "This provider not suppots");
         Assert.notNull(authentication, "authentication is not null");
@@ -51,17 +52,17 @@ public final class BearerAuthenticationProvider implements
 
         List<?> roles = (List<?>) rolesIsExist.orElseGet(List::of);
 
-        var setAuthorities = roles.stream().filter(String.class::isInstance).map(
+        var setAuthorities = roles.stream().map(
                 String.class::cast).map(ChucVu.RoleName::castStringToRole).collect(
                 Collectors.toSet());
 
-        BearerPrincical bearerPrincical = new BearerPrincical() {
+        BearerPrincipal bearerPrincipal = new BearerPrincipal() {
         };
-        bearerPrincical.getTokenProperties().putAll(readProps);
+        bearerPrincipal.getTokenProperties().putAll(readProps);
 
         AbstractBearerToken bearerTokenSuccess = new BearerAuthenticationToken(
                 authentication.toString(), UUID.fromString(
-                readProps.getSubject()), bearerPrincical, setAuthorities);
+                readProps.getSubject()), bearerPrincipal, setAuthorities);
         if (bearerTokenSuccess.getDetails() == null) {
             bearerAuthentication.setDetails(
                     bearerAuthentication.getDetails());

@@ -19,13 +19,13 @@ public final class BearerAuthenticationToken extends AbstractBearerToken {
 
     private final Map<String, ?> tokenProperties;
 
-    BearerAuthenticationToken(String authentication,UUID id,
-            BearerPrincical bearerPrincical, Collection<? extends GrantedAuthority> authorities) {
-        super(authentication, id, bearerPrincical,
+    BearerAuthenticationToken(String authentication, UUID id,
+                              BearerPrincipal bearerPrincipal, Collection<? extends GrantedAuthority> authorities) {
+        super(authentication, id, bearerPrincipal,
                 authorities);
      
         this.tokenProperties = Collections.unmodifiableMap(
-                bearerPrincical.getTokenProperties());
+                bearerPrincipal.getTokenProperties());
     }
 
     @Override
@@ -53,7 +53,7 @@ public final class BearerAuthenticationToken extends AbstractBearerToken {
 
     @RequiredArgsConstructor
     @Getter
-    public static abstract class BearerPrincical  {
+    public static abstract class BearerPrincipal {
 
         private final Map<String, Object> tokenProperties = new HashMap<>();
 
@@ -65,27 +65,7 @@ public final class BearerAuthenticationToken extends AbstractBearerToken {
     
     }
 
-    @RequiredArgsConstructor
-    public static class BearerPrincicalImlp{
-
-     
-
-//        @Override
-//        @SuppressWarnings("unchecked")
-//        public Collection<? extends GrantedAuthority> getAuthoritys() {
-//            Object roles = getAttribute("roles");
-//
-//            if (!(roles instanceof Collection)) {
-//                return Collections.emptySet();
-//            }
-//            for (var item : (Collection<?>) roles) {
-//                if (!(item instanceof GrantedAuthority)) {
-//                    return Collections.emptySet();
-//                }
-//            }
-//            return (Collection<? extends GrantedAuthority>) roles;
-//        }
 
       
     }
-}
+

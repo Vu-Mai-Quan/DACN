@@ -45,16 +45,13 @@ public class Db1Config {
 
     @Bean
     AbstractPlatformTransactionManager db1TrManager(
-            AbstractEntityManagerFactoryBean abstractEntityManagerFactoryBean, @Qualifier("flywayDb1") Flyway flyway) {
-        flyway.migrate();
+            AbstractEntityManagerFactoryBean abstractEntityManagerFactoryBean) {
         return new JpaTransactionManager(
                 Objects.requireNonNull(abstractEntityManagerFactoryBean.getObject()));
     }
 
-    @Bean()
-//	@DependsOn("abstractEntityManagerFactoryBean")
+    @Bean(initMethod = "migrate")
     Flyway flywayDb1(DataSource dataSourceDbOne) {
-
         return Flyway.configure().dataSource(dataSourceDbOne)
                 .locations("classpath:db/migration/db1").baselineOnMigrate(true).load();
     }

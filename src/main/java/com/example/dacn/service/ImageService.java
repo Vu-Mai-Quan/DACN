@@ -18,4 +18,6 @@ public interface ImageService {
     List<FileEntity> createMultipleFile(List<MultipartFile> files);
 
     List<FileEntity> loadAll(Set<Long> urls);
+
+    boolean removeAllById(Set<Long> ids);
 }

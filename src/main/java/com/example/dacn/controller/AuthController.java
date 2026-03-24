@@ -2,6 +2,10 @@ package com.example.dacn.controller;
 
 import com.example.dacn.service.NguoiDungService;
 import com.example.dacn.service.NguoiDungService.LoginDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,11 +34,17 @@ public class AuthController {
     long timeAgeRefresh;
 
     @GetMapping("public/login")
-    public ResponseEntity<Object> login(@RequestBody LoginDto param) {
+    @Operation(summary = "Login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Validation error"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    public ResponseEntity<Object> login(@RequestBody @Valid LoginDto param) {
         var resLogin = dungService.login(param);
         ResponseCookie refreshToken = ResponseCookie.from(
-                REFRESH.name(),
-                resLogin.refreshToken())
+                        REFRESH.name(),
+                        resLogin.refreshToken())
                 .sameSite("lax")
                 .httpOnly(true)
                 .path("/")
@@ -44,7 +54,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
                         refreshToken.toString()).body(
-                "{\"tokenAccess\":\"%s\"}".formatted(resLogin.accessToken()));
+                        "{\"tokenAccess\":\"%s\"}".formatted(resLogin.accessToken()));
     }
 
 }

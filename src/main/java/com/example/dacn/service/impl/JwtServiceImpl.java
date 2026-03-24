@@ -90,7 +90,7 @@ public final class JwtServiceImpl implements JwtService<JwtService.ParamJwt> {
 //        });
 //    }
     @Override
-    public Jws<Claims> paseJwt(String jwt) {
+    public Jws<Claims> paseJwt(String jwt) throws JwtException{
         // TODO Auto-generated method stub
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
     }

@@ -4,6 +4,7 @@ import com.example.dacn.db1.model.viewmodel.NguoiDungView;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public interface JwtService<T> {
 
     Map<String, ?> getTokenProperties(String token);
 
-    Jws<Claims> paseJwt(String jwt);
+    Jws<Claims> paseJwt(String jwt) throws JwtException;
 
     enum TypeToken {
         REFRESH, ACCESS;

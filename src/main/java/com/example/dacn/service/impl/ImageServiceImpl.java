@@ -17,10 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,6 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements com.example.dacn.service.ImageService {
     private final FileRepo fileRepo;
+    private final Executor taskExecutor;
 
     @Override
     @Transactional("db1TrManager")
@@ -56,6 +55,22 @@ public class ImageServiceImpl implements com.example.dacn.service.ImageService {
                 .systemPath(uploads.resolve(fileName).toAbsolutePath().toString())
                 .build();
     }
+
+    @Override
+    public boolean removeAllById(Set<Long> ids) {
+        var files = fileRepo.findAllById(ids);
+        fileRepo.deleteAll(files);
+        taskExecutor.execute(() -> files.forEach(file -> {
+            try {
+                Files.deleteIfExists(Paths.get(file.getSystemPath()));
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }));
+        return true;
+    }
+
+
 
     @Override
     public boolean removeFile(long id) {

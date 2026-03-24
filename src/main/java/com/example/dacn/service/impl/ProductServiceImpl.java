@@ -11,6 +11,7 @@ import com.example.dacn.db1.repositories.NguoiDungRepo;
 import com.example.dacn.db1.repositories.ProductRepo;
 import com.example.dacn.db1.repositories.StoreRepo;
 import com.example.dacn.mapper.ProductMapper;
+import com.example.dacn.service.ImageService;
 import com.example.dacn.service.ProductService;
 import com.example.dacn.template.dto.ProductDto;
 import jakarta.persistence.EntityManager;
@@ -18,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +42,7 @@ public class ProductServiceImpl implements ProductService {
     ProductMapper productMapper;
     StoreRepo storeRepo;
     NguoiDungRepo nguoiDungRepo;
-    @Qualifier("abstractEntityManagerFactoryBean")
-    EntityManager entityManager;
+    ImageService imageService;
 
     @Override
     @Transactional("db1TrManager")
@@ -73,7 +74,14 @@ public class ProductServiceImpl implements ProductService {
         product.setImages(setImage);
         product.setImageUrl(setImage.isEmpty() ? null : (setImage.getFirst()).getUrlImage());
         Product p = productMapper.productDtoToProduct(product, productDto);
-        return productMapper.productToProductResponse(productRepo.save(p));
+        try {
+            return productMapper.productToProductResponse(productRepo.save(p));
+        }catch (Exception e){
+            if( file != null && !file.isEmpty()){
+                imageService.removeAllById(file.keySet());
+            };
+            return null;
+        }
     }
 
     private final Random RANDOM = new Random();
