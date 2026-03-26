@@ -76,10 +76,12 @@ public class ProductServiceImpl implements ProductService {
                         .imageId(item.getId())
                         .build();
                 var mapMeta = ((ImageEntity) item).getMetadata();
-                var meta = mapMeta != null? ((ImageEntity) item).getMetadata().get("isMain"): null;
-                boolean isMain = meta instanceof Boolean ? (Boolean) meta: false;
+                var meta = mapMeta != null ? ((ImageEntity) item).getMetadata().get("isMain") : null;
+                boolean isMain = meta instanceof Boolean ? (Boolean) meta : false;
                 var image = new ImageProduct(id, isMain, item.getUrl(), product);
-                mainAvatar.set(isMain? image: null);
+                if (isMain) {
+                    mainAvatar.set(image);
+                }
                 return image;
             }).toList();
             product.setImages(setImage);
