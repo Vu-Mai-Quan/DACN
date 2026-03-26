@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.Builder.Default;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -24,6 +26,8 @@ public class ImageProduct {
     private ProductImageId id;
 
     @Column(name = "is_main")
+    @Default
+    @Getter
     private boolean isMain = false;
 
     @Getter

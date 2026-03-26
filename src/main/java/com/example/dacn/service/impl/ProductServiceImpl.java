@@ -5,6 +5,8 @@
 package com.example.dacn.service.impl;
 
 import com.example.dacn.config.BearerAuthenticationToken;
+import com.example.dacn.db1.model.FileEntity;
+import com.example.dacn.db1.model.ImageEntity;
 import com.example.dacn.db1.model.ImageProduct;
 import com.example.dacn.db1.model.Product;
 import com.example.dacn.db1.repositories.NguoiDungRepo;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.example.dacn.template.enumModel.StoreStatus.DISABLED;
 
@@ -46,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional("db1TrManager")
-    public ProductMapper.ProductResponse createProduct(ProductDto productDto, Map<Long, String> file) {
+    public ProductMapper.ProductResponse createProduct(ProductDto productDto, List<FileEntity> file) {
         BearerAuthenticationToken user
                 = (BearerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         var store = storeRepo.findById(productDto.getIdStore());
@@ -65,16 +68,23 @@ public class ProductServiceImpl implements ProductService {
         product.setCreateBy(createBy);
         product.setStore(store.get());
         product.setSku(generateSku(productDto.getName(), store.get().getId()));
-        List<ImageProduct> setImage = file == null ? List.of() : file.entrySet().stream().map(item -> {
-            var id = ImageProduct.ProductImageId.builder()
-                    .imageId(item.getKey())
-                    .build();
-            return new ImageProduct(id, false, item.getValue(), product);
-        }).toList();
-        product.setImages(setImage);
-        product.setImageUrl(setImage.isEmpty() ? null : (setImage.getFirst()).getUrlImage());
-        Product p = productMapper.productDtoToProduct(product, productDto);
+
         try {
+            AtomicReference<ImageProduct> mainAvatar = new AtomicReference<>();
+            List<ImageProduct> setImage = file == null ? List.of() : file.stream().map(item -> {
+                var id = ImageProduct.ProductImageId.builder()
+                        .imageId(item.getId())
+                        .build();
+                var mapMeta = ((ImageEntity) item).getMetadata();
+                var meta = mapMeta != null? ((ImageEntity) item).getMetadata().get("isMain"): null;
+                boolean isMain = meta instanceof Boolean ? (Boolean) meta: false;
+                var image = new ImageProduct(id, isMain, item.getUrl(), product);
+                mainAvatar.set(isMain? image: null);
+                return image;
+            }).toList();
+            product.setImages(setImage);
+            product.setImageUrl(mainAvatar.get() == null ? null : mainAvatar.get().getUrlImage());
+            Product p = productMapper.productDtoToProduct(product, productDto);
             return productMapper.productToProductResponse(productRepo.save(p));
         } catch (Exception e) {
             return null;

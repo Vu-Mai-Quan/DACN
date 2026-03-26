@@ -1,17 +1,17 @@
 package com.example.dacn.service;
 
-import com.example.dacn.db1.model.viewmodel.NguoiDungView;
-import com.example.dacn.template.dto.NguoiDungDto;
-import com.example.dacn.template.enumModel.UserStatus;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import com.example.dacn.db1.model.NguoiDung;
+import com.example.dacn.template.dto.NguoiDungDto;
+import com.example.dacn.template.enumModel.UserStatus;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
 public interface NguoiDungService {
 
@@ -20,12 +20,11 @@ public interface NguoiDungService {
     LoginResponse login(LoginDto login);
 
     @Builder
-    record NguoiDungViewParamSearch(String username,
-                                    String store, UserStatus userStatus) {
+    record NguoiDungViewParamSearch(String username, String store, UserStatus userStatus) {
 
     }
 
-    Page<NguoiDungView> readAllNd(Pageable pageable,
+    Page<NguoiDung> readAllNd(Pageable pageable,
                                   NguoiDungViewParamSearch dungViewParamSearch);
 
     record LoginDto(

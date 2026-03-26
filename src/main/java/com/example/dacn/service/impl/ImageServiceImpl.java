@@ -1,126 +1,132 @@
 package com.example.dacn.service.impl;
 
-import com.example.dacn.db1.model.FileEntity;
-import com.example.dacn.db1.model.ImageEntity;
-import com.example.dacn.db1.repositories.FileRepo;
-import jakarta.persistence.EntityExistsException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileUrlResource;
-import org.springframework.core.io.Resource;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.Resource;
+import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.dacn.db1.model.FileEntity;
+import com.example.dacn.db1.model.ImageEntity;
+import com.example.dacn.db1.repositories.FileRepo;
+
+import jakarta.persistence.EntityExistsException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @org.springframework.stereotype.Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements com.example.dacn.service.ImageService {
-    private final FileRepo fileRepo;
-    private final Executor taskExecutor;
+	private final FileRepo fileRepo;
+	private final Executor taskExecutor;
 
-    @Override
-    @Transactional("db1TrManager")
-    public FileEntity createFile(MultipartFile fileEntity) {
-        Path uploads = Path.of("uploads");
-        try {
-            if (!uploads.toFile().exists()) {
-                Files.createDirectory(uploads);
-            }
-            FileEntity file = fileEntityFactory(fileEntity, uploads), fileSuccess = fileRepo.save(file);
-            Files.copy(fileEntity.getInputStream(), uploads.resolve(fileSuccess.getUrl()),
-                    StandardCopyOption.REPLACE_EXISTING);
-            return fileSuccess;
-        } catch (IOException | EntityExistsException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+	@Override
+	@Transactional("db1TrManager")
+	public FileEntity createFile(ImageRequest ex) {
+		Path uploads = Path.of("uploads");
+		try {
+			if (!uploads.toFile().exists()) {
+				Files.createDirectory(uploads);
+			}
+			FileEntity file = fileEntityFactory(ex, uploads),
+					fileSuccess = fileRepo.save(file);
+			Files.copy(ex.files().getInputStream(), uploads.resolve(fileSuccess.getUrl()),
+					StandardCopyOption.REPLACE_EXISTING);
+			return fileSuccess;
+		} catch (IOException | EntityExistsException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 
-    }
+	}
 
-    private FileEntity fileEntityFactory(MultipartFile fileEntity, Path uploads) {
-        UUID randomUuid = UUID.randomUUID();
-        String fileName = randomUuid + "_" + fileEntity.getOriginalFilename();
-        return ImageEntity.builder()
-                .url(fileName)
-                .systemPath(uploads.resolve(fileName).toAbsolutePath().toString())
-                .build();
-    }
+	private FileEntity fileEntityFactory(@NonNull ImageRequest imageRequest,
+			@NonNull Path uploads) {
+		UUID randomUuid = UUID.randomUUID();
+		String fileName = randomUuid + "_" + imageRequest.files().getOriginalFilename();
+		return ImageEntity.builder().url(fileName)
+				.systemPath(uploads.resolve(fileName).toAbsolutePath().toString())
+				.metadata(imageRequest.fileMetadata()).build();
+	}
 
-    @Override
-    public void removeAllById(Iterable<FileEntity> ids) {
+	@Override
+	public void removeAllById(Iterable<FileEntity> ids) {
 //        var files = fileRepo.findAllById(ids);
-        fileRepo.deleteAll(ids);
-        taskExecutor.execute(() -> ids.forEach(file -> {
-            try {
-                Files.deleteIfExists(Paths.get(file.getSystemPath()));
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }));
-    }
+		fileRepo.deleteAll(ids);
+		taskExecutor.execute(() -> ids.forEach(file -> {
+			try {
+				Files.deleteIfExists(Paths.get(file.getSystemPath()));
+			} catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}));
+	}
 
+	@Override
+	public boolean removeFile(long id) {
+		var ref = fileRepo.findById(id);
+		if (ref.isPresent()) {
+			fileRepo.delete(ref.get());
+			try {
+				Files.deleteIfExists(Paths.get(ref.get().getSystemPath()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				log.error(e.getMessage());
+			}
+			return true;
+		}
 
-    @Override
-    public boolean removeFile(long id) {
-        var ref = fileRepo.findById(id);
-        if (ref.isPresent()) {
-            fileRepo.delete(ref.get());
-            try {
-                Files.deleteIfExists(Paths.get(ref.get().getSystemPath()));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                log.error(e.getMessage());
-            }
-            return true;
-        }
+		return false;
+	}
 
-        return false;
-    }
+	@Override
+	public Resource loadFile(String url) {
+		try {
+			return new FileUrlResource(Paths.get("uploads").resolve(url).toUri().toURL());
+		} catch (MalformedURLException e) {
+			return null;
+		}
 
-    @Override
-    public Resource loadFile(String url) {
-        try {
-            return new FileUrlResource(Paths.get("uploads").resolve(url).toUri().toURL());
-        } catch (MalformedURLException e) {
-            return null;
-        }
+	}
 
-    }
+	@Override
+	@Transactional("db1TrManager")
+	public List<FileEntity> createMultipleFile(@NonNull Set<ImageRequest> files) {
+		if (files.isEmpty())
+			return Collections.emptyList();
+		Path uploads = Path.of("uploads");
+		Map<FileEntity, MultipartFile> item = files.stream().collect(Collectors
+				.toMap(mut -> this.fileEntityFactory(mut, uploads), ImageRequest::files));
+		List<FileEntity> lsSuccess = this.fileRepo.saveAll(item.keySet());
+		item.forEach((key, value) -> {
+			try {
+				Files.copy(value.getInputStream(), uploads.resolve(key.getUrl()),
+						StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException ex) {
+				log.error(ex.getMessage());
+			}
+		});
+		return lsSuccess;
+	}
 
-    @Override
-    @Transactional("db1TrManager")
-    public List<FileEntity> createMultipleFile(List<MultipartFile> files) {
-        if (files.isEmpty()) return Collections.emptyList();
-        Path uploads = Path.of("uploads");
-        Map<FileEntity, MultipartFile> item =
-                files.stream().collect(Collectors.toMap(mut -> this.fileEntityFactory(mut, uploads),
-                        Function.identity()));
-        List<FileEntity> lsSuccess = this.fileRepo.saveAll(item.keySet());
-        item.forEach((key, value) -> {
-            try {
-                Files.copy(value.getInputStream(), uploads.resolve(key.getUrl()),
-                        StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException ex) {
-                log.error(ex.getMessage());
-            }
-        });
-        return lsSuccess;
-    }
-
-    @Override
-    public List<FileEntity> loadAll(Set<Long> storeRef) {
+	@Override
+	public List<FileEntity> loadAll(Set<Long> storeRef) {
 //    	var data = fileRepo.findAll();
-        return fileRepo.findAllById(storeRef);
+		return fileRepo.findAllById(storeRef);
 //        return data;
-    }
+	}
 }

@@ -4,31 +4,31 @@
  */
 package com.example.dacn.ultil;
 
-import com.example.dacn.db1.model.viewmodel.NguoiDungView;
-import com.example.dacn.template.enumModel.UserStatus;
 import org.springframework.data.jpa.domain.Specification;
+
+import com.example.dacn.db1.model.NguoiDung;
+import com.example.dacn.template.enumModel.UserStatus;
 
 /**
  *
  * @author ADMIN
  */
-public class NdViewSpecification {
+public class NguoiDungSpecification {
 
-    public static Specification<NguoiDungView> searchParam(String username
+    public static Specification<NguoiDung> searchParam(String username
     ) {
-        return (root, query, builder) -> builder.like(root.get("name"),
+        return (root, query, builder) -> builder.like(root.get("username"),
                 "%" + username + "%");
     }
 
-    public static Specification<NguoiDungView> searchStore(String storeName) {
+    public static Specification<NguoiDung> searchStore(Short storeName) {
         return (root, query, builder) -> {
 
-            return builder.like(root.get("storeName"),
-                    "%" + storeName);
+            return builder.equal(root.get("store").get("id"), storeName);
         };
     }
 
-    public static Specification<NguoiDungView> searchParam(UserStatus status) {
+    public static Specification<NguoiDung> searchParam(UserStatus status) {
         return (root, query, builder) -> builder.equal(root.get("status"),
                 status.name());
     }

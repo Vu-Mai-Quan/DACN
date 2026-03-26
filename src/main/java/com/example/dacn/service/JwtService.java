@@ -1,12 +1,13 @@
 package com.example.dacn.service;
 
-import com.example.dacn.db1.model.viewmodel.NguoiDungView;
+import java.util.Map;
+
+import org.springframework.security.core.userdetails.UserDetails;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
-
-import java.util.Map;
 
 
 public interface JwtService<T> {
@@ -24,8 +25,11 @@ public interface JwtService<T> {
     Header<?> getHeader(String jwt);
 
 
-    record ParamJwt(NguoiDungView nguoiDungView, TypeToken typeToken) {
+    record  ParamJwt<T extends UserDetails>(T param, TypeToken typeToken) {
 
 
     }
+
+
+
 }

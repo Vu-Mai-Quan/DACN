@@ -17,7 +17,11 @@ import java.util.*;
  */
 public final class BearerAuthenticationToken extends AbstractBearerToken {
 
-    private final Map<String, ?> tokenProperties;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4486366526762737764L;
+	private final Map<String, ?> tokenProperties;
 
     BearerAuthenticationToken(String authentication, UUID id,
                               BearerPrincipal bearerPrincipal, Collection<? extends GrantedAuthority> authorities) {

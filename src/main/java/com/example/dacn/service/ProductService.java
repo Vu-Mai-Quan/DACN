@@ -4,9 +4,11 @@
  */
 package com.example.dacn.service;
 
+import com.example.dacn.db1.model.FileEntity;
 import com.example.dacn.mapper.ProductMapper;
 import com.example.dacn.template.dto.ProductDto;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ import java.util.UUID;
  * @author ADMIN
  */
 public interface ProductService {
-    ProductMapper.ProductResponse createProduct(ProductDto productDto, Map<Long, String> filePath);
+    ProductMapper.ProductResponse createProduct(ProductDto productDto, List<FileEntity> filePath);
 
     boolean updateProduct(ProductDto productDto, UUID id, Map<UUID, String> file);
 

@@ -15,7 +15,11 @@ import org.springframework.util.Assert;
 public final class BearerAuthentication extends AbstractAuthenticationToken {
 
 
-    private final Object token;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5570589534818489645L;
+	private final Object token;
 
     public BearerAuthentication(Object token) {
         super(null);

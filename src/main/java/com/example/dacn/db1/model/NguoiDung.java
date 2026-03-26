@@ -3,6 +3,10 @@ package com.example.dacn.db1.model;
 import com.example.dacn.template.BaseEntity;
 import com.example.dacn.template.enumModel.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -11,7 +15,10 @@ import lombok.ToString.Exclude;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,13 +34,15 @@ import java.util.Set;
         })
 })
 @NoArgsConstructor
-public class NguoiDung extends BaseEntity {
+@JsonSerialize(include = Inclusion.NON_NULL)
+public class NguoiDung extends BaseEntity implements UserDetails{
 
     @Column(unique = true, length = 100, updatable = false)
     @Email(message = "Email đang sai định dạng")
     String username;
 
     @Setter
+    @JsonIgnore
     String password;
 
     @Enumerated(EnumType.STRING)
@@ -74,4 +83,10 @@ public class NguoiDung extends BaseEntity {
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(getId()).append(username).append(password).append(status).toHashCode();
     }
+
+	@Override
+	@JsonIgnore
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.chucVus.stream().map(ChucVu::getName).toList();
+	}
 }

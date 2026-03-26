@@ -17,43 +17,41 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ChucVu {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Byte id;
 
-    @Enumerated(EnumType.STRING)
-    @Getter
-    RoleName name;
+	@Enumerated(EnumType.STRING)
+	@Getter
+	RoleName name;
 
-    @ManyToMany(mappedBy = "chucVus")
-    private Set<NguoiDung> nguoiDungs = new HashSet<>();
+	@ManyToMany(mappedBy = "chucVus")
+	private Set<NguoiDung> nguoiDungs = new HashSet<>();
 
-    public static enum RoleName implements GrantedAuthority {
-        SYSTEM_ADMIN, STORE_OWNER, STAFF;
+	public static enum RoleName implements GrantedAuthority {
+		SYSTEM_ADMIN, STORE_OWNER, STAFF;
 
-        @Override
-        public String getAuthority() {
-            return this.name();
-        }
+		@Override
+		public String getAuthority() {
+			return this.name();
+		}
 
-        public static final Map<String, RoleName> ROLE_NAME_MAP = Arrays.stream(
-                RoleName.values()).collect(Collectors.toMap(
-                RoleName::name,
-                Function.identity()));
+		public static final Map<String, RoleName> ROLE_NAME_MAP = Arrays
+				.stream(RoleName.values())
+				.collect(Collectors.toMap(RoleName::name, Function.identity()));
 
-        public static RoleName castStringToRole(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return ROLE_NAME_MAP.get(value.trim());
-        }
-    ;
+		public static RoleName castStringToRole(String value) {
+			if (value == null || value.isBlank()) {
+				return null;
+			}
+			return ROLE_NAME_MAP.get(value.trim());
+		};
 
-    }
+	}
 
-    public ChucVu(RoleName name) {
-        super();
-        this.name = name;
-    }
+	public ChucVu(RoleName name) {
+		super();
+		this.name = name;
+	}
 
 }

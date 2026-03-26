@@ -4,13 +4,14 @@
  */
 package com.example.dacn.config;
 
-import lombok.Getter;
+import java.util.Collection;
+import java.util.Map;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.Map;
+import lombok.Getter;
 
 /**
  *
@@ -20,7 +21,11 @@ public sealed abstract class AbstractBearerToken  extends AbstractAuthentication
 
    
     
-    private final Object credentials;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8709862209539330491L;
+	private final Object credentials;
     private final Object principal;
     @Getter
     private final String token;

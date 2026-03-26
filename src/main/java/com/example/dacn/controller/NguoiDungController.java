@@ -5,6 +5,8 @@
 package com.example.dacn.controller;
 
 import com.example.dacn.service.NguoiDungService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequestMapping("/nguoi-dung/")
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
+@Tag(name = "NguoiDung",description =  "Người dùng")
 public class NguoiDungController {
 
     NguoiDungService nguoiDungService;
